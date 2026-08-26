@@ -32,6 +32,22 @@ same things Darkify itself writes:
 * **Switch size** sets `--darkify-switch-scale`, the variable Darkify's
   `switch_size` attribute produces. It survives a dark-mode toggle because the
   engine leaves `.darkify_switch` alone.
+
+  Two things keep the demo's switcher identical to the site's floating one.
+  First, `.dkfd-fab` is a flex container: Darkify's *minified* Orbit stylesheet
+  sets `display: inline-block` on the switcher (its unminified source does not),
+  and an inline-block sits on its line's text baseline, so the line-height of
+  whatever it is dropped into pushes the pill's track down inside its own fixed
+  height. The plugin's floating switcher never shows this because
+  `position: fixed` blockifies it; a flex parent does the same for the demo's.
+
+  Second, the switcher's border width is passed to `[darkify]` explicitly, with
+  its unit. Darkify stores that setting as a bare number and its floating switcher
+  adds the unit when writing the `:root` variables, but its shortcode passes the
+  raw value — and `border-width: 1` is invalid CSS, so the browser falls back to
+  `medium` (3px) regardless of the setting. That is invisible at full size and
+  swallows the switcher at the small end: at 50% an Orbit pill is 35×15, with
+  3px on every side. See `Darkify_Util_Demo::switch_border_width()`.
 * **Position** moves the switcher in the preview the way Darkify's placement
   setting does — the frame is a viewport, so the switcher floats in it as it
   would on a real site.
@@ -66,6 +82,9 @@ there is nothing to demonstrate, and it will not stand in with a lookalike.
 | `switch_size` | `100`          | Starting switcher size in percent, as in `[darkify]`. The size control starts on the preset nearest to it. |
 | `radius`      | —              | Optional corner radius for the switcher (`50%` for a circle, `12px`, or a bare number for pixels). Empty keeps Darkify's own Switcher Style setting. |
 | `brand`       | `Your Brand`   | Brand name in the sample site's header. |
+| `menu`        | —              | A real WordPress menu to show in the sample site's header, by title, slug or ID — a block theme's navigation (`wp_navigation`) or a classic nav menu. Top-level items only; the links open in the top window, not inside the preview. The demo follows the menu when it is edited. |
+| `nav`         | —              | Manual alternative to `menu`: `Label\|https://…` items, comma separated (the URL is optional). |
+| `menu_limit`  | `6`            | How many items to show. |
 | `url`         | `yoursite.com` | Address shown in the window's title bar. |
 | `heading`     | —              | Optional heading above the window. |
 | `subtitle`    | —              | Optional line under the heading. |
@@ -79,7 +98,7 @@ there is nothing to demonstrate, and it will not stand in with a lookalike.
 | `controls`  | `yes`   | `no` renders the preview on its own, with no control panel. |
 | `presets`   | the installed edition's free presets | Which Darkify colour presets to offer, as a comma-separated list of preset keys (`set1,set3,set9,set6,set10`; Pro adds `set2`, `set4`, `set5`, `set7`, `set8`, `set11`). Order is respected. Empty hides nothing — it means "the free ones". |
 | `preset`    | the site's own preset | Which preset starts selected. |
-| `sizes`     | `XS:40,S:55,M:70,L:85,XL:100,XXL:125` | Size options as `Label:percent`, where the percent is Darkify's own `switch_size`. Empty hides the group. |
+| `sizes`     | `XS:50,S:60,M:75,L:85,XL:100,XXL:125` | Size options as `Label:percent`, where the percent is Darkify's own `switch_size`. Empty hides the group. |
 | `positions` | `bottom-left,bottom-right` | Placements offered. Also accepts `top-left` and `top-right`. |
 | `position`  | `bottom-right` | Which placement starts selected. |
 
@@ -91,7 +110,8 @@ section needs its own palette.
 ### Example
 
 ```
-[darkify_demo heading="Try it yourself — right here"
+[darkify_demo menu="Demos"
+              heading="Try it yourself — right here"
               subtitle="This is Darkify's real floating switcher on a sample site."
               note="Prefer the whole site dark? Use the toggle in our header."]
 ```

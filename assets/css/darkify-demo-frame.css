@@ -67,9 +67,23 @@ body {
 
 .dkfd-nav {
 	display: flex;
-	gap: 22px;
+	flex-wrap: wrap;
+	gap: 8px 22px;
 	font-size: 14px;
 	color: #4b5468;
+}
+
+.dkfd-nav a {
+	color: inherit;
+	text-decoration: none;
+	transition: opacity 0.15s ease;
+}
+
+.dkfd-nav a:hover,
+.dkfd-nav a:focus-visible {
+	opacity: 0.7;
+	text-decoration: underline;
+	text-underline-offset: 3px;
 }
 
 /* Hero -------------------------------------------------------------------- */
@@ -140,6 +154,23 @@ body {
 	right: 22px;
 	bottom: 22px;
 	z-index: 5;
+	/*
+	 * `flex` is load-bearing, not cosmetic.
+	 *
+	 * Darkify's minified Orbit stylesheet gives the switcher
+	 * `display: inline-block` (its unminified source does not), and the pill's
+	 * inner `.theme-toggle` inherits that. An inline-block sits on its line's
+	 * text baseline, so the line-height of whatever it is dropped into pushes
+	 * the track down inside the switcher's fixed height — a few pixels at full
+	 * size, a quarter of the pill at the small end, which is what made XS look
+	 * broken.
+	 *
+	 * The plugin's own floating switcher never shows this because
+	 * `position: fixed` blockifies it. A flex parent does the same thing to its
+	 * children, so the demo's switcher lands in exactly the state the real one
+	 * is in — no override of Darkify's own rules needed.
+	 */
+	display: flex;
 }
 
 /* Responsive -------------------------------------------------------------- */
@@ -150,7 +181,7 @@ body {
 	}
 
 	.dkfd-nav {
-		gap: 16px;
+		gap: 6px 16px;
 		font-size: 13px;
 	}
 
@@ -172,6 +203,14 @@ body {
 	.dkfd-fab {
 		right: 16px;
 		bottom: 16px;
+	}
+}
+
+/* A menu with six items has to give way before the header does. Trimming from
+   the end keeps the mock-up looking like a header rather than a wrapped list. */
+@media (max-width: 640px) {
+	.dkfd-nav > :nth-child(n + 5) {
+		display: none;
 	}
 }
 

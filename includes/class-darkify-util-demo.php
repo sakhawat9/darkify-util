@@ -298,6 +298,15 @@ if (!class_exists('Darkify_Util_Demo')) {
                 'switch_size' => '100',
                 'brand'       => __('Your Brand', 'darkify-util'),
                 'url'         => 'yoursite.com',
+                // The sample site's navigation. `menu` names a real WordPress
+                // menu — a block theme's navigation or a classic nav menu — by
+                // title, slug or ID, so the demo shows the site's own menu and
+                // follows it when it changes. `nav` is the manual alternative:
+                // `Label|https://…` items, comma separated. With neither, the
+                // sample site keeps its generic, unlinked labels.
+                'menu'        => '',
+                'nav'         => '',
+                'menu_limit'  => '6',
                 'heading'     => '',
                 'subtitle'    => '',
                 'note'        => '',
@@ -310,7 +319,7 @@ if (!class_exists('Darkify_Util_Demo')) {
                 'controls'    => 'yes',
                 'presets'     => '',
                 'preset'      => '',
-                'sizes'       => 'XS:40,S:55,M:70,L:85,XL:100,XXL:125',
+                'sizes'       => 'XS:50,S:60,M:75,L:85,XL:100,XXL:125',
                 'positions'   => 'bottom-left,bottom-right',
                 'position'    => 'bottom-right',
                 // Optional override for the switcher's corner radius (e.g.
@@ -350,8 +359,10 @@ if (!class_exists('Darkify_Util_Demo')) {
                 'switch_size' => $size ? $size['value'] : $switch_size,
                 'preset'      => $preset,
                 'radius'      => $this->sanitize_radius($atts['radius']),
+                'border'      => $this->switch_border_width(),
                 'position'    => $position,
                 'brand'       => $atts['brand'],
+                'nav'         => $this->nav_items($atts['menu'], $atts['nav'], (int) $atts['menu_limit']),
                 'url'         => $atts['url'],
                 'heading'     => $atts['heading'],
                 'subtitle'    => $atts['subtitle'],
@@ -370,8 +381,173 @@ if (!class_exists('Darkify_Util_Demo')) {
         }
 
         /* --------------------------------------------------------------- */
+        /* Sample site navigation                                          */
+        /* --------------------------------------------------------------- */
+
+        /**
+         * The links across the top of the sample site.
+         *
+         * A real menu is the point: the demo shows the site's own navigation
+         * and follows it when it is edited, instead of carrying a copy that
+         * drifts. Block-theme navigations and classic menus both work.
+         *
+         * @return array<int,array{label:string,url:string}>
+         */
+        private function nav_items($menu, $manual, $limit)
+        {
+            $limit = $limit > 0 ? $limit : 6;
+            $items = array();
+
+            if ('' !== trim((string) $menu)) {
+                $items = $this->nav_items_from_menu(trim((string) $menu));
+            }
+
+            if (!$items && '' !== trim((string) $manual)) {
+                foreach (explode(',', (string) $manual) as $item) {
+                    $parts = explode('|', trim($item), 2);
+                    $label = trim($parts[0]);
+                    if ('' === $label) {
+                        continue;
+                    }
+                    $items[] = array(
+                        'label' => $label,
+                        'url'   => isset($parts[1]) ? esc_url_raw(trim($parts[1])) : '',
+                    );
+                }
+            }
+
+            if (!$items) {
+                foreach (array(
+                    __('Home', 'darkify-util'),
+                    __('Shop', 'darkify-util'),
+                    __('Blog', 'darkify-util'),
+                    __('Contact', 'darkify-util'),
+                ) as $label) {
+                    $items[] = array('label' => $label, 'url' => '');
+                }
+            }
+
+            return array_slice($items, 0, $limit);
+        }
+
+        /**
+         * Top-level items of a menu named by title, slug or ID — a block
+         * theme's `wp_navigation` first, then a classic nav menu.
+         */
+        private function nav_items_from_menu($menu)
+        {
+            $navigation = $this->find_block_navigation($menu);
+            if ($navigation) {
+                return $this->nav_items_from_blocks(parse_blocks($navigation->post_content));
+            }
+
+            $classic = wp_get_nav_menu_object($menu);
+            if (!$classic) {
+                return array();
+            }
+
+            $items = array();
+            foreach ((array) wp_get_nav_menu_items($classic->term_id) as $item) {
+                if (!empty($item->menu_item_parent)) {
+                    continue;
+                }
+                $items[] = array(
+                    'label' => $item->title,
+                    'url'   => $item->url,
+                );
+            }
+
+            return $items;
+        }
+
+        private function find_block_navigation($menu)
+        {
+            if (is_numeric($menu)) {
+                $post = get_post((int) $menu);
+                return ($post && 'wp_navigation' === $post->post_type) ? $post : null;
+            }
+
+            foreach (array('title' => $menu, 'name' => sanitize_title($menu)) as $field => $value) {
+                $found = get_posts(array(
+                    'post_type'        => 'wp_navigation',
+                    'post_status'      => 'publish',
+                    'posts_per_page'   => 1,
+                    'no_found_rows'    => true,
+                    'suppress_filters' => false,
+                    $field             => $value,
+                ));
+                if ($found) {
+                    return $found[0];
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * Walks a navigation block tree. Submenus contribute their own top-level
+         * entry; their children stay out of a five-item mock-up.
+         */
+        private function nav_items_from_blocks($blocks)
+        {
+            $items = array();
+
+            foreach ($blocks as $block) {
+                $name = isset($block['blockName']) ? $block['blockName'] : '';
+
+                if ('core/navigation-link' === $name || 'core/navigation-submenu' === $name) {
+                    $label = isset($block['attrs']['label']) ? $block['attrs']['label'] : '';
+                    if ('' !== $label) {
+                        $items[] = array(
+                            'label' => wp_strip_all_tags($label),
+                            'url'   => isset($block['attrs']['url']) ? $block['attrs']['url'] : '',
+                        );
+                    }
+                    continue;
+                }
+
+                // Group, row and spacer wrappers nest the real items.
+                if (!empty($block['innerBlocks'])) {
+                    $items = array_merge($items, $this->nav_items_from_blocks($block['innerBlocks']));
+                }
+            }
+
+            return $items;
+        }
+
+        /* --------------------------------------------------------------- */
         /* Control options                                                 */
         /* --------------------------------------------------------------- */
+
+        /**
+         * The switcher's border width, as a CSS length.
+         *
+         * Darkify stores this setting as a bare number ("1"). Its floating
+         * switcher appends the unit when it writes the `:root` variables
+         * (DarkifyUtils::generateSwitchStyles), but its `[darkify]` shortcode
+         * passes the raw value straight into `--darkify_switch_border`, where
+         * `border-width: 1` is invalid CSS and the browser falls back to
+         * `medium` — 3px, whatever the setting says.
+         *
+         * At full size that reads as a slightly thick edge. On a small switcher
+         * it is most of the switcher: at 50% an Orbit pill is 35×15, so a 3px
+         * border on every side swallows it. That is the "XS is broken" bug.
+         *
+         * Passing the width explicitly, with its unit, keeps the demo's
+         * switcher identical to the site's floating one at every size.
+         */
+        private function switch_border_width()
+        {
+            $options = get_option('darkify');
+            $border  = isset($options['switch_border']) && is_array($options['switch_border']) ? $options['switch_border'] : array();
+            $width   = isset($border['all']) ? trim((string) $border['all']) : '';
+
+            if ('' === $width) {
+                return '0px';
+            }
+
+            return preg_match('/^\d+(\.\d+)?$/', $width) ? $width . 'px' : $width;
+        }
 
         /**
          * A CSS length or percentage; a bare number is treated as pixels.

@@ -23,10 +23,20 @@ if (!defined('ABSPATH')) {
 			<span class="dkfd-brand__name"><?php echo esc_html($data['brand']); ?></span>
 		</span>
 		<nav class="dkfd-nav" aria-label="<?php esc_attr_e('Sample site navigation', 'darkify-util'); ?>">
-			<span><?php esc_html_e('Home', 'darkify-util'); ?></span>
-			<span><?php esc_html_e('Shop', 'darkify-util'); ?></span>
-			<span><?php esc_html_e('Blog', 'darkify-util'); ?></span>
-			<span><?php esc_html_e('Contact', 'darkify-util'); ?></span>
+			<?php foreach ($data['nav'] as $dkfd_item) : ?>
+				<?php if ($dkfd_item['url']) : ?>
+					<?php
+					/*
+					 * `_top`: the preview is a frame, and these are real pages.
+					 * Following one inside the frame would load a whole site
+					 * into the mock-up; the visitor means to go there.
+					 */
+					?>
+					<a href="<?php echo esc_url($dkfd_item['url']); ?>" target="_top"><?php echo esc_html($dkfd_item['label']); ?></a>
+				<?php else : ?>
+					<span><?php echo esc_html($dkfd_item['label']); ?></span>
+				<?php endif; ?>
+			<?php endforeach; ?>
 		</nav>
 	</header>
 
@@ -62,6 +72,11 @@ if (!defined('ABSPATH')) {
 		esc_attr($data['variant']),
 		(int) $data['switch_size']
 	);
+
+	// Explicit, unit-carrying border width: the shortcode's own default for it
+	// is the raw setting, which is invalid CSS and silently becomes 3px. See
+	// Darkify_Util_Demo::switch_border_width().
+	$dkfd_shortcode .= sprintf(' border="%s"', esc_attr($data['border']));
 
 	if ($data['radius']) {
 		$dkfd_shortcode .= sprintf(' border_radius="%s"', esc_attr($data['radius']));
