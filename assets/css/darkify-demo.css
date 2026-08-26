@@ -1,0 +1,142 @@
+/**
+ * [darkify_demo] — host page styles.
+ *
+ * Only the browser window around the preview lives here. The sample site inside
+ * has its own stylesheet (darkify-demo-frame.css) because it is served into a
+ * separate document.
+ */
+
+.dkfd {
+	--dkfd-max: 900px;
+	--dkfd-chrome-bg: #232a4e;
+	--dkfd-chrome-text: #aeb6d4;
+	--dkfd-window-bg: #ffffff;
+	--dkfd-radius: 14px;
+	--dkfd-height: 460px;
+
+	box-sizing: border-box;
+	width: 100%;
+	max-width: var(--dkfd-max);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.dkfd *,
+.dkfd *::before,
+.dkfd *::after {
+	box-sizing: border-box;
+}
+
+.dkfd__heading {
+	margin: 0 0 10px;
+	text-align: center;
+	font-size: clamp(24px, 3.4vw, 34px);
+	line-height: 1.25;
+	font-weight: 700;
+}
+
+.dkfd__subtitle,
+.dkfd__note {
+	margin: 0 0 26px;
+	text-align: center;
+	font-size: 15px;
+	line-height: 1.6;
+	opacity: 0.85;
+}
+
+.dkfd__note {
+	margin: 18px 0 0;
+	font-size: 13px;
+}
+
+.dkfd__window {
+	position: relative;
+	overflow: hidden;
+	border-radius: var(--dkfd-radius);
+	background: var(--dkfd-window-bg);
+	box-shadow: 0 30px 60px -24px rgba(4, 8, 32, 0.65), 0 2px 8px rgba(4, 8, 32, 0.25);
+}
+
+/* Browser chrome — the frame around the preview, not part of the sample site,
+   so it keeps the same look whichever mode the preview is in. */
+.dkfd__chrome {
+	position: relative;
+	display: flex;
+	align-items: center;
+	min-height: 38px;
+	padding: 10px 16px;
+	background: var(--dkfd-chrome-bg);
+}
+
+.dkfd__dots {
+	display: flex;
+	gap: 7px;
+}
+
+.dkfd__dots i {
+	display: block;
+	width: 11px;
+	height: 11px;
+	border-radius: 50%;
+	background: #ff5f57;
+}
+
+.dkfd__dots i:nth-child(2) {
+	background: #febc2e;
+}
+
+.dkfd__dots i:nth-child(3) {
+	background: #28c840;
+}
+
+.dkfd__url {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	max-width: 60%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+	font-size: 12px;
+	letter-spacing: 0.04em;
+	color: var(--dkfd-chrome-text);
+}
+
+.dkfd__viewport {
+	position: relative;
+	background: var(--dkfd-window-bg);
+}
+
+.dkfd__frame {
+	display: block;
+	width: 100%;
+	height: var(--dkfd-height);
+	border: 0;
+	background: transparent;
+	/* The preview grows and shrinks with its own content (cards stack on narrow
+	   screens); easing that keeps the window from snapping. */
+	transition: height 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dkfd__frame {
+		transition: none;
+	}
+}
+
+/* Until the script boots the preview there is nothing in the frame; keep the
+   window from collapsing to a bare chrome bar. */
+.dkfd:not(.dkfd--ready) .dkfd__viewport {
+	min-height: 260px;
+}
+
+@media (max-width: 600px) {
+	.dkfd__chrome {
+		padding: 8px 12px;
+	}
+
+	.dkfd__url {
+		font-size: 11px;
+	}
+}

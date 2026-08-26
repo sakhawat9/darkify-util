@@ -1,0 +1,466 @@
+/**
+ * [darkify_demo] — boots a real Darkify instance inside the preview frame.
+ *
+ * The frame is built from what the host page already carries: Darkify's own
+ * stylesheets, its inline configuration (the `darkify_*` settings its header
+ * template prints) and its client engine. Nothing about the plugin is
+ * reimplemented here — this file only moves Darkify into a document of its own
+ * so the demo can go dark while the page around it does not.
+ *
+ * Three things keep the demo from touching the real site:
+ *
+ *   1. localStorage inside the frame is replaced with an in-memory stand-in, so
+ *      playing with the demo never writes the visitor's dark-mode preference.
+ *   2. A few settings are neutralised in the frame (default-dark, OS-aware,
+ *      time-based, keyboard shortcut) so the preview always starts light and
+ *      the page's own keyboard shortcut isn't triggered twice.
+ *   3. The host page's Darkify also syncs iframes; a guard re-asserts the
+ *      demo's own state if that sync overrides it.
+ */
+(function () {
+	"use strict";
+
+	var DATA = window.DarkifyDemoData || {};
+	var SKELETON =
+		'<!doctype html><html><head><meta charset="utf-8">' +
+		'<meta name="viewport" content="width=device-width,initial-scale=1">' +
+		"<title>Darkify preview</title></head><body></body></html>";
+
+	// Settings that would make the preview start dark, or would fight the host
+	// page for the same keystroke. Everything else is used exactly as configured.
+	var OVERRIDES = [
+		'darkify_enable_default_dark_mode="";',
+		'darkify_enable_os_aware="";',
+		'darkify_enable_time_based_dark="";',
+		'darkify_enable_keyboard_shortcut="";',
+		'darkify_enable_switch_dragging="";',
+		'darkify_is_this_admin_panel="0";',
+		// The preview is a frame, but it is the page being demonstrated: it must
+		// behave like a top-level document, not like embedded content Darkify
+		// should keep its hands off.
+		'darkify_enable_frontend_iframe_dark_mode="1";'
+	].join("");
+
+	var MIN_HEIGHT = 240;
+
+	/* --------------------------------------------------------------------- */
+	/* Helpers                                                               */
+	/* --------------------------------------------------------------------- */
+
+	function toArray(list) {
+		return Array.prototype.slice.call(list || []);
+	}
+
+	function isDarkifyAsset(url) {
+		var bases = DATA.assetBases || [];
+		for (var i = 0; i < bases.length; i++) {
+			if (bases[i] && url.indexOf(bases[i]) === 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function baseFont() {
+		try {
+			var font = window.getComputedStyle(document.body).fontFamily;
+			if (font) {
+				return font;
+			}
+		} catch (e) {
+			/* fall through to the stylesheet default */
+		}
+		return "";
+	}
+
+	/**
+	 * Give the frame its own storage. Darkify reads and writes its state as
+	 * plain properties (`localStorage.darkify_last_state`), so a plain object
+	 * with the Storage methods defined on top behaves identically — and throws
+	 * everything away when the page is left.
+	 */
+	function isolateStorage(win) {
+		var fake = {};
+
+		Object.defineProperties(fake, {
+			getItem: {
+				value: function (key) {
+					return Object.prototype.hasOwnProperty.call(this, key) ? String(this[key]) : null;
+				}
+			},
+			setItem: {
+				value: function (key, value) {
+					this[key] = String(value);
+				}
+			},
+			removeItem: {
+				value: function (key) {
+					delete this[key];
+				}
+			},
+			clear: {
+				value: function () {
+					var self = this;
+					Object.keys(self).forEach(function (key) {
+						delete self[key];
+					});
+				}
+			},
+			key: {
+				value: function (index) {
+					var keys = Object.keys(this);
+					return index < keys.length ? keys[index] : null;
+				}
+			},
+			length: {
+				get: function () {
+					return Object.keys(this).length;
+				}
+			}
+		});
+
+		try {
+			Object.defineProperty(win, "localStorage", {
+				value: fake,
+				configurable: true
+			});
+			return { isolated: true };
+		} catch (e) {
+			// Some browsers refuse to shadow Storage on a window. The frame then
+			// shares the site's real storage, so the demo restores whatever it
+			// finds there after every toggle instead.
+			return { isolated: false };
+		}
+	}
+
+	function appendScript(doc, options, onload) {
+		var script = doc.createElement("script");
+		if (options.src) {
+			script.src = options.src;
+			script.onload = onload || null;
+			script.onerror = onload || null;
+		} else {
+			script.text = options.text;
+		}
+		doc.body.appendChild(script);
+		if (!options.src && onload) {
+			onload();
+		}
+	}
+
+	function loadSequentially(doc, sources, done) {
+		var index = 0;
+		(function next() {
+			if (index >= sources.length) {
+				done();
+				return;
+			}
+			appendScript(doc, { src: sources[index++] }, next);
+		})();
+	}
+
+	/* --------------------------------------------------------------------- */
+	/* Frame construction                                                    */
+	/* --------------------------------------------------------------------- */
+
+	function buildHead(doc, onReady) {
+		var pending = 0;
+		var settled = false;
+
+		function maybeReady() {
+			if (!settled && pending === 0) {
+				settled = true;
+				onReady();
+			}
+		}
+
+		function addLink(href) {
+			var link = doc.createElement("link");
+			pending++;
+			link.rel = "stylesheet";
+			link.href = href;
+			link.onload = link.onerror = function () {
+				pending--;
+				maybeReady();
+			};
+			doc.head.appendChild(link);
+		}
+
+		// Darkify's own stylesheets — the engine's base CSS and the stylesheet
+		// for whichever switcher style this demo uses.
+		toArray(document.querySelectorAll('link[rel="stylesheet"][href]')).forEach(function (link) {
+			if (isDarkifyAsset(link.href)) {
+				addLink(link.href);
+			}
+		});
+
+		if (DATA.frameCss) {
+			addLink(DATA.frameCss);
+		}
+
+		// Darkify's inline CSS: the palette variables for the selected colour
+		// set, the scrollbar rules, and any custom CSS entered in its settings.
+		toArray(document.querySelectorAll("style.darkify_inline_css")).forEach(function (style) {
+			var copy = doc.createElement("style");
+			copy.textContent = style.textContent;
+			doc.head.appendChild(copy);
+		});
+
+		// Nothing to wait for (no stylesheets found) — carry on immediately.
+		maybeReady();
+	}
+
+	function bootEngine(win, doc, finalize) {
+		// Darkify's configuration, exactly as the host page received it.
+		toArray(document.querySelectorAll("script.darkify_inline_js")).forEach(function (script) {
+			appendScript(doc, { text: script.textContent });
+		});
+
+		appendScript(doc, { text: OVERRIDES });
+
+		var externals = toArray(document.querySelectorAll("script[src]"))
+			.filter(function (script) {
+				return isDarkifyAsset(script.src);
+			})
+			.map(function (script) {
+				return script.src;
+			});
+
+		if (!externals.length && DATA.engineJs) {
+			externals = [DATA.engineJs];
+		}
+
+		loadSequentially(doc, externals, function () {
+			finalize(win, doc);
+		});
+	}
+
+	/**
+	 * Keep the demo's state its own.
+	 *
+	 * The host page's Darkify syncs every iframe it finds to the page's state,
+	 * which would pull the preview back to light the moment anything on the page
+	 * changed. Rather than patch the plugin, the frame simply re-asserts the
+	 * state the visitor chose here.
+	 */
+	function installGuard(win, doc, onChange) {
+		var root = doc.documentElement;
+		var intended = root.classList.contains("darkify_dark_mode_enabled");
+		var correcting = false;
+		var original = win.darkify_switch_trigger;
+
+		if (typeof original === "function") {
+			win.darkify_switch_trigger = function () {
+				intended = !root.classList.contains("darkify_dark_mode_enabled");
+				return original.apply(this, arguments);
+			};
+		}
+
+		if (typeof win.MutationObserver === "function") {
+			new win.MutationObserver(function () {
+				var isDark = root.classList.contains("darkify_dark_mode_enabled");
+				if (!correcting && isDark !== intended) {
+					correcting = true;
+					root.classList.toggle("darkify_dark_mode_enabled", intended);
+					correcting = false;
+				}
+				onChange();
+			}).observe(root, { attributes: true, attributeFilter: ["class"] });
+		}
+	}
+
+	/**
+	 * Without an isolated storage the frame writes to the site's real one, so
+	 * put back what was there after every toggle.
+	 */
+	function protectRealStorage(win, doc) {
+		var key = "darkify_last_state";
+		var saved = null;
+
+		try {
+			saved = window.localStorage.getItem(key);
+		} catch (e) {
+			return;
+		}
+
+		function restore() {
+			try {
+				if (saved === null) {
+					window.localStorage.removeItem(key);
+				} else {
+					window.localStorage.setItem(key, saved);
+				}
+			} catch (e) {
+				/* storage unavailable — nothing to protect */
+			}
+		}
+
+		restore();
+
+		var original = win.darkify_switch_trigger;
+		if (typeof original === "function") {
+			win.darkify_switch_trigger = function () {
+				var result = original.apply(this, arguments);
+				restore();
+				return result;
+			};
+		}
+
+		if (typeof win.MutationObserver === "function") {
+			new win.MutationObserver(restore).observe(doc.documentElement, {
+				attributes: true,
+				attributeFilter: ["class"]
+			});
+		}
+	}
+
+	/**
+	 * How tall the preview needs to be.
+	 *
+	 * Measured from the sample site's own boxes rather than from
+	 * documentElement.scrollHeight, which can never report less than the frame
+	 * it is already in — so the window could grow but never shrink back.
+	 * Anything pinned to the frame (the switcher) is skipped: it floats over the
+	 * page, it does not extend it.
+	 */
+	function contentHeight(win, doc) {
+		var body = doc.body;
+		if (!body) {
+			return MIN_HEIGHT;
+		}
+
+		var bottom = 0;
+		toArray(body.children).forEach(function (child) {
+			var style = win.getComputedStyle(child);
+			if (style.position === "fixed" || style.display === "none") {
+				return;
+			}
+			var rect = child.getBoundingClientRect();
+			if (rect.bottom > bottom) {
+				bottom = rect.bottom;
+			}
+		});
+
+		bottom += parseFloat(win.getComputedStyle(body).paddingBottom) || 0;
+
+		return Math.max(MIN_HEIGHT, Math.ceil(bottom));
+	}
+
+	function watchHeight(win, doc, apply) {
+		apply();
+
+		if (typeof win.ResizeObserver === "function") {
+			new win.ResizeObserver(apply).observe(doc.documentElement);
+		} else {
+			win.addEventListener("resize", apply);
+		}
+
+		// The engine repaints asynchronously after a toggle; a couple of late
+		// measurements catch any reflow that lands after the first frame.
+		[120, 400, 900].forEach(function (delay) {
+			win.setTimeout(apply, delay);
+		});
+	}
+
+	/* --------------------------------------------------------------------- */
+	/* Boot                                                                  */
+	/* --------------------------------------------------------------------- */
+
+	function boot(root) {
+		if (root.dataset.dkfdReady) {
+			return;
+		}
+
+		var iframe = root.querySelector(".dkfd__frame");
+		var template = root.querySelector(".dkfd__source");
+		if (!iframe || !template) {
+			return;
+		}
+
+		var doc = iframe.contentDocument;
+		var win = iframe.contentWindow;
+		if (!doc || !win) {
+			return;
+		}
+
+		root.dataset.dkfdReady = "1";
+
+		doc.open();
+		doc.write(SKELETON);
+		doc.close();
+
+		// Re-read: writing the skeleton replaces the document.
+		doc = iframe.contentDocument;
+		win = iframe.contentWindow;
+
+		var storage = isolateStorage(win);
+
+		doc.documentElement.setAttribute("lang", document.documentElement.lang || "en");
+
+		var font = baseFont();
+		if (font) {
+			// The sample site borrows the host site's typography so the preview
+			// reads as "your site", not as a generic mock-up.
+			doc.documentElement.style.setProperty("--dkfd-font", font);
+		}
+
+		buildHead(doc, function () {
+			doc.body.innerHTML = template.innerHTML;
+
+			bootEngine(win, doc, function (frameWin, frameDoc) {
+				function applyHeight() {
+					root.style.setProperty("--dkfd-height", contentHeight(frameWin, frameDoc) + "px");
+				}
+
+				if (!storage.isolated) {
+					protectRealStorage(frameWin, frameDoc);
+				}
+
+				installGuard(frameWin, frameDoc, applyHeight);
+				watchHeight(frameWin, frameDoc, applyHeight);
+
+				// Darkify runs this from a DOMContentLoaded handler, which has
+				// already fired by the time the engine is appended here.
+				try {
+					if (typeof frameWin.darkify_init_attention_effect === "function") {
+						frameWin.darkify_init_attention_effect();
+					}
+				} catch (e) {
+					/* optional flourish only */
+				}
+
+				root.classList.add("dkfd--ready");
+			});
+		});
+	}
+
+	function observe(root) {
+		if (typeof window.IntersectionObserver !== "function") {
+			boot(root);
+			return;
+		}
+
+		// The preview loads a full copy of the engine; there is no reason to do
+		// that before it is anywhere near the viewport.
+		var observer = new IntersectionObserver(function (entries) {
+			entries.forEach(function (entry) {
+				if (entry.isIntersecting) {
+					observer.disconnect();
+					boot(root);
+				}
+			});
+		}, { rootMargin: "300px" });
+
+		observer.observe(root);
+	}
+
+	function init() {
+		toArray(document.querySelectorAll(".dkfd")).forEach(observe);
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", init);
+	} else {
+		init();
+	}
+})();

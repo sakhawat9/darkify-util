@@ -1,0 +1,22 @@
+.sub-menu.kb-nav-sub-menu {
+  box-shadow: 0px 6px 15px 0px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 12px !important;
+  padding: 10px !important;
+}
+.df-accordions .kt-blocks-accordion-header {
+  cursor: pointer;
+}
+.df-accordions .kt-blocks-accordion-icon-trigger::after,
+.df-accordions .kt-blocks-accordion-icon-trigger:before {
+  width: 15px;
+}
+.product_list_wrapper li a {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 5px;
+    align-items: center;
+}
+footer ul {padding: 0;list-style: none;}
+footer ul {padding: 0;list-style: none;}
+footer ul li {margin: 0 !important;}
+footer ul li a {text-decoration: none;}
