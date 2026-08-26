@@ -363,10 +363,191 @@
 	}
 
 	/* --------------------------------------------------------------------- */
+	/* Controls                                                              */
+	/* --------------------------------------------------------------------- */
+
+	/**
+	 * Each control writes the same thing Darkify itself writes.
+	 *
+	 * The colour preset sets the `--darkify_dark_mode_*` variables on the
+	 * preview's <html> — the same variables Darkify's header template prints
+	 * for the saved preset and its own palette switcher assigns at runtime — and
+	 * swaps the `darkify-<set>` class alongside them, which is what invalidates
+	 * the engine's surface-token cache (it is keyed on the html class list).
+	 *
+	 * Size is `--darkify-switch-scale`, the variable Darkify's `switch_size`
+	 * attribute produces. Both survive a dark-mode toggle.
+	 */
+	var CONTROLS = {
+		preset: function (frame, option) {
+			var root = frame.doc.documentElement;
+
+			if (option.vars) {
+				Object.keys(option.vars).forEach(function (name) {
+					root.style.setProperty(name, option.vars[name]);
+				});
+			}
+
+			toArray(root.classList).forEach(function (name) {
+				if (name.indexOf("darkify-set") === 0) {
+					root.classList.remove(name);
+				}
+			});
+			root.classList.add("darkify-" + option.value);
+
+			// Colours the engine resolved in JS (rather than through its
+			// variable-driven CSS) are only re-derived by a sweep, which
+			// normally runs when dark mode flips. Ask for one so a preset change
+			// while the preview is already dark repaints everything.
+			if (
+				root.classList.contains("darkify_dark_mode_enabled") &&
+				typeof frame.win.darkify_state_sweep === "function"
+			) {
+				try {
+					frame.win.darkify_state_sweep();
+				} catch (e) {
+					/* the preview keeps the variable-driven colours regardless */
+				}
+			}
+		},
+
+		size: function (frame, option) {
+			var el = frame.doc.querySelector(".darkify_switch");
+			if (el) {
+				el.style.setProperty("--darkify-switch-scale", (parseInt(option.value, 10) || 100) / 100);
+			}
+		},
+
+		position: function (frame, option) {
+			var fab = frame.doc.querySelector(".dkfd-fab");
+			if (fab) {
+				fab.setAttribute("data-dkfd-position", option.value);
+			}
+		}
+	};
+
+	/**
+	 * A control button as the state understands it: its value, plus the
+	 * variables the server resolved for it (colour presets carry Darkify's own
+	 * palette values).
+	 */
+	function readOption(button) {
+		var option = { value: button.getAttribute("data-dkfd-value"), vars: null };
+		var vars = button.getAttribute("data-dkfd-vars");
+
+		if (vars) {
+			try {
+				option.vars = JSON.parse(vars);
+			} catch (e) {
+				option.vars = null;
+			}
+		}
+
+		return option;
+	}
+
+	/**
+	 * The control panel is designed for the dark section the demo usually sits
+	 * in, but the shortcode goes anywhere. Measure the surface behind it and
+	 * flip the panel's tokens when that surface is light, so the selected
+	 * states stay visible instead of turning white-on-white.
+	 */
+	function readSurface(root) {
+		var element = root;
+		var background = "";
+
+		while (element && element !== document.documentElement) {
+			var color = window.getComputedStyle(element).backgroundColor;
+			if (color && color !== "transparent" && !/,\s*0\s*\)$/.test(color)) {
+				background = color;
+				break;
+			}
+			element = element.parentElement;
+		}
+
+		if (!background) {
+			background = window.getComputedStyle(document.body).backgroundColor || "rgb(255, 255, 255)";
+		}
+
+		var channels = background.match(/\d+(\.\d+)?/g);
+		if (!channels || channels.length < 3) {
+			return;
+		}
+
+		// Rec. 601 luma is plenty for a light/dark decision.
+		var luma = (0.299 * channels[0] + 0.587 * channels[1] + 0.114 * channels[2]) / 255;
+		root.classList.toggle("dkfd--on-light", luma > 0.55);
+	}
+
+	function watchSurface(root) {
+		readSurface(root);
+
+		if (typeof window.MutationObserver !== "function") {
+			return;
+		}
+
+		// The host page's own dark-mode toggle repaints the section behind the
+		// demo, so the panel re-reads it whenever that state changes.
+		new MutationObserver(function () {
+			requestAnimationFrame(function () {
+				readSurface(root);
+			});
+		}).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+	}
+
+	function selectOption(button) {
+		var group = button.parentNode;
+		toArray(group.querySelectorAll("[data-dkfd-control]")).forEach(function (option) {
+			var on = option === button;
+			option.classList.toggle("is-selected", on);
+			option.setAttribute("aria-pressed", on ? "true" : "false");
+		});
+	}
+
+	function applyState(instance) {
+		if (!instance.frame) {
+			return;
+		}
+		Object.keys(instance.state).forEach(function (control) {
+			if (CONTROLS[control]) {
+				CONTROLS[control](instance.frame, instance.state[control]);
+			}
+		});
+	}
+
+	function wireControls(instance) {
+		var panel = instance.root.querySelector(".dkfd__controls");
+		if (!panel) {
+			return;
+		}
+
+		watchSurface(instance.root);
+
+		// Seed from what the server rendered as selected: the switcher is
+		// already drawn with these values, so a frame that boots later (or a
+		// visitor who clicks before it does) comes up matching the panel.
+		toArray(panel.querySelectorAll("[data-dkfd-control].is-selected")).forEach(function (button) {
+			instance.state[button.getAttribute("data-dkfd-control")] = readOption(button);
+		});
+
+		panel.addEventListener("click", function (event) {
+			var button = event.target.closest ? event.target.closest("[data-dkfd-control]") : null;
+			if (!button || !panel.contains(button)) {
+				return;
+			}
+
+			selectOption(button);
+			instance.state[button.getAttribute("data-dkfd-control")] = readOption(button);
+			applyState(instance);
+		});
+	}
+
+	/* --------------------------------------------------------------------- */
 	/* Boot                                                                  */
 	/* --------------------------------------------------------------------- */
 
-	function boot(root) {
+	function boot(instance) {
+		var root = instance.root;
 		if (root.dataset.dkfdReady) {
 			return;
 		}
@@ -429,14 +610,19 @@
 					/* optional flourish only */
 				}
 
+				// The controls address the switcher inside the frame, so they
+				// can only take effect once it exists.
+				instance.frame = { win: frameWin, doc: frameDoc };
+				applyState(instance);
+
 				root.classList.add("dkfd--ready");
 			});
 		});
 	}
 
-	function observe(root) {
+	function observe(instance) {
 		if (typeof window.IntersectionObserver !== "function") {
-			boot(root);
+			boot(instance);
 			return;
 		}
 
@@ -446,16 +632,23 @@
 			entries.forEach(function (entry) {
 				if (entry.isIntersecting) {
 					observer.disconnect();
-					boot(root);
+					boot(instance);
 				}
 			});
 		}, { rootMargin: "300px" });
 
-		observer.observe(root);
+		observer.observe(instance.root);
 	}
 
 	function init() {
-		toArray(document.querySelectorAll(".dkfd")).forEach(observe);
+		toArray(document.querySelectorAll(".dkfd")).forEach(function (root) {
+			var instance = { root: root, frame: null, state: {} };
+
+			// Wired before the frame is built: a click that lands early is kept
+			// as state and applied the moment the preview is ready.
+			wireControls(instance);
+			observe(instance);
+		});
 	}
 
 	if (document.readyState === "loading") {

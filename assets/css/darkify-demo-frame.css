@@ -188,3 +188,54 @@ body {
 		grid-template-columns: 1fr;
 	}
 }
+
+/* Switcher placement ------------------------------------------------------
+   The Position control moves the switcher the way Darkify's own placement
+   setting does — the frame is a viewport, so a fixed switcher floats in it
+   exactly as it would on a real site. */
+
+.dkfd-fab[data-dkfd-position="bottom-left"] {
+	right: auto;
+	left: 22px;
+}
+
+.dkfd-fab[data-dkfd-position="top-right"] {
+	bottom: auto;
+	top: 22px;
+}
+
+.dkfd-fab[data-dkfd-position="top-left"] {
+	right: auto;
+	bottom: auto;
+	top: 22px;
+	left: 22px;
+}
+
+/* Size and colour changes animate rather than jump — the switcher's own box is
+   driven by the CSS variables Darkify already uses for it. */
+.dkfd-fab .darkify_switch_style,
+.dkfd-fab .darkify_switch_style svg {
+	transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dkfd-fab .darkify_switch_style,
+	.dkfd-fab .darkify_switch_style svg {
+		transition: none;
+	}
+}
+
+@media (max-width: 720px) {
+	.dkfd-fab[data-dkfd-position="bottom-left"] {
+		left: 16px;
+	}
+
+	.dkfd-fab[data-dkfd-position="top-right"] {
+		top: 16px;
+	}
+
+	.dkfd-fab[data-dkfd-position="top-left"] {
+		top: 16px;
+		left: 16px;
+	}
+}

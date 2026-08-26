@@ -140,3 +140,181 @@
 		font-size: 11px;
 	}
 }
+
+/* Demo controls -----------------------------------------------------------
+   Styled for the dark section the demo lives in. The tokens below are the
+   whole palette — override them on `.dkfd` to drop the panel onto a lighter
+   background. */
+
+.dkfd {
+	--dkfd-panel-bg: rgba(255, 255, 255, 0.02);
+	--dkfd-panel-border: rgba(255, 255, 255, 0.08);
+	--dkfd-panel-label: #64748b;
+	--dkfd-panel-text: #94a3b8;
+	--dkfd-panel-strong: #ffffff;
+	--dkfd-panel-strong-text: #0f172a;
+}
+
+.dkfd__controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 14px 34px;
+	margin-top: 14px;
+	padding: 16px 22px;
+	border: 1px solid var(--dkfd-panel-border);
+	border-radius: 14px;
+	background: var(--dkfd-panel-bg);
+}
+
+.dkfd-ctrl {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	min-width: 0;
+}
+
+/* The divider between groups, drawn on the group itself so it disappears
+   automatically when the groups wrap onto their own rows. */
+.dkfd-ctrl + .dkfd-ctrl {
+	padding-left: 34px;
+	border-left: 1px solid var(--dkfd-panel-border);
+	margin-left: -20px;
+}
+
+.dkfd-ctrl__label {
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--dkfd-panel-label);
+	line-height: 1;
+}
+
+.dkfd-ctrl__options {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.dkfd__controls button {
+	appearance: none;
+	cursor: pointer;
+	font-family: inherit;
+	transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dkfd__controls button:focus-visible {
+	outline: 2px solid var(--dkfd-panel-strong);
+	outline-offset: 2px;
+}
+
+/* Colour swatches */
+
+/* A preset chip: its page background against its link colour — the pair that
+   tells Darkify's presets apart at a glance. */
+.dkfd-swatch {
+	position: relative;
+	width: 26px;
+	height: 26px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: linear-gradient(
+		135deg,
+		var(--dkfd-swatch, #0f0f0f) 0 50%,
+		var(--dkfd-swatch-2, var(--dkfd-swatch, #e7e7e7)) 50% 100%
+	);
+	box-shadow: 0 0 0 0 var(--dkfd-panel-strong);
+}
+
+.dkfd-swatch:hover {
+	box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.dkfd-swatch.is-selected {
+	box-shadow: 0 0 0 2px var(--dkfd-panel-strong);
+}
+
+/* Size and position pills */
+
+.dkfd-pill {
+	min-width: 38px;
+	padding: 7px 12px;
+	border: 1px solid var(--dkfd-panel-border);
+	border-radius: 8px;
+	background: transparent;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1;
+	color: var(--dkfd-panel-text);
+}
+
+.dkfd-pill:hover {
+	border-color: rgba(255, 255, 255, 0.3);
+	color: var(--dkfd-panel-strong);
+}
+
+.dkfd-pill.is-selected {
+	border-color: rgba(255, 255, 255, 0.55);
+	color: var(--dkfd-panel-strong);
+}
+
+/* The position group reads as a segmented control: its selected option is
+   filled rather than outlined. */
+.dkfd-pill--solid.is-selected {
+	border-color: var(--dkfd-panel-strong);
+	background: var(--dkfd-panel-strong);
+	color: var(--dkfd-panel-strong-text);
+	font-weight: 700;
+}
+
+.dkfd__controls .screen-reader-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+@media (max-width: 782px) {
+	.dkfd__controls {
+		gap: 16px;
+		padding: 16px 18px;
+	}
+
+	/* Stacked groups don't need the divider — or the pull-in that goes with it. */
+	.dkfd-ctrl {
+		flex-basis: 100%;
+	}
+
+	.dkfd-ctrl + .dkfd-ctrl {
+		padding-left: 0;
+		margin-left: 0;
+		border-left: 0;
+	}
+}
+
+/* The same panel on a light surface. Applied by the script, which measures the
+   background actually behind the demo. */
+.dkfd.dkfd--on-light {
+	--dkfd-panel-bg: rgba(15, 23, 42, 0.02);
+	--dkfd-panel-border: rgba(15, 23, 42, 0.12);
+	--dkfd-panel-label: #64748b;
+	--dkfd-panel-text: #475569;
+	--dkfd-panel-strong: #0f172a;
+	--dkfd-panel-strong-text: #ffffff;
+}
+
+.dkfd--on-light .dkfd-swatch:hover {
+	box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.3);
+}
+
+.dkfd--on-light .dkfd-pill:hover,
+.dkfd--on-light .dkfd-pill.is-selected {
+	border-color: rgba(15, 23, 42, 0.45);
+}

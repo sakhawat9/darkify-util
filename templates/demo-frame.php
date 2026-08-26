@@ -52,12 +52,22 @@ if (!defined('ABSPATH')) {
 	</div>
 </div>
 
-<div class="dkfd-fab"><?php
-	// Darkify's own switcher, rendered by Darkify. do_shortcode() returns the
-	// switcher markup with every value escaped by the plugin itself.
-	echo do_shortcode(sprintf(
-		'[darkify switch="%s" switch_size="%d"]',
+<div class="dkfd-fab" data-dkfd-position="<?php echo esc_attr($data['position']); ?>"><?php
+	// Darkify's own switcher, rendered by Darkify, with the size the controls
+	// start on passed through the shortcode's own attribute — so the first
+	// paint already matches the panel. The Switch Size control then updates the
+	// very CSS variable this attribute writes.
+	$dkfd_shortcode = sprintf(
+		'[darkify switch="%s" switch_size="%d"',
 		esc_attr($data['variant']),
 		(int) $data['switch_size']
-	)); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	);
+
+	if ($data['radius']) {
+		$dkfd_shortcode .= sprintf(' border_radius="%s"', esc_attr($data['radius']));
+	}
+
+	// do_shortcode() returns the switcher markup with every value escaped by
+	// Darkify itself.
+	echo do_shortcode($dkfd_shortcode . ']'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 ?></div>

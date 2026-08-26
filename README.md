@@ -14,6 +14,37 @@ already put on the page — its stylesheets, its inline configuration and its
 engine — inside an isolated preview frame, which is what lets one part of the
 page go dark while the rest of the site does not.
 
+Below the window sit three live controls — **Color preset**, **Switch size** and
+**Position**. They drive the preview in real time, with no reload, by writing the
+same things Darkify itself writes:
+
+* **Color preset** offers Darkify's own dark-mode presets — Carbon Mist,
+  Midnight Reverie, Verdant Depths, Celestial Tide, Emberwood — read from the
+  schema the plugin registers on every request, so the names, the swatches and
+  the colours are the plugin's own, including anything customised under
+  Settings → Colors. Choosing one sets the `--darkify_dark_mode_*` variables on
+  the preview's `<html>` (what Darkify's header template prints for the saved
+  preset, and what its own palette switcher assigns at runtime) and swaps the
+  `darkify-<set>` class alongside them, which is what invalidates the engine's
+  surface-token cache. If the preview is already dark, the engine's own sweep is
+  asked to repaint, so the change lands instantly rather than on the next
+  toggle. The preset starts on whichever one the site itself is set to.
+* **Switch size** sets `--darkify-switch-scale`, the variable Darkify's
+  `switch_size` attribute produces. It survives a dark-mode toggle because the
+  engine leaves `.darkify_switch` alone.
+* **Position** moves the switcher in the preview the way Darkify's placement
+  setting does — the frame is a viewport, so the switcher floats in it as it
+  would on a real site.
+
+Whatever the controls start on is what the switcher is rendered with
+server-side, so the first paint already matches the panel — there is no flash
+and no state to reconcile. Nothing here touches the site's real Darkify
+settings.
+
+The panel carries Darkify's own `darkify_ignore` class, so its deliberate
+colours survive the host page going dark, and it reads the background actually
+behind it to pick light or dark styling.
+
 The demo cannot affect the site:
 
 * the frame gets an in-memory `localStorage` stand-in, so toggling the demo
@@ -32,7 +63,8 @@ there is nothing to demonstrate, and it will not stand in with a lookalike.
 | Attribute     | Default        | Description |
 | ------------- | -------------- | ----------- |
 | `switch`      | `classic`      | Switcher style. Any style the installed Darkify edition ships, by name (`classic`, `expand`, `inner-moon`, `within`, `orbit`, plus Pro's `around`, `eclipse`, `shift`, …) or by the number `[darkify]` accepts. Unknown styles fall back to `classic`. |
-| `switch_size` | `80`           | Switcher size in percent, as in `[darkify]` (40–150). |
+| `switch_size` | `100`          | Starting switcher size in percent, as in `[darkify]`. The size control starts on the preset nearest to it. |
+| `radius`      | —              | Optional corner radius for the switcher (`50%` for a circle, `12px`, or a bare number for pixels). Empty keeps Darkify's own Switcher Style setting. |
 | `brand`       | `Your Brand`   | Brand name in the sample site's header. |
 | `url`         | `yoursite.com` | Address shown in the window's title bar. |
 | `heading`     | —              | Optional heading above the window. |
@@ -40,12 +72,35 @@ there is nothing to demonstrate, and it will not stand in with a lookalike.
 | `note`        | —              | Optional line under the window. |
 | `max_width`   | `900`          | Window width in pixels. |
 
+#### Controls
+
+| Attribute   | Default | Description |
+| ----------- | ------- | ----------- |
+| `controls`  | `yes`   | `no` renders the preview on its own, with no control panel. |
+| `presets`   | the installed edition's free presets | Which Darkify colour presets to offer, as a comma-separated list of preset keys (`set1,set3,set9,set6,set10`; Pro adds `set2`, `set4`, `set5`, `set7`, `set8`, `set11`). Order is respected. Empty hides nothing — it means "the free ones". |
+| `preset`    | the site's own preset | Which preset starts selected. |
+| `sizes`     | `XS:40,S:55,M:70,L:85,XL:100,XXL:125` | Size options as `Label:percent`, where the percent is Darkify's own `switch_size`. Empty hides the group. |
+| `positions` | `bottom-left,bottom-right` | Placements offered. Also accepts `top-left` and `top-right`. |
+| `position`  | `bottom-right` | Which placement starts selected. |
+
+The panel's colours are CSS custom properties on `.dkfd`
+(`--dkfd-panel-bg`, `--dkfd-panel-border`, `--dkfd-panel-label`,
+`--dkfd-panel-text`, `--dkfd-panel-strong`, `--dkfd-panel-strong-text`) if a
+section needs its own palette.
+
 ### Example
 
 ```
 [darkify_demo heading="Try it yourself — right here"
               subtitle="This is Darkify's real floating switcher on a sample site."
               note="Prefer the whole site dark? Use the toggle in our header."]
+```
+
+A circular switcher, starting on Verdant Depths at a small size, with no
+position control:
+
+```
+[darkify_demo radius="50%" preset="set9" switch_size="55" positions=""]
 ```
 
 Placing it inside a section that already has its own heading? Leave `heading`,
@@ -59,7 +114,8 @@ templates/demo.php                     the browser window (host page)
 templates/demo-frame.php               the sample site (rendered into the frame)
 assets/css/darkify-demo.css            host page styles
 assets/css/darkify-demo-frame.css      sample site styles (loaded in the frame)
-assets/js/darkify-demo.js              builds the frame and boots Darkify in it
+assets/js/darkify-demo.js              builds the frame, boots Darkify in it,
+                                       and wires the controls to the switcher
 ```
 
 Styles and scripts load only on pages where the shortcode is present.
