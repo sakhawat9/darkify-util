@@ -333,24 +333,85 @@
 }
 
 /*
- * Why the preview fades rather than tweening its colours.
- *
- * Darkify suspends transitions while it repaints (`darkify_suspend_transitions`
- * sets `transition-property: none` on everything it reads) — deliberately, so
- * it classifies settled colours instead of interpolated ones. That makes a
- * per-element colour tween impossible from the outside, and it is the right
- * call for the plugin. So the flip is covered instead: the preview dips out,
- * the engine repaints while it is faint, and it comes back in the other mode.
- * The switcher keeps animating throughout — Darkify exempts `.darkify_switch`
- * from that suspension — so the moment still reads as a switch being thrown.
+ * The flip itself is masked from inside the frame (see darkify-hero-frame.css):
+ * the sample *page* dips while the engine repaints it, and the switcher and the
+ * cursor stay crisp on top of it — which is what the moment is about. Only the
+ * height eases out here.
  */
 .dkfd--hero .dkfd__frame {
-	transition: opacity var(--dkfd-fade) ease, transform var(--dkfd-fade) ease, height 0.25s ease;
+	transition: height 0.25s ease;
 }
 
-.dkfd--hero.is-flipping .dkfd__frame {
-	opacity: 0.22;
-	transform: scale(0.994);
+/* The cursor ------------------------------------------------------------- */
+
+.dkfd--hero .dkfd__window {
+	position: relative;
+}
+
+/* The transform is driven by the Web Animations API (curved paths, and a drift
+   while it waits), so only the fade is a CSS transition. */
+.dkfd__cursor {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 6;
+	width: 24px;
+	height: 24px;
+	opacity: 0;
+	pointer-events: none;
+	transform: translate3d(0, 0, 0);
+	transition: opacity 360ms ease;
+	will-change: transform, opacity;
+}
+
+.dkfd--hero.is-pointing .dkfd__cursor {
+	opacity: 1;
+}
+
+.dkfd__cursor svg {
+	display: block;
+	filter: drop-shadow(0 2px 5px rgba(4, 8, 32, 0.45));
+	transform-origin: 4px 3px;
+	transition: transform 150ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+/* The press: the pointer dips into the switch and a ring leaves from its tip. */
+.dkfd--hero.is-clicking .dkfd__cursor svg {
+	transform: scale(0.84);
+}
+
+/* The click ring leaves from the pointer's tip and opens out past the switch,
+   so it reads on a white switcher and a black one alike. */
+.dkfd__ripple {
+	position: absolute;
+	left: 4px;
+	top: 3px;
+	width: 46px;
+	height: 46px;
+	margin: -23px 0 0 -23px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, 0.92);
+	box-shadow: 0 0 0 1.5px rgba(15, 23, 42, 0.35), inset 0 0 0 1.5px rgba(15, 23, 42, 0.25);
+	opacity: 0;
+	transform: scale(0.18);
+}
+
+.dkfd--hero.is-clicking .dkfd__ripple {
+	animation: dkfd-ripple 560ms cubic-bezier(0.2, 0.6, 0.3, 1);
+}
+
+@keyframes dkfd-ripple {
+	0% {
+		opacity: 0.95;
+		transform: scale(0.18);
+	}
+	65% {
+		opacity: 0.4;
+	}
+	100% {
+		opacity: 0;
+		transform: scale(1.65);
+	}
 }
 
 /* The mode badge in the window chrome. */
@@ -381,14 +442,19 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.dkfd--hero .dkfd__frame,
-	.dkfd__mode {
+	.dkfd__mode,
+	.dkfd__cursor,
+	.dkfd__cursor svg {
 		transition: none;
 	}
 
 	/* The loop does not run at all under reduced motion (the script checks the
-	   same query); this only guards a flip that was already in flight. */
-	.dkfd--hero.is-flipping .dkfd__frame {
-		opacity: 1;
-		transform: none;
+	   same query); this only guards a sequence that was already in flight. */
+	.dkfd__cursor {
+		display: none;
+	}
+
+	.dkfd--hero.is-clicking .dkfd__ripple {
+		animation: none;
 	}
 }

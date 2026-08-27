@@ -9,10 +9,12 @@
  * preview flips itself on a timer, holds each mode long enough to be read, and
  * loops, so a visitor scrolling past a landing page sees the plugin work.
  *
- * The loop is Darkify's own switch, called on an interval inside the frame. It
- * is not a canned animation between two hand-drawn states: every colour in the
- * dark half is one the engine derived from this site's palette, the same way it
- * would on the visitor's own pages.
+ * The loop is Darkify's own switch, thrown on an interval inside the frame — by
+ * an animated cursor that walks over and clicks it, so the sequence reads as
+ * somebody using the plugin rather than a slideshow. It is not a canned
+ * animation between two hand-drawn states either: every colour in the dark half
+ * is one the engine derived from this site's palette, the same way it would on
+ * the visitor's own pages.
  */
 
 if (!defined('ABSPATH')) {
@@ -57,12 +59,13 @@ if (!class_exists('Darkify_Util_Hero')) {
                 'switch_size' => '80',
                 'radius'     => '',
                 'switcher'   => 'yes',
+                'cursor'     => 'yes',
                 'chrome'     => 'yes',
                 'badge'      => 'yes',
                 // The loop, in milliseconds.
                 'autoplay'   => 'yes',
-                'light_hold' => '2800',
-                'dark_hold'  => '3600',
+                'light_hold' => '3000',
+                'dark_hold'  => '3800',
                 'fade'       => '260',
                 'start'      => 'light',
             ), $atts, self::SHORTCODE);
@@ -83,6 +86,7 @@ if (!class_exists('Darkify_Util_Hero')) {
                 'switch_size' => max(40, min(200, (int) $atts['switch_size'])),
                 'radius'      => $this->sanitize_radius($atts['radius']),
                 'switcher'    => $this->is_truthy($atts['switcher']),
+                'cursor'      => $this->is_truthy($atts['cursor']) && $this->is_truthy($atts['switcher']),
                 'chrome'      => $this->is_truthy($atts['chrome']),
                 'badge'       => $this->is_truthy($atts['badge']),
                 'brand'       => $atts['brand'],

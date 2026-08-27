@@ -80,7 +80,7 @@ if (!defined('ABSPATH')) {
 	 * it.
 	 */
 	?>
-	<div class="dkfh-fab" aria-hidden="true"><?php
+	<div class="dkfh-fab darkify_ignore" aria-hidden="true"><?php
 		echo $this->switcher_markup($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	?></div>
 <?php endif; ?>

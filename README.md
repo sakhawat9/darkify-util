@@ -164,17 +164,44 @@ and it comes back in the other mode. Darkify's switcher is exempt from that
 suspension, so its sun-to-moon morph plays right through the fade and the moment
 still reads as a switch being thrown.
 
+### The pointer
+
+The switch is not thrown invisibly: an animated cursor walks in from the side,
+settles on the switcher, presses it — the switcher gives under it, and a ring
+opens out from the pointer's tip — and withdraws once the new mode is on screen.
+It genuinely clicks the switcher (`element.click()`, the same path a visitor's
+click takes), so what the pointer appears to do is what actually happens.
+
+The cursor lives on the host page, above the frame, rather than inside it: the
+preview dips while the engine repaints, and the hand doing the clicking has to
+stay crisp through that. Its target is read from the switcher's real position
+inside the frame every time it sets off, so it lands on the switch at any width.
+The walk overlaps the tail of the hold, so `light_hold` and `dark_hold` stay what
+they say — time spent in that mode, not time plus travel. `cursor="no"` turns it
+off and the preview flips on its own.
+
+Its motion is driven by the Web Animations API rather than CSS transitions, for
+three reasons: it follows a **curve** (a hand does not travel in a straight
+line, and the path out is bowed the other way from the path in); it starts from
+wherever the pointer actually is, so nothing is ever teleported to a start
+position; and its duration comes from the **distance** (~2.1ms per pixel,
+clamped), so the pointer moves at one speed whatever the preview's width. It
+waits out over the page rather than off-stage, drifting a few pixels instead of
+freezing, and the cycle is paced to leave it resting there for a beat before it
+sets off again.
+
 The loop runs only while the preview is on screen (IntersectionObserver) and the
 tab is visible, and **not at all** under `prefers-reduced-motion: reduce` —
-including when the visitor turns that on mid-visit.
+including when the visitor turns that on mid-visit. The cursor is not rendered
+at all in that case.
 
 ### Attributes
 
 | Attribute | Default | Description |
 | --- | --- | --- |
 | `autoplay` | `yes` | `no` renders the preview without the loop. |
-| `light_hold` | `2800` | Milliseconds spent in light mode (600–20000). |
-| `dark_hold` | `3600` | Milliseconds spent in dark mode (600–20000). |
+| `light_hold` | `3000` | Milliseconds spent in light mode (600–20000). |
+| `dark_hold` | `3800` | Milliseconds spent in dark mode (600–20000). |
 | `fade` | `260` | Cross-fade duration in milliseconds (0–1200). |
 | `start` | `light` | Which mode the preview opens in. |
 | `heading` / `text` | sample copy | The sample site's headline and paragraph. |
@@ -184,6 +211,7 @@ including when the visitor turns that on mid-visit.
 | `max_width` | `640` | Window width in pixels. |
 | `switch` / `switch_size` / `radius` | `classic` / `80` / — | The switcher riding along in the corner. |
 | `switcher` / `chrome` / `badge` | `yes` | Turn off the switcher, the browser chrome, or the Light/Dark badge. |
+| `cursor` | `yes` | The animated pointer that clicks the switch. Needs `switcher="yes"`. |
 
 ```
 [darkify_hero_demo heading="Beautiful dark mode for any WordPress site"

@@ -555,6 +555,238 @@
 	/* --------------------------------------------------------------------- */
 
 	/**
+	 * The pointer that throws the switch.
+	 *
+	 * It lives on the host page, above the frame, because the preview dips while
+	 * the engine repaints and the hand doing the clicking has to stay crisp
+	 * through that. Its target is read from the switcher's real position inside
+	 * the frame every time it sets off, so it lands on the switch at any width
+	 * and after any reflow.
+	 *
+	 * Motion is driven by the Web Animations API rather than CSS transitions, for
+	 * two reasons: it can follow a curve (a hand does not travel in a straight
+	 * line), and it never needs the pointer to be teleported to a start position
+	 * first — the animation begins from wherever it actually is. Between clicks
+	 * it drifts a few pixels instead of freezing, which is what stops the whole
+	 * thing from reading as a slideshow.
+	 */
+	function createCursor(instance) {
+		var root = instance.root;
+		var node = root.querySelector(".dkfd__cursor");
+
+		if (!node || !root.hasAttribute("data-dkfd-cursor")) {
+			return null;
+		}
+
+		// Travel time is derived from the distance rather than fixed, so the
+		// pointer moves at one speed whatever the preview's width — a fixed
+		// duration makes a short hop crawl and a long one dart.
+		var SPEED = 2.1; // milliseconds per pixel
+		var TRAVEL_MIN = 620;
+		var TRAVEL_MAX = 1500;
+		var SETTLE = 220;
+		var PRESS = 200;
+
+		var animated = typeof node.animate === "function";
+		var position = null;
+		var drift = null;
+		var motion = null;
+
+		var transformFor = function (point) {
+			return "translate3d(" + point.x.toFixed(1) + "px, " + point.y.toFixed(1) + "px, 0)";
+		};
+
+		var place = function (point) {
+			position = point;
+			node.style.transform = transformFor(point);
+		};
+
+		var cancel = function (animation) {
+			if (animation) {
+				try {
+					animation.cancel();
+				} catch (e) {
+					/* already finished */
+				}
+			}
+		};
+
+		/** Where the switcher is, in the host window's coordinates. */
+		var switchPoint = function () {
+			var frameEl = root.querySelector(".dkfd__frame");
+			var target = instance.frame && instance.frame.doc.querySelector(".darkify_switch");
+			if (!frameEl || !target) {
+				return null;
+			}
+
+			var host = root.querySelector(".dkfd__window") || root;
+			var frameBox = frameEl.getBoundingClientRect();
+			var hostBox = host.getBoundingClientRect();
+			var targetBox = target.getBoundingClientRect();
+
+			// Low and right of centre: still unmistakably on the switch, with the
+			// pointer's body hanging off it rather than over the icon it is there
+			// to show off.
+			return {
+				x: frameBox.left - hostBox.left + targetBox.left + targetBox.width * 0.62,
+				y: frameBox.top - hostBox.top + targetBox.top + targetBox.height * 0.6
+			};
+		};
+
+		/**
+		 * Where it waits between clicks: out over the page, left of centre.
+		 * Placed as a fraction of the window so the walk stays a long, readable
+		 * glide at any size instead of a twitch at small ones.
+		 */
+		var restPoint = function () {
+			var host = root.querySelector(".dkfd__window") || root;
+			var box = host.getBoundingClientRect();
+			return { x: box.width * 0.32, y: box.height * 0.55 };
+		};
+
+		var distanceBetween = function (a, b) {
+			return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+		};
+
+		var travelTime = function (from, to) {
+			return Math.max(TRAVEL_MIN, Math.min(TRAVEL_MAX, distanceBetween(from, to) * SPEED));
+		};
+
+		/**
+		 * A curved move. The bow is perpendicular to the straight line between
+		 * the two points, so the pointer swings into place instead of sliding
+		 * along a ruler.
+		 */
+		var moveTo = function (to, duration, easing, bowSign, done) {
+			cancel(drift);
+			drift = null;
+			cancel(motion);
+
+			var from = position || to;
+
+			if (!animated || duration <= 0) {
+				place(to);
+				if (done) {
+					done();
+				}
+				return;
+			}
+
+			var dx = to.x - from.x;
+			var dy = to.y - from.y;
+			var length = Math.sqrt(dx * dx + dy * dy) || 1;
+			var bow = Math.min(52, length * 0.18) * bowSign;
+			var middle = {
+				x: from.x + dx * 0.5 + (-dy / length) * bow,
+				y: from.y + dy * 0.5 + (dx / length) * bow
+			};
+
+			motion = node.animate(
+				[
+					{ transform: transformFor(from) },
+					{ transform: transformFor(middle), offset: 0.5 },
+					{ transform: transformFor(to) }
+				],
+				{ duration: duration, easing: easing, fill: "both" }
+			);
+
+			motion.onfinish = function () {
+				// Commit the end state as a plain style and drop the animation,
+				// so nothing stacks up over a long-running loop.
+				place(to);
+				cancel(motion);
+				motion = null;
+				if (done) {
+					done();
+				}
+			};
+		};
+
+		/** Never quite still: a few pixels of wander while it waits. */
+		var startDrift = function () {
+			if (!animated || !position) {
+				return;
+			}
+			cancel(drift);
+
+			var base = position;
+			drift = node.animate(
+				[
+					{ transform: transformFor(base) },
+					{ transform: transformFor({ x: base.x + 8, y: base.y - 6 }), offset: 0.35 },
+					{ transform: transformFor({ x: base.x + 3, y: base.y + 7 }), offset: 0.7 },
+					{ transform: transformFor(base) }
+				],
+				{ duration: 5200, easing: "ease-in-out", iterations: Infinity }
+			);
+		};
+
+		return {
+			/** How long before the click the pointer has to set off. */
+			lead: function () {
+				var point = switchPoint();
+				if (!point) {
+					return TRAVEL_MIN + SETTLE;
+				}
+				return travelTime(position || restPoint(), point) + SETTLE;
+			},
+
+			approach: function () {
+				var point = switchPoint();
+				if (!point) {
+					return;
+				}
+
+				// First run: start out over the page and fade in, rather than
+				// appearing already on the switch.
+				if (!position) {
+					place(restPoint());
+				}
+
+				root.classList.add("is-pointing");
+				moveTo(point, travelTime(position, point), "cubic-bezier(0.32, 0.02, 0.16, 1)", 1);
+			},
+
+			press: function () {
+				root.classList.add("is-clicking");
+				pressSwitch(true);
+			},
+
+			release: function () {
+				root.classList.remove("is-clicking");
+				pressSwitch(false);
+			},
+
+			retreat: function () {
+				var rest = restPoint();
+				// Bowed the other way on the way out, so the path back is not a
+				// retrace of the path in, and a touch slower — leaving is never
+				// as purposeful as arriving.
+				moveTo(rest, travelTime(position || rest, rest), "cubic-bezier(0.3, 0, 0.28, 1)", -1, startDrift);
+			},
+
+			reset: function () {
+				cancel(motion);
+				cancel(drift);
+				motion = null;
+				drift = null;
+				root.classList.remove("is-clicking");
+				pressSwitch(false);
+			},
+
+			pressDuration: PRESS
+		};
+
+		/** The switch gives under the press, the way a real one would. */
+		function pressSwitch(down) {
+			var fab = instance.frame && instance.frame.doc.querySelector(".dkfh-fab");
+			if (fab) {
+				fab.classList.toggle("is-pressed", down);
+			}
+		}
+	}
+
+	/**
 	 * Flip the preview on a loop.
 	 *
 	 * The switch itself is Darkify's — `darkify_switch_trigger()` inside the
@@ -595,8 +827,28 @@
 			dark: root.getAttribute("data-dkfd-label-dark") || "Dark"
 		};
 
-		var timer = null;
+		var timers = [];
 		var running = false;
+		var cursor = createCursor(instance);
+
+		// The dip that covers the repaint lives inside the frame, so the
+		// switcher and the pointer clicking it stay crisp on top of it.
+		frame.doc.documentElement.style.setProperty("--dkfh-fade", timing.fade + "ms");
+
+		var after = function (delay, fn) {
+			var id = window.setTimeout(function () {
+				if (running) {
+					fn();
+				}
+			}, delay);
+			timers.push(id);
+			return id;
+		};
+
+		var clearTimers = function () {
+			timers.forEach(window.clearTimeout);
+			timers = [];
+		};
 
 		var isDark = function () {
 			return frame.doc.documentElement.classList.contains("darkify_dark_mode_enabled");
@@ -610,39 +862,73 @@
 			}
 		};
 
-		var flip = function () {
-			if (!running) {
-				return;
+		/**
+		 * Throw the switch — by clicking Darkify's own switcher, the same path a
+		 * visitor's click takes, so what the pointer appears to do is what
+		 * actually happens.
+		 */
+		var throwSwitch = function () {
+			var element = frame.doc.querySelector(".darkify_switch");
+			if (element && typeof element.click === "function") {
+				element.click();
+			} else if (typeof frame.win.darkify_switch_trigger === "function") {
+				frame.win.darkify_switch_trigger();
 			}
-
-			root.classList.add("is-flipping");
-
-			// Long enough for the fade to have covered the preview before the
-			// repaint lands underneath it.
-			timer = window.setTimeout(function () {
-				if (!running) {
-					root.classList.remove("is-flipping");
-					return;
-				}
-
-				if (typeof frame.win.darkify_switch_trigger === "function") {
-					frame.win.darkify_switch_trigger();
-				}
-				announce();
-
-				timer = window.setTimeout(function () {
-					root.classList.remove("is-flipping");
-					schedule();
-				}, 40);
-			}, timing.fade);
 		};
 
+		var flip = function () {
+			frame.doc.documentElement.classList.add("dkfh-flipping");
+
+			// Long enough for the dip to have covered the page before the
+			// repaint lands underneath it.
+			after(timing.fade, function () {
+				throwSwitch();
+				announce();
+
+				after(40, function () {
+					frame.doc.documentElement.classList.remove("dkfh-flipping");
+					schedule();
+				});
+			});
+		};
+
+		/**
+		 * One cycle: hold the mode, walk the pointer over, press, flip, and
+		 * withdraw. The walk overlaps the tail of the hold, so `light_hold` and
+		 * `dark_hold` stay what they say — time spent in that mode — rather than
+		 * time plus travel.
+		 */
 		var schedule = function () {
 			if (!running) {
 				return;
 			}
-			window.clearTimeout(timer);
-			timer = window.setTimeout(flip, isDark() ? timing.dark : timing.light);
+
+			// Deliberately not clearing here: the pointer's withdrawal is still
+			// pending when the next cycle is scheduled, and it belongs to the
+			// flip that just happened. start() and stop() own the timer list.
+			var hold = isDark() ? timing.dark : timing.light;
+
+			if (!cursor) {
+				after(hold, flip);
+				return;
+			}
+
+			var lead = cursor.lead();
+
+			after(Math.max(0, hold - lead), function () {
+				cursor.approach();
+
+				after(lead, function () {
+					cursor.press();
+					flip();
+
+					after(cursor.pressDuration, cursor.release);
+					// Leaves once the new mode is on screen, not before — and
+					// early enough to be back at rest, drifting, before the next
+					// cycle sets off.
+					after(timing.fade + 260, cursor.retreat);
+				});
+			});
 		};
 
 		var start = function () {
@@ -656,8 +942,11 @@
 
 		var stop = function () {
 			running = false;
-			window.clearTimeout(timer);
-			root.classList.remove("is-flipping");
+			clearTimers();
+			frame.doc.documentElement.classList.remove("dkfh-flipping");
+			if (cursor) {
+				cursor.reset();
+			}
 		};
 
 		instance.autoplay = { start: start, stop: stop };
