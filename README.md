@@ -2,6 +2,19 @@
 
 Site-specific helper plugin for the Darkify demo site.
 
+Two preview shortcodes, both built on the same idea: a sample site rendered into
+an isolated same-origin frame, running the **real** Darkify engine against the
+site's own settings.
+
+| Shortcode | What it is |
+| --- | --- |
+| `[darkify_demo]` | The interactive "Try it yourself" demo — the visitor throws the switch, and controls change the preset, size and position live. |
+| `[darkify_hero_demo]` | The hero preview — no interaction, it flips itself on a loop. |
+
+`includes/class-darkify-util-preview.php` holds what they share: the frame
+machinery, the Darkify lookups, the asset wiring and the switcher markup. Each
+shortcode adds only its own sample site and its own driver.
+
 ## `[darkify_demo]` — the "Try it yourself — right here" section
 
 Renders a browser window containing a small sample site with Darkify's own
@@ -130,16 +143,84 @@ position control:
 Placing it inside a section that already has its own heading? Leave `heading`,
 `subtitle` and `note` out and only the window renders.
 
-### Files
+## `[darkify_hero_demo]` — the auto-playing hero preview
+
+The same preview, driven by a timer instead of a visitor: it opens in light
+mode, flips to dark, holds long enough for the difference to register, flips
+back, and loops. Nobody clicks anything.
+
+The flip is Darkify's own `darkify_switch_trigger()` called inside the frame —
+the same call the switcher's click makes — so what plays is the engine
+repainting the sample site, not a canned animation between two hand-drawn
+states. Every dark colour comes from the site's configured palette.
+
+**The transition is a cross-fade on the frame, not a colour tween.** Darkify
+suspends transitions while it repaints (`darkify_suspend_transitions` sets
+`transition-property: none` on everything it reads) so it classifies settled
+colours rather than interpolated ones — which makes a per-element tween
+impossible from outside, and is the right call for the plugin. So the flip is
+covered instead: the preview dips out, the engine repaints while it is faint,
+and it comes back in the other mode. Darkify's switcher is exempt from that
+suspension, so its sun-to-moon morph plays right through the fade and the moment
+still reads as a switch being thrown.
+
+The loop runs only while the preview is on screen (IntersectionObserver) and the
+tab is visible, and **not at all** under `prefers-reduced-motion: reduce` —
+including when the visitor turns that on mid-visit.
+
+### Attributes
+
+| Attribute | Default | Description |
+| --- | --- | --- |
+| `autoplay` | `yes` | `no` renders the preview without the loop. |
+| `light_hold` | `2800` | Milliseconds spent in light mode (600–20000). |
+| `dark_hold` | `3600` | Milliseconds spent in dark mode (600–20000). |
+| `fade` | `260` | Cross-fade duration in milliseconds (0–1200). |
+| `start` | `light` | Which mode the preview opens in. |
+| `heading` / `text` | sample copy | The sample site's headline and paragraph. |
+| `cta` / `cta_alt` | `Get Started` / `See Features` | The two button labels. |
+| `brand` / `url` | `Your Brand` / `yoursite.com` | Brand name and address bar. |
+| `menu` / `nav` / `menu_limit` | — | Same menu resolution as `[darkify_demo]`; falls back to short generic labels. |
+| `max_width` | `640` | Window width in pixels. |
+| `switch` / `switch_size` / `radius` | `classic` / `80` / — | The switcher riding along in the corner. |
+| `switcher` / `chrome` / `badge` | `yes` | Turn off the switcher, the browser chrome, or the Light/Dark badge. |
 
 ```
-includes/class-darkify-util-demo.php   shortcode, asset wiring, Darkify lookup
-templates/demo.php                     the browser window (host page)
-templates/demo-frame.php               the sample site (rendered into the frame)
-assets/css/darkify-demo.css            host page styles
-assets/css/darkify-demo-frame.css      sample site styles (loaded in the frame)
-assets/js/darkify-demo.js              builds the frame, boots Darkify in it,
-                                       and wires the controls to the switcher
+[darkify_hero_demo heading="Beautiful dark mode for any WordPress site"
+                   cta="Get Darkify" cta_alt="See Live Demo"
+                   dark_hold="4200" max_width="600"]
 ```
 
-Styles and scripts load only on pages where the shortcode is present.
+### Placeholders and the flip
+
+The sample site's content placeholders are translucent, not solid grey, and they
+carry `darkify_ignore`. A solid light grey cannot survive the flip: Darkify maps
+every neutral surface onto the palette, so a `#e4e8f0` bar inside a card becomes
+exactly the same colour as the card and the content disappears. (Measured: every
+grey from `#e4e8f0` to `#7d8aa3` lands on the same `#171717`.) A translucent
+slate reads as a light bar on white and a soft light bar on dark, because what
+shows through it is whatever Darkify painted underneath. The cards are tinted
+rather than white for the same reason — a white panel maps onto the palette's
+base background, which is also what the page becomes.
+
+## Files
+
+```
+includes/class-darkify-util-preview.php  shared: frame machinery, Darkify
+                                         lookups, assets, switcher markup, menus
+includes/class-darkify-util-demo.php     [darkify_demo] and its controls
+includes/class-darkify-util-hero.php     [darkify_hero_demo]
+templates/demo.php                       the demo's browser window (host page)
+templates/demo-frame.php                 the demo's sample site (in the frame)
+templates/hero.php                       the hero's window and loop settings
+templates/hero-frame.php                 the hero's sample site (in the frame)
+assets/css/darkify-preview.css           host page styles for both
+assets/css/darkify-demo-frame.css        the demo's sample site
+assets/css/darkify-hero-frame.css        the hero's sample site
+assets/js/darkify-preview.js             builds the frame and boots Darkify in
+                                         it, then attaches the controls or the
+                                         autoplay loop
+```
+
+One stylesheet and one script serve every preview on a page, and they load only
+on pages where one of the shortcodes is present.

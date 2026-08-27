@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 ?>
-<div class="dkfd" id="<?php echo esc_attr($data['instance']); ?>" style="--dkfd-max: <?php echo esc_attr($data['max_width']); ?>px;">
+<div class="dkfd" id="<?php echo esc_attr($data['instance']); ?>" data-dkfd-frame-css="<?php echo esc_url($data['frame_css']); ?>" style="--dkfd-max: <?php echo esc_attr($data['max_width']); ?>px;">
 
 	<?php if ($data['heading']) : ?>
 		<h2 class="dkfd__heading"><?php echo esc_html($data['heading']); ?></h2>

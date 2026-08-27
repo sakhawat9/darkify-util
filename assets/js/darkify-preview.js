@@ -1,5 +1,10 @@
 /**
- * [darkify_demo] — boots a real Darkify instance inside the preview frame.
+ * Darkify previews — boots a real Darkify instance inside a preview frame.
+ *
+ * Serves both shortcodes: [darkify_demo], where a visitor throws the switch,
+ * and [darkify_hero_demo], where the preview flips itself on a loop. The frame
+ * machinery below is the same for both; what differs is the driver attached
+ * once the engine is running.
  *
  * The frame is built from what the host page already carries: Darkify's own
  * stylesheets, its inline configuration (the `darkify_*` settings its header
@@ -20,7 +25,7 @@
 (function () {
 	"use strict";
 
-	var DATA = window.DarkifyDemoData || {};
+	var DATA = window.DarkifyPreviewData || {};
 	var SKELETON =
 		'<!doctype html><html><head><meta charset="utf-8">' +
 		'<meta name="viewport" content="width=device-width,initial-scale=1">' +
@@ -163,7 +168,7 @@
 	/* Frame construction                                                    */
 	/* --------------------------------------------------------------------- */
 
-	function buildHead(doc, onReady) {
+	function buildHead(root, doc, onReady) {
 		var pending = 0;
 		var settled = false;
 
@@ -194,8 +199,11 @@
 			}
 		});
 
-		if (DATA.frameCss) {
-			addLink(DATA.frameCss);
+		// Each preview names its own sample-site stylesheet; the localized
+		// default is only a fallback for markup that predates the attribute.
+		var frameCss = root.getAttribute("data-dkfd-frame-css") || DATA.frameCss;
+		if (frameCss) {
+			addLink(frameCss);
 		}
 
 		// Darkify's inline CSS: the palette variables for the selected colour
@@ -543,6 +551,177 @@
 	}
 
 	/* --------------------------------------------------------------------- */
+	/* Autoplay (the hero preview)                                           */
+	/* --------------------------------------------------------------------- */
+
+	/**
+	 * Flip the preview on a loop.
+	 *
+	 * The switch itself is Darkify's — `darkify_switch_trigger()` inside the
+	 * frame, the same call the switcher's own click makes — so what a visitor
+	 * watches is the engine repainting the sample site, not a canned animation
+	 * between two hand-drawn states.
+	 *
+	 * The visible transition is a cross-fade on the frame rather than a colour
+	 * tween on its elements, because the engine suspends transitions while it
+	 * repaints (it has to read settled colours, not interpolated ones). Dipping
+	 * the preview out, flipping it, and bringing it back reads as one smooth
+	 * change and never as a flash.
+	 *
+	 * It runs only while the preview is on screen and the tab is visible, and
+	 * not at all for a visitor who asked for reduced motion.
+	 */
+	function startAutoplay(instance) {
+		var root = instance.root;
+		if (!root.hasAttribute("data-dkfd-autoplay") || instance.autoplay) {
+			return;
+		}
+
+		var frame = instance.frame;
+		var number = function (name, fallback) {
+			var value = parseInt(root.getAttribute("data-dkfd-" + name), 10);
+			return isNaN(value) ? fallback : value;
+		};
+
+		var timing = {
+			light: number("light-hold", 2800),
+			dark: number("dark-hold", 3600),
+			fade: number("fade", 260)
+		};
+
+		var badge = root.querySelector("[data-dkfd-mode]");
+		var labels = {
+			light: root.getAttribute("data-dkfd-label-light") || "Light",
+			dark: root.getAttribute("data-dkfd-label-dark") || "Dark"
+		};
+
+		var timer = null;
+		var running = false;
+
+		var isDark = function () {
+			return frame.doc.documentElement.classList.contains("darkify_dark_mode_enabled");
+		};
+
+		var announce = function () {
+			var mode = isDark() ? "dark" : "light";
+			if (badge && badge.getAttribute("data-dkfd-mode") !== mode) {
+				badge.setAttribute("data-dkfd-mode", mode);
+				badge.textContent = labels[mode];
+			}
+		};
+
+		var flip = function () {
+			if (!running) {
+				return;
+			}
+
+			root.classList.add("is-flipping");
+
+			// Long enough for the fade to have covered the preview before the
+			// repaint lands underneath it.
+			timer = window.setTimeout(function () {
+				if (!running) {
+					root.classList.remove("is-flipping");
+					return;
+				}
+
+				if (typeof frame.win.darkify_switch_trigger === "function") {
+					frame.win.darkify_switch_trigger();
+				}
+				announce();
+
+				timer = window.setTimeout(function () {
+					root.classList.remove("is-flipping");
+					schedule();
+				}, 40);
+			}, timing.fade);
+		};
+
+		var schedule = function () {
+			if (!running) {
+				return;
+			}
+			window.clearTimeout(timer);
+			timer = window.setTimeout(flip, isDark() ? timing.dark : timing.light);
+		};
+
+		var start = function () {
+			if (running || reducedMotion()) {
+				return;
+			}
+			running = true;
+			announce();
+			schedule();
+		};
+
+		var stop = function () {
+			running = false;
+			window.clearTimeout(timer);
+			root.classList.remove("is-flipping");
+		};
+
+		instance.autoplay = { start: start, stop: stop };
+
+		// The preview should be flipping when it is being looked at, and idle
+		// when it is not: off screen, in a background tab, or once the visitor
+		// switches on reduced motion mid-visit.
+		if (typeof window.IntersectionObserver === "function") {
+			new IntersectionObserver(function (entries) {
+				entries.forEach(function (entry) {
+					if (entry.isIntersecting && !document.hidden) {
+						start();
+					} else {
+						stop();
+					}
+				});
+			}, { threshold: 0.25 }).observe(root);
+		} else {
+			start();
+		}
+
+		document.addEventListener("visibilitychange", function () {
+			if (document.hidden) {
+				stop();
+			} else if (isVisible(root)) {
+				start();
+			}
+		});
+
+		watchReducedMotion(function (reduced) {
+			if (reduced) {
+				stop();
+			} else if (isVisible(root)) {
+				start();
+			}
+		});
+	}
+
+	function reducedMotion() {
+		return typeof window.matchMedia === "function" &&
+			window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	}
+
+	function watchReducedMotion(onChange) {
+		if (typeof window.matchMedia !== "function") {
+			return;
+		}
+		var query = window.matchMedia("(prefers-reduced-motion: reduce)");
+		var handler = function () {
+			onChange(query.matches);
+		};
+		if (typeof query.addEventListener === "function") {
+			query.addEventListener("change", handler);
+		} else if (typeof query.addListener === "function") {
+			query.addListener(handler);
+		}
+	}
+
+	function isVisible(element) {
+		var rect = element.getBoundingClientRect();
+		return rect.bottom > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight);
+	}
+
+	/* --------------------------------------------------------------------- */
 	/* Boot                                                                  */
 	/* --------------------------------------------------------------------- */
 
@@ -585,7 +764,7 @@
 			doc.documentElement.style.setProperty("--dkfd-font", font);
 		}
 
-		buildHead(doc, function () {
+		buildHead(root, doc, function () {
 			doc.body.innerHTML = template.innerHTML;
 
 			bootEngine(win, doc, function (frameWin, frameDoc) {
@@ -614,6 +793,16 @@
 				// can only take effect once it exists.
 				instance.frame = { win: frameWin, doc: frameDoc };
 				applyState(instance);
+
+				// A hero told to open in dark mode throws the switch once
+				// before anyone sees it, through the guard so the state sticks.
+				if ("dark" === root.getAttribute("data-dkfd-start") &&
+					typeof frameWin.darkify_switch_trigger === "function") {
+					frameWin.darkify_switch_trigger();
+				}
+
+				// Needs instance.frame, so it goes last.
+				startAutoplay(instance);
 
 				root.classList.add("dkfd--ready");
 			});

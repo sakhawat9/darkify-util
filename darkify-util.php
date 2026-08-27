@@ -24,9 +24,13 @@ function darkify_enqueue_scripts()
 add_action('wp_enqueue_scripts', 'darkify_enqueue_scripts');
 
 /**
- * The [darkify_demo] shortcode — a live, interactive Darkify demo that runs the
- * real plugin engine inside an isolated preview frame.
+ * The preview shortcodes. Both render a sample site into an isolated frame and
+ * run the real Darkify engine inside it — [darkify_demo] for the visitor to
+ * play with, [darkify_hero_demo] flipping itself on a loop.
  */
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-preview.php';
 require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-demo.php';
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-hero.php';
 
 add_action('plugins_loaded', array('Darkify_Util_Demo', 'instance'));
+add_action('plugins_loaded', array('Darkify_Util_Hero', 'instance'));

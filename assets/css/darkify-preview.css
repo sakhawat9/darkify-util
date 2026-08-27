@@ -318,3 +318,77 @@
 .dkfd--on-light .dkfd-pill.is-selected {
 	border-color: rgba(15, 23, 42, 0.45);
 }
+
+/* Hero preview ------------------------------------------------------------
+   The auto-playing variant. Same window, no controls, and a cross-fade that
+   covers the moment the engine repaints. */
+
+.dkfd--hero {
+	--dkfd-fade: 260ms;
+	--dkfd-height: 420px;
+}
+
+.dkfd--hero.dkfd--bare .dkfd__window {
+	border-radius: 12px;
+}
+
+/*
+ * Why the preview fades rather than tweening its colours.
+ *
+ * Darkify suspends transitions while it repaints (`darkify_suspend_transitions`
+ * sets `transition-property: none` on everything it reads) — deliberately, so
+ * it classifies settled colours instead of interpolated ones. That makes a
+ * per-element colour tween impossible from the outside, and it is the right
+ * call for the plugin. So the flip is covered instead: the preview dips out,
+ * the engine repaints while it is faint, and it comes back in the other mode.
+ * The switcher keeps animating throughout — Darkify exempts `.darkify_switch`
+ * from that suspension — so the moment still reads as a switch being thrown.
+ */
+.dkfd--hero .dkfd__frame {
+	transition: opacity var(--dkfd-fade) ease, transform var(--dkfd-fade) ease, height 0.25s ease;
+}
+
+.dkfd--hero.is-flipping .dkfd__frame {
+	opacity: 0.22;
+	transform: scale(0.994);
+}
+
+/* The mode badge in the window chrome. */
+
+.dkfd__mode {
+	margin-left: auto;
+	padding: 3px 10px;
+	border-radius: 999px;
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	line-height: 1.6;
+	background: rgba(255, 255, 255, 0.12);
+	color: #e8ecf8;
+	transition: background-color var(--dkfd-fade) ease, color var(--dkfd-fade) ease;
+}
+
+.dkfd__mode[data-dkfd-mode="dark"] {
+	background: #ffffff;
+	color: #0f172a;
+}
+
+/* The badge sits at the right end, so the centred address needs the room. */
+.dkfd--hero .dkfd__url {
+	max-width: 45%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dkfd--hero .dkfd__frame,
+	.dkfd__mode {
+		transition: none;
+	}
+
+	/* The loop does not run at all under reduced motion (the script checks the
+	   same query); this only guards a flip that was already in flight. */
+	.dkfd--hero.is-flipping .dkfd__frame {
+		opacity: 1;
+		transform: none;
+	}
+}
