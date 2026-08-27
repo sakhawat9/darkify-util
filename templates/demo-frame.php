@@ -16,10 +16,24 @@ if (!defined('ABSPATH')) {
     exit;
 }
 ?>
+<?php
+/*
+ * `darkify_ignore` on the brand mark and the card icons is Darkify's own
+ * opt-out — the runtime marker behind its Disallowed Elements setting, honoured
+ * by both the engine and its stylesheet.
+ *
+ * Without it these blocks vanish in dark mode, and correctly so: the engine
+ * reads a solid-coloured box as a surface and maps it into the palette, which
+ * paints a #f3cac2 icon the same #171717 as the card behind it. That is the
+ * right call for a page's own panels and the wrong one for a brand accent — so
+ * the sample site does what a real site would, and tells Darkify to leave its
+ * brand colours alone.
+ */
+?>
 <div class="dkfd-site">
 	<header class="dkfd-site__bar">
 		<span class="dkfd-brand">
-			<span class="dkfd-brand__mark" aria-hidden="true"></span>
+			<span class="dkfd-brand__mark darkify_ignore" aria-hidden="true"></span>
 			<span class="dkfd-brand__name"><?php echo esc_html($data['brand']); ?></span>
 		</span>
 		<nav class="dkfd-nav" aria-label="<?php esc_attr_e('Sample site navigation', 'darkify-util'); ?>">
@@ -54,7 +68,7 @@ if (!defined('ABSPATH')) {
 		);
 		foreach ($dkfd_cards as $dkfd_card) : ?>
 			<div class="dkfd-card">
-				<span class="dkfd-card__icon" aria-hidden="true"></span>
+				<span class="dkfd-card__icon darkify_ignore" aria-hidden="true"></span>
 				<h3 class="dkfd-card__title"><?php echo esc_html($dkfd_card[0]); ?></h3>
 				<p class="dkfd-card__text"><?php echo esc_html($dkfd_card[1]); ?></p>
 			</div>

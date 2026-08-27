@@ -29,6 +29,9 @@ if (!class_exists('Darkify_Util_Demo')) {
         const SHORTCODE = 'darkify_demo';
         const HANDLE    = 'darkify-util-demo';
 
+        /** How many colour presets the control offers unless told otherwise. */
+        const DEFAULT_PRESETS = 5;
+
         /**
          * Switcher styles, keyed by the numeric values Darkify's own [darkify]
          * shortcode accepts. 1-5 exist in both editions; the rest are Pro's.
@@ -577,7 +580,7 @@ if (!class_exists('Darkify_Util_Demo')) {
          * Settings → Colors.
          *
          * @param string $requested Comma-separated preset keys, or '' for the
-         *                          presets the installed edition ships free.
+         *                          default five.
          * @return array
          */
         private function color_presets($requested)
@@ -624,9 +627,16 @@ if (!class_exists('Darkify_Util_Demo')) {
                     return array_search(strtolower($a['value']), $wanted, true)
                         - array_search(strtolower($b['value']), $wanted, true);
                 });
+
+                return $presets;
             }
 
-            return $presets;
+            // A row of swatches, not a palette browser: the demo shows the
+            // first five presets Darkify lists — Carbon Mist, Midnight Reverie,
+            // Verdant Depths, Celestial Tide, Emberwood — the same five, in the
+            // same order, in both editions. Naming presets explicitly opts into
+            // any of the others.
+            return array_slice($presets, 0, self::DEFAULT_PRESETS);
         }
 
         /**
@@ -725,14 +735,45 @@ if (!class_exists('Darkify_Util_Demo')) {
         }
 
         /**
-         * Resolve a Darkify class in whichever edition is installed.
+         * Resolve a Darkify class in whichever edition is running.
+         *
+         * Both editions can be active at once (Pro alongside the free plugin),
+         * and then only one of them actually registers the settings schema —
+         * the other's registry class exists but is empty. So the edition is
+         * chosen by which one holds the schema, not by which class happens to
+         * load first; picking on existence alone silently costs the demo its
+         * Color preset control.
          */
         private function darkify_class($relative)
         {
-            foreach (array('ThemeAtelier\\Darkify\\', 'ThemeAtelier\\DarkifyPro\\') as $namespace) {
-                $class = $namespace . $relative;
-                if (class_exists($class)) {
-                    return $class;
+            $namespace = $this->darkify_schema_namespace();
+            if ($namespace && class_exists($namespace . $relative)) {
+                return $namespace . $relative;
+            }
+
+            foreach ($this->darkify_namespaces() as $candidate) {
+                if (class_exists($candidate . $relative)) {
+                    return $candidate . $relative;
+                }
+            }
+
+            return null;
+        }
+
+        private function darkify_namespaces()
+        {
+            return array('ThemeAtelier\\Darkify\\', 'ThemeAtelier\\DarkifyPro\\');
+        }
+
+        /**
+         * The namespace of the edition whose settings schema is registered.
+         */
+        private function darkify_schema_namespace()
+        {
+            foreach ($this->darkify_namespaces() as $namespace) {
+                $registry = $namespace . 'Admin\\Schema\\SchemaRegistry';
+                if (class_exists($registry) && !empty($registry::$sections['darkify'])) {
+                    return $namespace;
                 }
             }
 

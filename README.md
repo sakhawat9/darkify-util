@@ -59,7 +59,11 @@ settings.
 
 The panel carries Darkify's own `darkify_ignore` class, so its deliberate
 colours survive the host page going dark, and it reads the background actually
-behind it to pick light or dark styling.
+behind it to pick light or dark styling. The sample site's brand mark and card
+icons carry the same class — the runtime marker behind Darkify's Disallowed
+Elements setting. Without it the engine reads a solid-coloured box as a surface
+and maps it into the palette, which paints a `#f3cac2` icon the same `#171717`
+as the card behind it: right for a page's own panels, wrong for a brand accent.
 
 The demo cannot affect the site:
 
@@ -96,7 +100,7 @@ there is nothing to demonstrate, and it will not stand in with a lookalike.
 | Attribute   | Default | Description |
 | ----------- | ------- | ----------- |
 | `controls`  | `yes`   | `no` renders the preview on its own, with no control panel. |
-| `presets`   | the installed edition's free presets | Which Darkify colour presets to offer, as a comma-separated list of preset keys (`set1,set3,set9,set6,set10`; Pro adds `set2`, `set4`, `set5`, `set7`, `set8`, `set11`). Order is respected. Empty hides nothing — it means "the free ones". |
+| `presets`   | the first five Darkify lists | Which Darkify colour presets to offer, as a comma-separated list of preset keys (`set1,set3,set9,set6,set10`; Pro adds `set2`, `set4`, `set5`, `set7`, `set8`, `set11`). Order is respected. Empty means the first five Darkify lists — Carbon Mist, Midnight Reverie, Verdant Depths, Celestial Tide, Emberwood — the same five in either edition. |
 | `preset`    | the site's own preset | Which preset starts selected. |
 | `sizes`     | `XS:50,S:60,M:75,L:85,XL:100,XXL:125` | Size options as `Label:percent`, where the percent is Darkify's own `switch_size`. Empty hides the group. |
 | `positions` | `bottom-left,bottom-right` | Placements offered. Also accepts `top-left` and `top-right`. |
