@@ -591,6 +591,7 @@
 		var position = null;
 		var drift = null;
 		var motion = null;
+		var pressed = null;
 
 		var transformFor = function (point) {
 			return "translate3d(" + point.x.toFixed(1) + "px, " + point.y.toFixed(1) + "px, 0)";
@@ -614,15 +615,21 @@
 		/**
 		 * Whatever the pointer is meant to press right now.
 		 *
-		 * On the front end that is Darkify's own floating switcher. In the admin
-		 * view it is the moon in the admin bar, which is where the plugin puts
-		 * its switch on a dashboard — so the pointer goes to the control a
-		 * visitor would actually reach for on the screen they are looking at.
+		 * A step can name its own control (the palette dropdown, an option
+		 * inside it). Otherwise it is the switch for the view on screen: on the
+		 * front end Darkify's floating switcher, in the admin the moon in the
+		 * admin bar, which is where the plugin puts its switch on a dashboard.
+		 * Either way the pointer goes to the control a visitor would actually
+		 * reach for on the screen they are looking at.
 		 */
-		var switchTarget = function () {
+		var switchTarget = function (selector) {
 			var doc = instance.frame && instance.frame.doc;
 			if (!doc) {
 				return null;
+			}
+
+			if (selector) {
+				return doc.querySelector(selector);
 			}
 
 			var stage = doc.querySelector(".dkfh-stage");
@@ -634,9 +641,9 @@
 		};
 
 		/** Where that control is, in the host window's coordinates. */
-		var switchPoint = function () {
+		var switchPoint = function (selector) {
 			var frameEl = root.querySelector(".dkfd__frame");
-			var target = switchTarget();
+			var target = switchTarget(selector);
 			if (!frameEl || !target) {
 				return null;
 			}
@@ -648,9 +655,14 @@
 
 			// Low and right of centre: still unmistakably on the switch, with the
 			// pointer's body hanging off it rather than over the icon it is there
-			// to show off.
+			// to show off. A wide control — a dropdown, one of its rows — is aimed
+			// at near its left edge instead, where a hand would actually land;
+			// 62% across one of those puts the pointer out in empty space.
+			var wide = targetBox.width > targetBox.height * 2;
+
 			return {
-				x: frameBox.left - hostBox.left + targetBox.left + targetBox.width * 0.62,
+				x: frameBox.left - hostBox.left + targetBox.left +
+					(wide ? Math.min(targetBox.width * 0.5, 34) : targetBox.width * 0.62),
 				y: frameBox.top - hostBox.top + targetBox.top + targetBox.height * 0.6
 			};
 		};
@@ -745,16 +757,16 @@
 
 		return {
 			/** How long before the click the pointer has to set off. */
-			lead: function () {
-				var point = switchPoint();
+			lead: function (selector) {
+				var point = switchPoint(selector);
 				if (!point) {
 					return TRAVEL_MIN + SETTLE;
 				}
 				return travelTime(position || restPoint(), point) + SETTLE;
 			},
 
-			approach: function () {
-				var point = switchPoint();
+			approach: function (selector) {
+				var point = switchPoint(selector);
 				if (!point) {
 					return;
 				}
@@ -769,9 +781,9 @@
 				moveTo(point, travelTime(position, point), "cubic-bezier(0.32, 0.02, 0.16, 1)", 1);
 			},
 
-			press: function () {
+			press: function (selector) {
 				root.classList.add("is-clicking");
-				pressSwitch(true);
+				pressSwitch(true, selector);
 			},
 
 			release: function () {
@@ -799,24 +811,33 @@
 			pressDuration: PRESS
 		};
 
-		/** The switch gives under the press, the way a real one would. */
-		function pressSwitch(down) {
-			var doc = instance.frame && instance.frame.doc;
-			if (!doc) {
+		/**
+		 * The control gives under the press, the way a real one would — whichever
+		 * control this step is on.
+		 *
+		 * The last one pressed is remembered rather than being searched for
+		 * again on release: the view, and with it the control, can change
+		 * between a press and its release.
+		 */
+		function pressSwitch(down, selector) {
+			if (pressed) {
+				pressed.classList.remove("is-pressed");
+				pressed = null;
+			}
+
+			if (!down) {
 				return;
 			}
 
-			var stage = doc.querySelector(".dkfh-stage");
-			var live = stage && stage.classList.contains("is-admin") ? ".dkfa-toggle" : ".dkfh-fab";
+			var target = switchTarget(selector);
+			if (!target) {
+				return;
+			}
 
-			// Both are cleared on every pass, not only the one being pressed: the
-			// view can change between a press and its release.
-			[".dkfh-fab", ".dkfa-toggle"].forEach(function (selector) {
-				var control = doc.querySelector(selector);
-				if (control) {
-					control.classList.toggle("is-pressed", down && selector === live);
-				}
-			});
+			// Darkify's switcher is styled to give on its wrapper, not on the
+			// switch itself, which the engine leaves alone.
+			pressed = (target.closest && target.closest(".dkfh-fab")) || target;
+			pressed.classList.add("is-pressed");
 		}
 	}
 
@@ -869,6 +890,26 @@
 
 		var stage = frame.doc.querySelector(".dkfh-stage");
 		var address = root.querySelector(".dkfd__url");
+
+		/*
+		 * The preset the loop picks in the admin's palette dropdown, with the
+		 * `--darkify_dark_mode_*` values the server resolved for it. Absent —
+		 * no dropdown rendered, or a Darkify whose schema does not offer the
+		 * named preset — and the loop simply does not have that step.
+		 */
+		var palette = (function () {
+			var raw = root.getAttribute("data-dkfd-palette");
+			if (!raw || !frame.doc.querySelector(".dkfa-select--live")) {
+				return null;
+			}
+			try {
+				return JSON.parse(raw);
+			} catch (e) {
+				return null;
+			}
+		})();
+
+		timing.palette = number("palette-hold", 3600);
 		var urls = {
 			site: root.getAttribute("data-dkfd-url") || "",
 			admin: root.getAttribute("data-dkfd-admin-url") || ""
@@ -998,6 +1039,10 @@
 				if (stage) {
 					stage.classList.add("is-swapping");
 				}
+				// The palette goes back before the lights do, while the engine is
+				// still dark and a sweep still means something. Leaving it set
+				// would start the next pass from this one's leftovers.
+				setPalette(false);
 				if (isDark()) {
 					throwSwitch();
 				}
@@ -1066,6 +1111,118 @@
 			});
 		};
 
+		/*
+		 * Picking the preset.
+		 *
+		 * The recolour is Darkify's: `CONTROLS.preset` writes the same
+		 * `--darkify_dark_mode_*` variables Darkify's own palette switcher
+		 * assigns, swaps the `darkify-<set>` class that keys the engine's
+		 * surface-token cache, and asks for a state sweep so colours the engine
+		 * resolved in JS are re-derived too. Nothing here paints a second
+		 * palette of its own.
+		 *
+		 * The class the preview opened with is remembered so the loop can hand
+		 * the frame back exactly as it found it — otherwise the second pass
+		 * would start from the first pass's leftovers.
+		 */
+		var baseSet = toArray(frame.doc.documentElement.classList).filter(function (name) {
+			return 0 === name.indexOf("darkify-set");
+		})[0] || "";
+
+		var select = frame.doc.querySelector(".dkfa-select--live");
+		var pickedOption = select && select.querySelector(".dkfa-option--target");
+		var autoOption = select && select.querySelector(".dkfa-option.is-selected");
+
+		var setPalette = function (picked) {
+			if (!palette || !select) {
+				return;
+			}
+
+			var label = select.querySelector(".dkfa-select__label");
+			var dot = select.querySelector(".dkfa-select__dot");
+			var element = frame.doc.documentElement;
+
+			/*
+			 * The control is updated before the preset is applied, not after.
+			 * The swatch is set to the palette's own colour — a dark green for
+			 * Verdant Depths — and it is `CONTROLS.preset`'s state sweep that
+			 * turns that into the light teal a dark dashboard needs. Setting it
+			 * afterwards would leave the sweep nothing to re-derive and the dot
+			 * invisible on its own background.
+			 */
+			if (label) {
+				label.textContent = picked ? palette.label : autoLabel;
+			}
+			// A custom property, not a background: the stylesheet needs to be able
+			// to override it in dark mode, where the preset's raw colour is the
+			// page's own and would vanish into it. An inline background could not
+			// be overridden at all.
+			if (dot) {
+				dot.style.setProperty("--dkfa-dot", picked ? palette.dot : "");
+			}
+			if (select) {
+				select.classList.toggle("is-picked", picked);
+			}
+			if (pickedOption) {
+				pickedOption.classList.toggle("is-selected", picked);
+				pickedOption.classList.remove("is-hover");
+			}
+			if (autoOption && autoOption !== pickedOption) {
+				autoOption.classList.toggle("is-selected", !picked);
+			}
+
+			if (picked) {
+				CONTROLS.preset(frame, { value: palette.value, vars: palette.vars });
+			} else {
+				// Back to Auto: drop the variables rather than overwriting them,
+				// so the engine falls back to the site's own configuration.
+				Object.keys(palette.vars || {}).forEach(function (name) {
+					element.style.removeProperty(name);
+				});
+				CONTROLS.preset(frame, { value: baseSet.replace(/^darkify-/, "") || "set1", vars: null });
+				if (!baseSet) {
+					element.classList.remove("darkify-set1");
+				}
+			}
+		};
+
+		var autoLabel = (function () {
+			var label = select && select.querySelector(".dkfa-select__label");
+			return label ? label.textContent : "";
+		})();
+
+		/** Open the dropdown, and walk the highlight onto the row being aimed at. */
+		var openPalette = function (done) {
+			if (select) {
+				select.classList.add("is-open");
+			}
+			// The highlight lands as the pointer does, not halfway down the list.
+			after(Math.max(0, timing.pick - 220), function () {
+				if (pickedOption) {
+					pickedOption.classList.add("is-hover");
+				}
+			});
+			done();
+		};
+
+		/** Choose it: close the menu and repaint, behind the same veil as a flip. */
+		var choosePalette = function (done) {
+			var change = function () {
+				if (select) {
+					select.classList.remove("is-open");
+				}
+				setPalette(true);
+			};
+
+			if (!veil || reducedMotion()) {
+				change();
+				done();
+				return;
+			}
+
+			cover(change, 0, done);
+		};
+
 		/** The address follows the view, with a beat of fade so it is noticed. */
 		var setAddress = function (view) {
 			if (!address || !urls[view]) {
@@ -1083,36 +1240,54 @@
 		/**
 		 * The loop, as a list of held moments.
 		 *
-		 * Each step is a mode the preview sits in and the move it makes when the
-		 * hold runs out: front end light, front end dark, over to wp-admin, admin
-		 * light, admin dark, and back. Without the admin half it is the two-step
-		 * loop it has always been.
+		 * Each step is something the preview sits in front of and the move it
+		 * makes when the hold runs out: front end light, front end dark, over to
+		 * wp-admin, admin light, admin dark, the palette dropdown, and back.
+		 * Without the admin half it is the two-step loop it has always been, and
+		 * without a resolvable preset the two palette steps drop out of it.
 		 *
-		 * `light_hold` and `dark_hold` stay what they say — time spent in that
-		 * mode. The pointer's walk overlaps the tail of the hold rather than
-		 * being added to it.
+		 * `hold` is time spent looking at that state. The pointer's walk overlaps
+		 * the tail of it rather than being added to it, so `light_hold` and the
+		 * rest stay what they say.
+		 *
+		 * `target` names the control the pointer walks to; a step without one is
+		 * not a click at all, and the pointer sits it out — nobody presses a
+		 * button to load a page.
 		 */
 		var admin = root.hasAttribute("data-dkfd-admin") && stage &&
 			!!frame.doc.querySelector(".dkfh-view--admin");
 
-		var steps = admin
-			? [
-				{ hold: timing.light, move: "flip" },
-				{ hold: timing.dark, move: "travel", view: "admin" },
-				{ hold: timing.adminLight, move: "flip" },
-				{ hold: timing.adminDark, move: "travel", view: "site" }
-			]
-			: [
-				{ hold: timing.light, move: "flip" },
-				{ hold: timing.dark, move: "flip" }
-			];
+		// How long the dropdown stays open before the row under the pointer is
+		// taken. Long enough to read the list it came from.
+		timing.pick = 1100;
+
+		var steps = [{ hold: timing.light, act: flip }];
+
+		if (admin) {
+			steps.push({ hold: timing.dark, act: travelTo("admin") });
+			steps.push({ hold: timing.adminLight, act: flip });
+
+			if (palette && select) {
+				steps.push({ hold: timing.adminDark, act: openPalette, target: ".dkfa-select--live .dkfa-select__value" });
+				steps.push({ hold: timing.pick, act: choosePalette, target: ".dkfa-option--target" });
+				steps.push({ hold: timing.palette, act: travelTo("site") });
+			} else {
+				steps.push({ hold: timing.adminDark, act: travelTo("site") });
+			}
+		} else {
+			steps.push({ hold: timing.dark, act: flip });
+		}
 
 		var step = 0;
 
+		function travelTo(view) {
+			return function (done) {
+				travel(view, done);
+			};
+		}
+
 		/**
-		 * One cycle: hold, walk the pointer over, press, act, and withdraw. A
-		 * walk between views is not a click, so the pointer sits it out — nobody
-		 * presses a button to load a page.
+		 * One cycle: hold, walk the pointer over, press, act, and withdraw.
 		 */
 		var schedule = function () {
 			if (!running) {
@@ -1121,37 +1296,37 @@
 
 			// Deliberately not clearing here: the pointer's withdrawal is still
 			// pending when the next cycle is scheduled, and it belongs to the
-			// flip that just happened. start() and stop() own the timer list.
+			// move that just happened. start() and stop() own the timer list.
 			var current = steps[step % steps.length];
 			step = (step + 1) % steps.length;
 
 			var act = function () {
-				if ("travel" === current.move) {
-					travel(current.view, schedule);
-				} else {
-					flip(schedule);
-				}
+				current.act(schedule);
 			};
 
-			if (!cursor || "travel" === current.move) {
+			// A step with no control to press is not a click: hold, then act.
+			if (!cursor || (!current.target && current.act !== flip)) {
 				after(current.hold, act);
 				return;
 			}
 
-			var lead = cursor.lead();
+			var lead = cursor.lead(current.target);
 
 			after(Math.max(0, current.hold - lead), function () {
-				cursor.approach();
+				cursor.approach(current.target);
 
 				after(lead, function () {
-					cursor.press();
+					cursor.press(current.target);
 					act();
 
 					after(cursor.pressDuration, cursor.release);
-					// Leaves once the new mode is on screen, not before — and
+					// Leaves once the new state is on screen, not before — and
 					// early enough to be back at rest, drifting, before the next
-					// cycle sets off.
-					after(timing.fade + 260, cursor.retreat);
+					// cycle sets off. It stays put while a menu it just opened is
+					// still open: the next step's target is inside that menu.
+					if (current.act !== openPalette) {
+						after(timing.fade + 260, cursor.retreat);
+					}
 				});
 			});
 		};
@@ -1185,6 +1360,15 @@
 				stage.classList.remove("is-swapping");
 			}
 			root.classList.remove("is-loading");
+
+			// A dropdown caught mid-open would still be hanging there when the
+			// preview scrolls back into view.
+			if (select) {
+				select.classList.remove("is-open");
+			}
+			if (pickedOption) {
+				pickedOption.classList.remove("is-hover");
+			}
 
 			if (cursor) {
 				cursor.reset();

@@ -39,6 +39,24 @@ if (!defined('ABSPATH')) {
 			data-dkfd-admin-hold="<?php echo esc_attr($data['admin_hold']); ?>"
 			data-dkfd-admin-dark-hold="<?php echo esc_attr($data['admin_dark_hold']); ?>"
 			data-dkfd-admin-url="<?php echo esc_attr($data['admin_url']); ?>"
+			<?php if ($data['admin_palette']) : ?>
+				<?php
+				/*
+				 * The preset the loop picks in the admin's palette dropdown,
+				 * carrying the CSS variables the server resolved for it — the
+				 * same `--darkify_dark_mode_*` values Darkify's own header
+				 * template prints, so the recolour is the engine's, not a
+				 * second palette written here.
+				 */
+				?>
+				data-dkfd-palette-hold="<?php echo esc_attr($data['palette_hold']); ?>"
+				data-dkfd-palette="<?php echo esc_attr(wp_json_encode(array(
+					'value' => $data['admin_palette']['value'],
+					'label' => $data['admin_palette']['label'],
+					'dot'   => $data['admin_palette']['chip'][0],
+					'vars'  => $data['admin_palette']['vars'],
+				))); ?>"
+			<?php endif; ?>
 		<?php endif; ?>
 	<?php endif; ?>
 	data-dkfd-url="<?php echo esc_attr($data['url']); ?>"

@@ -108,51 +108,41 @@ if (!defined('ABSPATH')) {
 		 * The admin half: Darkify's settings screen inside a mock of wp-admin.
 		 *
 		 * Laid over the front end rather than beside it — absolutely positioned,
-		 * opaque, and only faded in while the veil is closed — so the two views
+		 * opaque, and only revealed while the veil is closed — so the two views
 		 * are exactly the same size and the window never resizes between them.
+		 *
+		 * The menu is the collapsed icon rail, not the expanded one. That is a
+		 * layout decision the settings screen forces: at this size the labels
+		 * cost ~100px of the content column, and without them every row's
+		 * description fits on one line and the whole card fits in the window.
 		 *
 		 * Nothing here is a screenshot. It is markup in the same document the
 		 * engine is already running against, so the dark admin a visitor sees is
 		 * Darkify deriving these colours live, the same way it would on their own
-		 * dashboard.
+		 * dashboard — and the palette dropdown holds the plugin's real presets,
+		 * with the colours this site has saved for them.
 		 */
 		$dkfa_menu = array(
 			array(
-				'label' => __('Controls', 'darkify-util'),
-				'icon'  => '<path d="M3 6h2m4 0h9M3 12h9m4 0h5M3 18h5m4 0h9"/><circle cx="7" cy="6" r="2"/><circle cx="14" cy="12" r="2"/><circle cx="10" cy="18" r="2"/>',
-				'open'  => true,
-				'kids'  => array(
-					array(
-                        'label'  => __('Frontend', 'darkify-util'),
-                        'icon'   => '<rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M9 20h6"/>',
-                        'active' => false,
-                    ),
-					array(
-                        'label'  => __('Admin', 'darkify-util'),
-                        'icon'   => '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
-                        'active' => true,
-                    ),
-				),
+				'label'  => __('Controls', 'darkify-util'),
+				'icon'   => '<path d="M3 6h2m4 0h9M3 12h9m4 0h5M3 18h5m4 0h9"/><circle cx="7" cy="6" r="2"/><circle cx="14" cy="12" r="2"/><circle cx="10" cy="18" r="2"/>',
+				'active' => true,
 			),
 			array(
 				'label' => __('Switches', 'darkify-util'),
 				'icon'  => '<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.5"/>',
-				'more'  => true,
 			),
 			array(
 				'label' => __('Colors', 'darkify-util'),
 				'icon'  => '<path d="M12 3a9 9 0 1 0 0 18c1 0 1.6-.8 1.6-1.7 0-1.6 1.2-2.3 2.4-2.3H18a4 4 0 0 0 4-4c0-5.5-4.5-10-10-10Z"/><circle cx="7.5" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="10" r="1"/>',
-				'more'  => true,
 			),
 			array(
 				'label' => __('Media', 'darkify-util'),
 				'icon'  => '<rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/>',
-				'more'  => true,
 			),
 			array(
 				'label' => __('Advanced', 'darkify-util'),
 				'icon'  => '<path d="M4 17c4 0 4-10 8-10s4 10 8 10"/>',
-				'more'  => true,
 			),
 			array(
 				'label' => __('Tools', 'darkify-util'),
@@ -174,6 +164,8 @@ if (!defined('ABSPATH')) {
 				'title'   => __('Admin Panel Palette', 'darkify-util'),
 				'text'    => __('Color preset for the WordPress admin. Auto lets Darkify derive each color from the original.', 'darkify-util'),
 				'control' => 'select',
+				// The one control the loop actually operates.
+				'live'    => true,
 			),
 			array(
 				'title'   => __('Block Editor Dark Mode', 'darkify-util'),
@@ -191,6 +183,8 @@ if (!defined('ABSPATH')) {
 				'control' => 'toggle',
 			),
 		);
+
+		$dkfa_auto = __('Auto (recommended)', 'darkify-util');
 		?>
 		<div class="dkfh-view dkfh-view--admin" aria-hidden="true">
 			<div class="dkfa">
@@ -236,46 +230,20 @@ if (!defined('ABSPATH')) {
 				</div>
 
 				<div class="dkfa-body">
-					<div class="dkfa-side">
-						<div class="dkfa-side__head">
-							<span class="dkfa-logo darkify_ignore" aria-hidden="true">
-								<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3m12.8 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1M5.6 18.4l2.1-2.1m8.6-8.6 2.1-2.1"/></svg>
-							</span>
-							<span class="dkfa-side__title">
-								<b><?php echo esc_html($data['admin_brand']); ?></b>
-								<em><?php echo esc_html($data['admin_version']); ?></em>
-							</span>
-							<span class="dkfa-side__collapse" aria-hidden="true">
-								<svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M9.5 4.5v15M17 9.5 14 12l3 2.5"/></svg>
-							</span>
-						</div>
+					<div class="dkfa-rail">
+						<span class="dkfa-logo darkify_ignore" aria-hidden="true">
+							<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3m12.8 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1M5.6 18.4l2.1-2.1m8.6-8.6 2.1-2.1"/></svg>
+						</span>
 
-						<div class="dkfa-menu">
+						<span class="dkfa-rail__menu">
 							<?php foreach ($dkfa_menu as $dkfa_item) : ?>
-								<span class="dkfa-menu__item<?php echo empty($dkfa_item['open']) ? '' : ' is-open'; ?>">
+								<span class="dkfa-rail__item<?php echo empty($dkfa_item['active']) ? '' : ' is-active'; ?>" title="<?php echo esc_attr($dkfa_item['label']); ?>">
 									<svg viewBox="0 0 24 24" aria-hidden="true"><?php
 										echo $dkfa_item['icon']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static markup above.
 									?></svg>
-									<em><?php echo esc_html($dkfa_item['label']); ?></em>
-									<?php if (!empty($dkfa_item['open']) || !empty($dkfa_item['more'])) : ?>
-										<svg class="dkfa-menu__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
-									<?php endif; ?>
 								</span>
-
-								<?php if (!empty($dkfa_item['kids'])) : ?>
-									<span class="dkfa-menu__sub">
-										<?php foreach ($dkfa_item['kids'] as $dkfa_kid) : ?>
-											<span class="dkfa-menu__item dkfa-menu__item--sub<?php echo empty($dkfa_kid['active']) ? '' : ' is-active'; ?>">
-												<svg viewBox="0 0 24 24" aria-hidden="true"><?php
-													echo $dkfa_kid['icon']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static markup above.
-												?></svg>
-												<em><?php echo esc_html($dkfa_kid['label']); ?></em>
-											</span>
-										<?php endforeach; ?>
-									</span>
-								<?php endif; ?>
 							<?php endforeach; ?>
-						</div>
+						</span>
 					</div>
 
 					<div class="dkfa-main">
@@ -286,7 +254,7 @@ if (!defined('ABSPATH')) {
 							</span>
 							<span class="dkfa-head__tools">
 								<span class="dkfa-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/></svg></span>
-								<span class="dkfa-save"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.5h11l4 4v11h-15Z"/><path d="M8 4.5v5h7M8 19.5v-6h8v6"/></svg><?php esc_html_e('Save', 'darkify-util'); ?></span>
+								<span class="dkfa-save darkify_ignore"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.5h11l4 4v11h-15Z"/><path d="M8 4.5v5h7M8 19.5v-6h8v6"/></svg><?php esc_html_e('Save', 'darkify-util'); ?></span>
 								<span class="dkfa-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg></span>
 							</span>
 						</div>
@@ -298,15 +266,60 @@ if (!defined('ABSPATH')) {
 
 							<div class="dkfa-card">
 								<?php foreach ($dkfa_rows as $dkfa_row) : ?>
+									<?php $dkfa_live = !empty($dkfa_row['live']) && $data['admin_palette']; ?>
 									<div class="dkfa-row">
 										<span class="dkfa-row__text">
 											<b><?php echo esc_html($dkfa_row['title']); ?></b>
 											<em><?php echo esc_html($dkfa_row['text']); ?></em>
 											<?php if ('select' === $dkfa_row['control']) : ?>
-												<span class="dkfa-select">
-													<span class="dkfa-select__dot darkify_ignore" aria-hidden="true"></span>
-													<?php esc_html_e('Auto (recommended)', 'darkify-util'); ?>
-													<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+												<span class="dkfa-select<?php echo $dkfa_live ? ' dkfa-select--live' : ''; ?>">
+													<span class="dkfa-select__value">
+														<?php
+														/*
+														 * Palette-driven rather than engine-mapped (see the stylesheet):
+														 * the raw colour of a dark preset cannot show on that preset's own
+														 * page, so in dark mode the swatch takes Darkify's accent for a
+														 * chosen preset and its text colour for Auto.
+														 */
+														?>
+														<span class="dkfa-select__dot darkify_ignore" aria-hidden="true"></span>
+														<span class="dkfa-select__label"><?php echo esc_html($dkfa_auto); ?></span>
+														<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+													</span>
+
+													<?php if ($dkfa_live) : ?>
+														<?php
+														/*
+														 * The dropdown's contents are Darkify's own presets, resolved from
+														 * the schema it registers — the same names and the same swatch
+														 * colours its Colors screen shows.
+														 *
+														 * The panel itself is a panel and goes dark with the page — no
+														 * `darkify_ignore` on it. The swatches are the exception, and they
+														 * carry it: a preset is identified by its *background*, every one of
+														 * those is a near-black, and the engine lands all six on the same
+														 * dark surface — six identical dots that say nothing about the six
+														 * palettes they stand for.
+														 *
+														 * So each dot is given both of its colours and picks by mode: the
+														 * preset's background on a light menu, its accent on a dark one.
+														 * That is the pair the real screen shows — white for Carbon Mist,
+														 * violet for Midnight Reverie, teal for Verdant Depths.
+														 */
+														?>
+														<span class="dkfa-menu" aria-hidden="true">
+															<span class="dkfa-option is-selected">
+																<span class="dkfa-option__dot dkfa-option__dot--auto darkify_ignore"></span><?php echo esc_html($dkfa_auto); ?>
+																<svg class="dkfa-option__check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+															</span>
+															<?php foreach ($data['admin_presets'] as $dkfa_preset) : ?>
+																<span class="dkfa-option<?php echo $dkfa_preset['value'] === $data['admin_palette']['value'] ? ' dkfa-option--target' : ''; ?>">
+																	<span class="dkfa-option__dot darkify_ignore" style="--dkfa-dot: <?php echo esc_attr($dkfa_preset['chip'][0]); ?>; --dkfa-dot-dark: <?php echo esc_attr($dkfa_preset['chip'][1]); ?>"></span><?php echo esc_html($dkfa_preset['label']); ?>
+																	<svg class="dkfa-option__check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+																</span>
+															<?php endforeach; ?>
+														</span>
+													<?php endif; ?>
 												</span>
 											<?php endif; ?>
 										</span>
@@ -314,6 +327,15 @@ if (!defined('ABSPATH')) {
 										<?php if ('toggle' === $dkfa_row['control']) : ?>
 											<span class="dkfa-onoff">
 												<em><?php esc_html_e('On', 'darkify-util'); ?></em>
+												<?php
+												/*
+												 * The pill inverts with the page — black on a light admin, white on a
+												 * dark one, green under Verdant Depths — but not by way of the engine,
+												 * which reads it as a panel and hands back the card colour it is
+												 * sitting on. `darkify_ignore` keeps it off, and the stylesheet drives
+												 * it from Darkify's own palette variables instead.
+												 */
+												?>
 												<span class="dkfa-switch darkify_ignore" aria-hidden="true"><i></i></span>
 											</span>
 										<?php endif; ?>

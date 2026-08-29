@@ -342,25 +342,29 @@ body {
  * the loop is one the engine derived from these.
  *
  * Sized in absolute pixels rather than inherited from the page, because it has
- * to read as a whole dashboard inside a ~640px window: this is the admin at a
- * distance, and the type is small on purpose.
+ * to read as a whole dashboard inside a ~640px window. Two decisions come out of
+ * that constraint: the menu is the collapsed icon rail (its labels would cost
+ * ~100px of the content column), and the greys are set several steps darker
+ * than a full-size admin can afford — at 9–11px, #6b7280 on white reads as fog.
+ * Together they buy every row a single-line description and the whole settings
+ * card inside the window.
  */
 
 .dkfa {
 	--dkfa-bar: #1d2327;
-	--dkfa-bar-text: #d7dade;
-	--dkfa-bg: #f5f6f8;
+	--dkfa-bar-text: #e3e5e9;
+	--dkfa-bg: #f3f4f7;
 	--dkfa-panel: #ffffff;
-	--dkfa-line: #e6e8ec;
-	--dkfa-ink: #111827;
-	--dkfa-muted: #6b7280;
-	--dkfa-faint: #9aa1ad;
+	--dkfa-line: #e2e5ea;
+	--dkfa-ink: #0d1117;
+	--dkfa-muted: #454d5a;
+	--dkfa-faint: #6d7684;
 
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 	background: var(--dkfa-bg);
-	font-size: 9px;
+	font-size: 10px;
 	color: var(--dkfa-muted);
 }
 
@@ -379,25 +383,25 @@ body {
 	align-items: center;
 	justify-content: space-between;
 	flex: none;
-	height: 22px;
-	padding: 0 8px 0 4px;
+	height: 24px;
+	padding: 0 9px 0 4px;
 	background: var(--dkfa-bar);
 	color: var(--dkfa-bar-text);
-	font-size: 8.5px;
+	font-size: 9.5px;
 	line-height: 1;
 }
 
 .dkfa-bar__group {
 	display: flex;
 	align-items: center;
-	gap: 9px;
+	gap: 10px;
 	min-width: 0;
 }
 
 .dkfa-bar__item {
 	display: inline-flex;
 	align-items: center;
-	gap: 3px;
+	gap: 4px;
 	white-space: nowrap;
 }
 
@@ -414,8 +418,8 @@ body {
 
 .dkfa-bar svg {
 	display: block;
-	width: 10px;
-	height: 10px;
+	width: 11px;
+	height: 11px;
 	fill: none;
 	stroke: currentColor;
 	stroke-width: 1.7;
@@ -426,21 +430,21 @@ body {
 .dkfa-avatar {
 	display: inline-flex;
 	margin-left: 2px;
-	color: #b8bcc4;
+	color: #c4c8d0;
 }
 
 /* Darkify's admin switch. The icon follows the engine's own state class, so it
    can never disagree with the page behind it. */
 .dkfa-toggle {
 	display: inline-flex;
-	margin-left: 3px;
+	margin-left: 4px;
 	color: #ffffff;
 	transition: transform 140ms ease;
 }
 
 .dkfa-toggle svg {
-	width: 12px;
-	height: 12px;
+	width: 14px;
+	height: 14px;
 	stroke-width: 1.6;
 }
 
@@ -459,7 +463,7 @@ body {
 	transform: scale(0.88);
 }
 
-/* Sidebar ----------------------------------------------------------------- */
+/* The icon rail ----------------------------------------------------------- */
 
 .dkfa-body {
 	display: flex;
@@ -467,20 +471,15 @@ body {
 	min-height: 0;
 }
 
-.dkfa-side {
+.dkfa-rail {
 	display: flex;
 	flex: none;
 	flex-direction: column;
-	width: 132px;
+	align-items: center;
+	width: 46px;
+	padding-top: 9px;
 	border-right: 1px solid var(--dkfa-line);
 	background: var(--dkfa-panel);
-}
-
-.dkfa-side__head {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	padding: 9px 9px 10px;
 }
 
 /* A brand mark, not a surface: the engine maps a solid coloured box into the
@@ -490,127 +489,53 @@ body {
 	align-items: center;
 	justify-content: center;
 	flex: none;
-	width: 19px;
-	height: 19px;
-	border-radius: 6px;
+	width: 24px;
+	height: 24px;
+	margin-bottom: 11px;
+	border-radius: 7px;
 	background: #16181d;
 	color: #ffffff;
 }
 
 .dkfa-logo svg {
-	width: 12px;
-	height: 12px;
+	width: 14px;
+	height: 14px;
 	fill: none;
 	stroke: currentColor;
 	stroke-width: 1.7;
 	stroke-linecap: round;
 }
 
-.dkfa-side__title {
+.dkfa-rail__menu {
 	display: flex;
-	flex: 1;
+	width: 100%;
 	flex-direction: column;
-	gap: 1px;
-	min-width: 0;
+	align-items: stretch;
 }
 
-.dkfa-side__title b {
-	font-size: 10px;
-	font-weight: 700;
-	color: var(--dkfa-ink);
-	letter-spacing: -0.01em;
-}
-
-.dkfa-side__title em {
-	font-size: 7px;
-	font-style: normal;
-	color: var(--dkfa-faint);
-}
-
-.dkfa-side__collapse {
-	display: flex;
-	flex: none;
-	color: var(--dkfa-faint);
-}
-
-.dkfa-side__collapse svg {
-	width: 11px;
-	height: 11px;
-	fill: none;
-	stroke: currentColor;
-	stroke-width: 1.5;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-}
-
-.dkfa-menu {
-	display: flex;
-	flex-direction: column;
-	padding-bottom: 8px;
-}
-
-.dkfa-menu__item {
+.dkfa-rail__item {
 	display: flex;
 	align-items: center;
-	gap: 7px;
-	padding: 6px 9px;
-	font-size: 9.5px;
-	color: var(--dkfa-ink);
-}
-
-.dkfa-menu__item svg {
-	flex: none;
-	width: 12px;
-	height: 12px;
-	fill: none;
-	stroke: currentColor;
-	stroke-width: 1.6;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-	opacity: 0.72;
-}
-
-.dkfa-menu__item em {
-	flex: 1;
-	font-style: normal;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-.dkfa-menu__chevron {
-	width: 9px !important;
-	height: 9px !important;
-	opacity: 0.45 !important;
-}
-
-.dkfa-menu__item.is-open {
-	background: var(--dkfa-bg);
-	font-weight: 600;
-}
-
-.dkfa-menu__item.is-open .dkfa-menu__chevron {
-	transform: rotate(90deg);
-}
-
-.dkfa-menu__sub {
-	display: flex;
-	flex-direction: column;
-	background: var(--dkfa-bg);
-	padding-bottom: 4px;
-}
-
-.dkfa-menu__item--sub {
-	padding: 5px 9px 5px 16px;
-	font-size: 9px;
+	justify-content: center;
+	height: 30px;
 	color: var(--dkfa-muted);
 }
 
-/* The current screen, marked the way the real menu marks it: a rule down the
-   left edge and the label in full ink. */
-.dkfa-menu__item--sub.is-active {
+.dkfa-rail__item svg {
+	width: 14px;
+	height: 14px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.7;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* The current screen, marked the way the collapsed menu marks it: a rule down
+   the left edge and the icon in full ink. */
+.dkfa-rail__item.is-active {
 	box-shadow: inset 2px 0 0 0 var(--dkfa-ink);
-	font-weight: 600;
+	background: var(--dkfa-bg);
 	color: var(--dkfa-ink);
 }
 
@@ -630,7 +555,7 @@ body {
 	justify-content: space-between;
 	gap: 10px;
 	flex: none;
-	padding: 8px 12px;
+	padding: 9px 13px;
 }
 
 .dkfa-head__title {
@@ -641,16 +566,16 @@ body {
 }
 
 .dkfa-head__title em {
-	font-size: 7px;
+	font-size: 8px;
 	font-style: normal;
-	font-weight: 600;
+	font-weight: 700;
 	letter-spacing: 0.12em;
 	text-transform: uppercase;
 	color: var(--dkfa-faint);
 }
 
 .dkfa-head__title b {
-	font-size: 12.5px;
+	font-size: 14px;
 	font-weight: 700;
 	letter-spacing: -0.015em;
 	color: var(--dkfa-ink);
@@ -659,7 +584,7 @@ body {
 .dkfa-head__tools {
 	display: flex;
 	align-items: center;
-	gap: 7px;
+	gap: 8px;
 }
 
 .dkfa-icon {
@@ -669,8 +594,8 @@ body {
 
 .dkfa-head svg {
 	display: block;
-	width: 12px;
-	height: 12px;
+	width: 13px;
+	height: 13px;
 	fill: none;
 	stroke: currentColor;
 	stroke-width: 1.6;
@@ -678,32 +603,41 @@ body {
 	stroke-linejoin: round;
 }
 
+/*
+ * Solid, the way the real screen's primary action is — and the same problem the
+ * On pills have, for the same reason: the engine reads a dark filled button as
+ * a panel and hands back the secondary background, which is the card it is
+ * sitting on. Pinned to the palette's text colour instead, so it stays a light
+ * pill with dark type in every palette.
+ */
 .dkfa-save {
 	display: inline-flex;
 	align-items: center;
-	gap: 5px;
-	padding: 5px 10px;
-	border-radius: 6px;
-	background: #e4e6eb;
-	font-size: 9.5px;
+	gap: 6px;
+	padding: 6px 12px;
+	border-radius: 7px;
+	background: #16181d;
+	font-size: 11px;
 	font-weight: 600;
-	color: var(--dkfa-muted);
+	color: #ffffff;
+}
+
+.darkify_dark_mode_enabled .dkfa-save {
+	background: var(--darkify_dark_mode_text_color, #bebebe);
+	color: var(--darkify_dark_mode_bg, #0f0f0f);
 }
 
 .dkfa-content {
 	flex: 1;
 	min-height: 0;
-	/* The card runs past the bottom edge on purpose: a settings screen is taller
-	   than a hero preview, and a page cut off by the window reads as a real one
-	   scrolled to the top rather than a shortened mock-up. */
 	overflow: hidden;
-	padding: 2px 12px 0;
+	padding: 2px 13px 0;
 }
 
 .dkfa-intro {
 	margin: 0 0 10px;
-	font-size: 9px;
-	line-height: 1.5;
+	font-size: 10px;
+	line-height: 1.45;
 	color: var(--dkfa-muted);
 }
 
@@ -717,7 +651,7 @@ body {
 .dkfa-section {
 	display: block;
 	margin-bottom: 6px;
-	font-size: 7.5px;
+	font-size: 8px;
 	font-weight: 700;
 	letter-spacing: 0.11em;
 	text-transform: uppercase;
@@ -734,8 +668,8 @@ body {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
-	gap: 12px;
-	padding: 9px 11px;
+	gap: 14px;
+	padding: 9px 12px;
 }
 
 .dkfa-row + .dkfa-row {
@@ -745,41 +679,57 @@ body {
 .dkfa-row__text {
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 1px;
 	min-width: 0;
 }
 
 .dkfa-row__text b {
-	font-size: 9.5px;
+	font-size: 11px;
 	font-weight: 600;
+	letter-spacing: -0.005em;
 	color: var(--dkfa-ink);
 }
 
 .dkfa-row__text em {
-	font-size: 8.5px;
+	font-size: 9.5px;
 	font-style: normal;
 	line-height: 1.45;
 	color: var(--dkfa-muted);
 }
 
+/* The palette control ----------------------------------------------------- */
+
 .dkfa-select {
-	display: inline-flex;
+	position: relative;
+	/* Hugs its label rather than being pinned to a width: at this scale a fixed
+	   box either crops the chevron off the end or leaves a gap after it. */
+	align-self: flex-start;
+	min-width: 148px;
+	margin-top: 7px;
+}
+
+/* Raised while its menu is open, so the menu covers the rows below it rather
+   than sliding under their borders. */
+.dkfa-select.is-open {
+	z-index: 2;
+}
+
+.dkfa-select__value {
+	display: flex;
 	align-items: center;
-	gap: 5px;
-	width: 132px;
-	margin-top: 6px;
-	padding: 5px 7px;
+	gap: 6px;
+	padding: 6px 9px;
 	border: 1px solid var(--dkfa-line);
 	border-radius: 6px;
 	background: var(--dkfa-panel);
-	font-size: 8.5px;
+	font-size: 9.5px;
 	white-space: nowrap;
 	color: var(--dkfa-ink);
 }
 
-.dkfa-select svg {
-	width: 9px;
-	height: 9px;
+.dkfa-select__value svg {
+	width: 10px;
+	height: 10px;
 	margin-left: auto;
 	fill: none;
 	stroke: currentColor;
@@ -787,22 +737,165 @@ body {
 	stroke-linecap: round;
 	stroke-linejoin: round;
 	opacity: 0.5;
+	transition: transform 160ms ease;
 }
 
+.dkfa-select.is-open .dkfa-select__value svg {
+	transform: rotate(180deg);
+}
+
+/* Focus, as a control that has just been clicked would show it. */
+.dkfa-select.is-open .dkfa-select__value {
+	box-shadow: 0 0 0 2px rgba(13, 17, 23, 0.14);
+}
+
+/* Gives under the pointer, the way the switcher and the moon do. */
+.dkfa-select__value,
+.dkfa-option {
+	transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.dkfa-select__value.is-pressed,
+.dkfa-option.is-pressed {
+	transform: scale(0.975);
+}
+
+.dkfa-option.is-pressed {
+	background: var(--dkfa-line);
+}
+
+/*
+ * The swatch for the palette in force.
+ *
+ * In light mode it is that palette's own colour, handed over by the loop as
+ * `--dkfa-dot`. In dark mode it takes Darkify's variables instead, because the
+ * raw colour cannot survive there: Verdant Depths' #04261d against a Verdant
+ * Depths page is the page. So a chosen preset shows its accent and Auto shows a
+ * neutral — which is exactly the pairing the real screen shows, a teal dot on
+ * the row that is set and a muted one on the row that is not.
+ */
 .dkfa-select__dot {
 	flex: none;
-	width: 8px;
-	height: 8px;
+	width: 9px;
+	height: 9px;
 	border-radius: 50%;
-	background: #22262e;
+	background: var(--dkfa-dot, #22262e);
 }
+
+.darkify_dark_mode_enabled .dkfa-select__dot {
+	background: var(--darkify_dark_mode_text_color, #bebebe);
+}
+
+.darkify_dark_mode_enabled .dkfa-select.is-picked .dkfa-select__dot {
+	background: var(--darkify_dark_mode_link_color, #e7e7e7);
+}
+
+/*
+ * The dropdown, engine-coloured throughout — panel, type and swatches alike.
+ * It is an ordinary light panel and it should go dark with the page; and a
+ * preset's swatch is its background colour, which is a near-black, so six of
+ * them left untouched would be six invisible dots on a dark menu. Inverted,
+ * they come back as the tints that actually tell the presets apart.
+ */
+.dkfa-menu {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	min-width: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 4px;
+	border: 1px solid var(--dkfa-line);
+	border-radius: 7px;
+	background: var(--dkfa-panel);
+	box-shadow: 0 8px 20px -6px rgba(13, 17, 23, 0.28), 0 2px 5px rgba(13, 17, 23, 0.08);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-3px);
+	transition: opacity 140ms ease, transform 140ms ease, visibility 140ms;
+}
+
+.dkfa-select.is-open .dkfa-menu {
+	opacity: 1;
+	visibility: visible;
+	transform: none;
+}
+
+.dkfa-option {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	padding: 5px 8px 5px 7px;
+	border-radius: 5px;
+	font-size: 9.5px;
+	white-space: nowrap;
+	color: var(--dkfa-ink);
+}
+
+.dkfa-option.is-selected {
+	font-weight: 600;
+}
+
+/* The tick against the row in force, the way the real menu marks it. */
+.dkfa-option__check {
+	width: 10px;
+	height: 10px;
+	margin-left: auto;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2.4;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	opacity: 0;
+}
+
+.dkfa-option.is-selected .dkfa-option__check {
+	opacity: 1;
+}
+
+/* Where the pointer is: set by the loop as it arrives on the option, so the row
+   lights up under the cursor the way it would under a real one. */
+.dkfa-option.is-hover {
+	background: var(--dkfa-bg);
+}
+
+/*
+ * A preset's swatch: its background on a light menu, its accent on a dark one.
+ *
+ * The pair is set on the element by the template. `darkify_ignore` keeps the
+ * engine off it — left to classify these it maps all six near-black preset
+ * backgrounds onto the same dark surface, and the menu becomes six identical
+ * dots. The accent colours are already light and already distinct, which is why
+ * the real screen shows those.
+ */
+.dkfa-option__dot {
+	flex: none;
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: var(--dkfa-dot, #22262e);
+	box-shadow: inset 0 0 0 1px var(--dkfa-dot-dark, transparent);
+}
+
+.darkify_dark_mode_enabled .dkfa-option__dot {
+	background: var(--dkfa-dot-dark, var(--dkfa-dot, #bebebe));
+	box-shadow: none;
+}
+
+/* Auto has no palette of its own, so it takes the page's own text colour —
+   neutral against the presets' colours, exactly as on the real screen. */
+.darkify_dark_mode_enabled .dkfa-option__dot--auto {
+	background: var(--darkify_dark_mode_text_color, #bebebe);
+}
+
+/* The toggles ------------------------------------------------------------- */
 
 .dkfa-onoff {
 	display: inline-flex;
 	align-items: center;
-	gap: 5px;
+	gap: 6px;
 	flex: none;
-	font-size: 8.5px;
+	font-size: 10px;
 	font-weight: 600;
 	color: var(--dkfa-ink);
 }
@@ -812,27 +905,42 @@ body {
 }
 
 /*
- * Switched on, and it stays that way through the flip: a control that is on is
- * the same shape and the same solid pill on a dark dashboard as on a light one,
- * so `darkify_ignore` keeps the engine off it — exactly as in the references.
+ * A switched-on pill, in whichever palette is running.
+ *
+ * Left to the engine this reads as *off*. Measured: it classifies #16181d as a
+ * panel and maps it to the palette's secondary background (#171717 under Auto)
+ * with the knob on the page background behind it — a dark pill with a darker
+ * knob, sitting invisibly on a dark card while the label beside it still says
+ * "On". So it carries `darkify_ignore` and takes Darkify's own palette
+ * variables directly: the accent for the pill, the page colour for the knob.
+ * White on a dark admin, green under Verdant Depths, black on a light one, the
+ * way the real screen shows it — and always unmistakably on.
  */
 .dkfa-switch {
 	position: relative;
 	display: block;
-	width: 21px;
-	height: 12px;
+	width: 24px;
+	height: 14px;
 	border-radius: 999px;
 	background: #16181d;
 }
 
+.darkify_dark_mode_enabled .dkfa-switch {
+	background: var(--darkify_dark_mode_link_color, #e7e7e7);
+}
+
 .dkfa-switch i {
 	position: absolute;
-	top: 2px;
-	left: 11px;
-	width: 8px;
-	height: 8px;
+	top: 2.5px;
+	left: 12.5px;
+	width: 9px;
+	height: 9px;
 	border-radius: 50%;
 	background: #ffffff;
+}
+
+.darkify_dark_mode_enabled .dkfa-switch i {
+	background: var(--darkify_dark_mode_bg, #0f0f0f);
 }
 
 /* Responsive -------------------------------------------------------------- */
@@ -868,27 +976,11 @@ body {
 		display: none;
 	}
 
-	/* Narrow: the menu collapses to icons, the way the real one does, and the
-	   settings text loses its second line rather than wrapping into the row
-	   below it. */
-	.dkfa-side {
-		width: 40px;
-	}
-
-	.dkfa-side__title,
-	.dkfa-side__collapse,
-	.dkfa-menu__item em,
-	.dkfa-menu__chevron {
-		display: none;
-	}
-
-	.dkfa-menu__item {
-		justify-content: center;
-		padding: 6px 0;
-	}
-
-	.dkfa-menu__item--sub {
-		padding: 5px 0;
+	/* Narrow: the rail tightens, the admin bar drops its two least useful
+	   items, and a description that no longer fits on one line is held to two
+	   rather than pushing the card out of the window. */
+	.dkfa-rail {
+		width: 38px;
 	}
 
 	.dkfa-bar__group .dkfa-bar__item:nth-child(2),
@@ -904,7 +996,7 @@ body {
 	}
 
 	.dkfa-select {
-		width: 118px;
+		min-width: 0;
 	}
 }
 

@@ -149,16 +149,20 @@ The same preview, driven by a timer instead of a visitor: it opens in light
 mode, flips to dark, holds long enough for the difference to register, walks
 over to wp-admin, flips that too, and comes back. Nobody clicks anything.
 
-The loop is four held moments:
+The loop is six held moments:
 
 | | View | Mode | Address | Ends with |
 | --- | --- | --- | --- | --- |
 | 1 | Front end | Light | `yoursite.com` | The pointer clicks the switcher |
 | 2 | Front end | Dark | `yoursite.com` | The walk to wp-admin |
 | 3 | Admin | Light | `yoursite.com/wp-admin` | The pointer clicks the admin bar's moon |
-| 4 | Admin | Dark | `yoursite.com/wp-admin` | The walk back |
+| 4 | Admin | Dark | `yoursite.com/wp-admin` | The pointer opens the palette dropdown |
+| 5 | Admin | Dark, menu open | `yoursite.com/wp-admin` | The pointer takes **Verdant Depths** |
+| 6 | Admin | Verdant Depths | `yoursite.com/wp-admin` | The walk back |
 
-`admin="no"` cuts it back to the two front-end steps.
+`admin="no"` cuts it back to the two front-end steps; `admin_palette=""` (or a
+Darkify that does not offer the named preset) drops steps 4–5 and the dropdown
+is not rendered at all.
 
 The flip is Darkify's own `darkify_switch_trigger()` called inside the frame —
 the same call the switcher's click makes — so what plays is the engine
@@ -188,8 +192,11 @@ presses a button to load a page.
 
 The cursor lives on the host page, above the frame, rather than inside it: the
 preview dips while the engine repaints, and the hand doing the clicking has to
-stay crisp through that. Its target is read from the switcher's real position
-inside the frame every time it sets off, so it lands on the switch at any width.
+stay crisp through that. Its target is read from that control's real position
+inside the frame every time it sets off, so it lands at any width. A round
+switch is aimed at low and right of centre, so the pointer's body hangs off it
+rather than covering the icon; a wide control — the dropdown, one of its rows —
+is aimed at near its left edge, where a hand would actually land.
 The walk overlaps the tail of the hold, so `light_hold` and `dark_hold` stay what
 they say — time spent in that mode, not time plus travel. `cursor="no"` turns it
 off and the preview flips on its own.
@@ -211,17 +218,31 @@ at all in that case.
 
 ### The admin half
 
-Steps 3 and 4 are a mock of wp-admin on Darkify's own settings screen, in the
-same frame and under the same engine — not a screenshot, and with no dark-mode
-rules of its own, so the dark dashboard a visitor sees is Darkify deriving those
+Steps 3–6 are a mock of wp-admin on Darkify's own settings screen, in the same
+frame and under the same engine — not a screenshot, and with no dark-mode rules
+of its own, so the dark dashboard a visitor sees is Darkify deriving those
 colours live. The pointer clicks the moon in the admin bar rather than the
 floating switcher, because that is where the plugin puts its switch on a
 dashboard; the switcher itself steps aside for the admin view.
 
+**The menu is the collapsed icon rail**, not the expanded one. That is a layout
+decision the settings screen forces rather than a stylistic one: at this size
+the labels cost about 100px of the content column, and without them every row's
+description fits on one line and the whole five-row card fits inside the window
+instead of running off the bottom of it.
+
+**Type is set for the size it is actually read at.** The admin is a whole
+dashboard inside a ~640px window, so its labels land around 10–11.5px — and at
+that size the greys a full-size admin can afford (`#6b7280` on white) read as
+fog. Body copy is several steps darker (`#454d5a`), headings darker still
+(`#0d1117`), and the muted/faint pair is kept far enough apart that the section
+labels still recede without disappearing. The card runs off the bottom of the
+window rather than the type being shrunk to fit five rows in.
+
 **The two views never resize the window.** The front end stays in flow and gives
 the frame its height; the admin is absolutely positioned over it at exactly that
-size and is opaque, so the swap cannot move anything. The settings card runs
-past the bottom edge on purpose — a page cut off by the window reads as a real
+size and is opaque, so the swap cannot move anything. The settings card running
+past the bottom edge is the point — a page cut off by the window reads as a real
 one scrolled to the top rather than a shortened mock-up.
 
 The walk between them rides the same veil the flip does, held ~340ms longer so
@@ -230,13 +251,85 @@ the window chrome swapping and a thin progress bar crossing it. The preview
 always *arrives* in light mode: what the next half of the loop is there to show
 is Darkify turning that screen dark.
 
+### Picking a palette
+
+Step 5 is the plugin's other admin feature: the pointer opens **Admin Panel
+Palette** and takes *Verdant Depths*, and the dashboard repaints into it.
+
+The dropdown is not a drawing of a control. Its contents are Darkify's real
+presets, resolved from the schema the plugin registers on every request
+(`color_pallets`) — the same names, in the same order, with the same swatch
+colours its own Colors screen shows, including any this site has customised, and
+a tick against the one in force. The
+recolour is the plugin's too: it goes through the same `CONTROLS.preset` path
+`[darkify_demo]`'s swatches use, writing the `--darkify_dark_mode_*` variables
+Darkify's header template prints, swapping the `darkify-<set>` class that keys
+the engine's surface-token cache, and asking for a state sweep so colours the
+engine resolved in JS are re-derived as well. Nothing here paints a second
+palette of its own.
+
+That resolution (`color_presets()`, `preset_schema()`, `palette_vars()`) used to
+be private to `Darkify_Util_Demo`; it now lives on the shared
+`Darkify_Util_Preview` parent, because both shortcodes need the same answer.
+
+The pick is a two-press interaction, so it is two steps rather than one: the
+first opens the menu and the pointer stays put — the next target is inside the
+menu it just opened — and the second takes the row under it, behind the same
+veil as any other repaint. The walk home resets the palette to Auto while the
+engine is still dark and a sweep still means something, so the next pass starts
+clean instead of from this one's leftovers.
+
 The admin bar keeps WordPress's own colours in both modes — that is what the
 plugin leaves alone — so it carries `darkify_ignore` (`.darkify_ignore *` is in
 Darkify's disallowed selectors, so the whole subtree is skipped). It is also the
 one strip lifted above the veil, for the same reason the switcher is: the
 control the pointer is about to click has to stay crisp while the page dissolves
-behind it. The "On" toggles are ignored too — a switched-on control is the same
-solid pill on a dark dashboard as on a light one.
+behind it.
+
+### The controls that the engine gets wrong
+
+Four things in the admin are `darkify_ignore` for the opposite reason — not
+because they should stay put, but because the engine's answer for them is wrong
+and they are given their two colours directly instead: the **On** pills, the
+collapsed palette **swatch**, the **Save** button, and the **swatches in the
+dropdown**. Everything else in the admin, the dropdown panel included, is
+engine-coloured like any other page.
+
+A filled dark control is not a panel, but that is what the engine reads it as.
+Measured: `.dkfa-switch`'s `#16181d` came back as `#171717` — the palette's
+secondary background, which is the card it is sitting on — with the knob painted
+in the page background behind it. The result was a dark pill with a darker knob,
+invisible on a dark card, next to a label still reading "On". Save came back the
+same way. And the swatch cannot work by inversion at all: Verdant Depths' own
+`#04261d` on a Verdant Depths page *is* the page.
+
+So each takes `--darkify_dark_mode_*` directly — still Darkify's values, from
+the palette actually in force, just not routed through surface classification:
+
+| | Light | Dark |
+| --- | --- | --- |
+| On pill / knob | `#16181d` / white | `link_color` / `bg` |
+| Save | `#16181d` / white | `text_color` / `bg` |
+| Collapsed swatch, preset chosen | the preset's own colour | `link_color` |
+| Collapsed swatch, Auto | `#22262e` | `text_color` |
+| Dropdown swatch, a preset | that preset's background | that preset's accent |
+| Dropdown swatch, Auto | `#22262e` | `text_color` |
+
+Which is what the real screen shows: a black pill on a light admin, white on a
+dark one, green under Verdant Depths — and a teal dot on the palette row that is
+set beside a muted one on the row that is not.
+
+The dropdown's swatches are the same problem one level down. A preset is
+identified by its *background*, and every one of those is a near-black; left to
+the engine all six land on the same dark surface and the menu becomes six
+identical dots. Their **accents** are already light and already distinct, which
+is why the real menu shows those — white for Carbon Mist, violet for Midnight
+Reverie, teal for Verdant Depths. So each dot is handed both colours and picks
+by mode.
+
+Every one of these light-mode colours is handed over as a custom property
+(`--dkfa-dot` / `--dkfa-dot-dark`) rather than an inline `background`, so the
+dark-mode rule can still win; an inline background could not be overridden.
 
 ### Attributes
 
@@ -249,6 +342,8 @@ solid pill on a dark dashboard as on a light one.
 | `admin_hold` | `3000` | Milliseconds spent in light mode in the admin (600–20000). |
 | `admin_dark_hold` | `3800` | Milliseconds spent in dark mode in the admin (600–20000). |
 | `admin_url` | `yoursite.com/wp-admin` | Address shown while the admin view is on screen. |
+| `admin_palette` | `Verdant Depths` | The preset the loop picks, by name or set key. `""` skips those two steps. |
+| `palette_hold` | `3600` | Milliseconds spent showing the chosen palette (600–20000). |
 | `admin_brand` / `admin_version` / `admin_user` | `Darkify Pro` / `v2.1.0` / `admin` | The admin mock's sidebar title, version and "Howdy, …". |
 | `fade` | `260` | Cross-fade duration in milliseconds (0–1200). |
 | `start` | `light` | Which mode the preview opens in. |

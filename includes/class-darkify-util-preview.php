@@ -25,6 +25,9 @@ if (!class_exists('Darkify_Util_Preview')) {
 
     abstract class Darkify_Util_Preview
     {
+        /** How many colour presets a control offers unless told otherwise. */
+        const DEFAULT_PRESETS = 5;
+
         /** One stylesheet and one script serve every preview on a page. */
         const HANDLE = 'darkify-util-preview';
 
@@ -297,6 +300,172 @@ if (!class_exists('Darkify_Util_Preview')) {
             }
 
             return null;
+        }
+
+        /* --------------------------------------------------------------- */
+        /* Darkify's colour presets                                        */
+        /* --------------------------------------------------------------- */
+
+        /**
+         * Darkify's own colour presets, read from the schema the plugin
+         * registers on every request (`SchemaRegistry`) rather than copied
+         * here: the names, the swatch colours and the per-preset colour values
+         * are the plugin's, including anything the site has customised in
+         * Settings → Colors.
+         *
+         * @param string $requested Comma-separated preset keys, or '' for the
+         *                          default five.
+         * @return array
+         */
+        protected function color_presets($requested)
+        {
+            $field = $this->preset_schema();
+            if (!$field || empty($field['options'])) {
+                return array();
+            }
+
+            $wanted = array_filter(array_map('trim', explode(',', strtolower((string) $requested))));
+
+            $presets = array();
+            foreach ($field['options'] as $key => $option) {
+                if ($wanted) {
+                    if (!in_array(strtolower($key), $wanted, true)) {
+                        continue;
+                    }
+                } elseif (!empty($option['pro_only'])) {
+                    // Default: the presets this site can actually use.
+                    continue;
+                }
+
+                $vars = $this->palette_vars($key);
+                if (!$vars) {
+                    continue;
+                }
+
+                $presets[] = array(
+                    'value' => $key,
+                    'label' => isset($option['name']) ? $option['name'] : $key,
+                    'vars'  => $vars,
+                    // Two-tone chip: the preset's page background and its link
+                    // colour — the pair that tells the presets apart at a glance.
+                    'chip'  => array(
+                        $vars['--darkify_dark_mode_bg'],
+                        $vars['--darkify_dark_mode_link_color'],
+                    ),
+                );
+            }
+
+            if ($wanted) {
+                // Keep the order the shortcode asked for.
+                usort($presets, function ($a, $b) use ($wanted) {
+                    return array_search(strtolower($a['value']), $wanted, true)
+                        - array_search(strtolower($b['value']), $wanted, true);
+                });
+
+                return $presets;
+            }
+
+            // A row of swatches, not a palette browser: the demo shows the
+            // first five presets Darkify lists — Carbon Mist, Midnight Reverie,
+            // Verdant Depths, Celestial Tide, Emberwood — the same five, in the
+            // same order, in both editions. Naming presets explicitly opts into
+            // any of the others.
+            return array_slice($presets, 0, self::DEFAULT_PRESETS);
+        }
+
+        /**
+         * The `color_pallets` field from Darkify's registered settings schema.
+         */
+        protected function preset_schema()
+        {
+            $registry = $this->darkify_class('Admin\\Schema\\SchemaRegistry');
+            if (!$registry || empty($registry::$sections['darkify'])) {
+                return null;
+            }
+
+            $found = null;
+            $walk = function ($fields) use (&$walk, &$found) {
+                foreach ($fields as $field) {
+                    if (!is_array($field) || $found) {
+                        continue;
+                    }
+                    if (isset($field['id']) && 'color_pallets' === $field['id']) {
+                        $found = $field;
+                        return;
+                    }
+                    foreach (array('fields', 'tabs') as $child) {
+                        if (!empty($field[$child]) && is_array($field[$child])) {
+                            $walk($field[$child]);
+                        }
+                    }
+                }
+            };
+
+            foreach ($registry::$sections['darkify'] as $section) {
+                if (!empty($section['fields'])) {
+                    $walk($section['fields']);
+                }
+            }
+
+            return $found;
+        }
+
+        /**
+         * The CSS variables one preset resolves to.
+         *
+         * Same field-to-variable mapping Darkify's own header template uses,
+         * over the same values: the site's saved colours where it has any, the
+         * schema's declared defaults otherwise.
+         */
+        protected function palette_vars($set)
+        {
+            $defaults_class = $this->darkify_class('Admin\\Schema\\SchemaDefaults');
+            $defaults = $defaults_class ? $defaults_class::for_option('darkify') : array();
+            $options  = get_option('darkify');
+            $options  = is_array($options) ? $options : array();
+
+            $group = function ($id) use ($options, $defaults) {
+                $default = isset($defaults[$id]) ? $defaults[$id] : array();
+                $saved   = isset($options[$id]) ? $options[$id] : null;
+
+                if (is_array($default) && is_array($saved)) {
+                    return array_merge($default, $saved);
+                }
+
+                return null !== $saved && '' !== $saved ? $saved : $default;
+            };
+
+            $background = $group('dark_mode_color_' . $set);
+            $link       = $group('dark_mode_link_color_' . $set);
+            $input      = $group('dark_mode_input_color_' . $set);
+            $border     = $group('dark_mode_border_color_' . $set);
+            $button     = $group('dark_mode_btn_color_' . $set);
+
+            if (!is_array($background) || empty($background['background'])) {
+                return array();
+            }
+
+            $vars = array(
+                '--darkify_dark_mode_bg'                     => $background['background'],
+                '--darkify_dark_mode_secondary_bg'           => isset($background['secondary_background']) ? $background['secondary_background'] : '',
+                '--darkify_dark_mode_text_color'             => isset($link['text']) ? $link['text'] : '',
+                '--darkify_dark_mode_link_color'             => isset($link['color']) ? $link['color'] : '',
+                '--darkify_dark_mode_link_hover_color'       => isset($link['hover']) ? $link['hover'] : '',
+                '--darkify_dark_mode_input_bg'               => isset($input['background']) ? $input['background'] : '',
+                '--darkify_dark_mode_input_text_color'       => isset($input['color']) ? $input['color'] : '',
+                '--darkify_dark_mode_input_placeholder_color' => isset($input['placeholder']) ? $input['placeholder'] : '',
+                '--darkify_dark_mode_border_color'           => is_string($border) ? $border : '',
+                '--darkify_dark_mode_btn_text_color'         => isset($button['color']) ? $button['color'] : '',
+                '--darkify_dark_mode_btn_bg'                 => isset($button['background']) ? $button['background'] : '',
+                '--darkify_dark_mode_btn_text_hover_color'   => isset($button['hover_color']) ? $button['hover_color'] : '',
+                '--darkify_dark_mode_btn_hover_bg'           => isset($button['hover_background']) ? $button['hover_background'] : '',
+                '--darkify_dark_mode_btn_border_color'       => isset($button['border']) ? $button['border'] : '',
+                '--darkify_dark_mode_btn_hover_border_color' => isset($button['hover_border']) ? $button['hover_border'] : '',
+            );
+
+            return array_filter($vars, function ($value) {
+                return is_string($value) && '' !== $value;
+            });
         }
 
         /* --------------------------------------------------------------- */
