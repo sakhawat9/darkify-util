@@ -26,7 +26,22 @@ if (!defined('ABSPATH')) {
 		data-dkfd-dark-hold="<?php echo esc_attr($data['dark_hold']); ?>"
 		data-dkfd-fade="<?php echo esc_attr($data['fade']); ?>"
 		data-dkfd-start="<?php echo esc_attr($data['start']); ?>"
+		<?php if ($data['admin']) : ?>
+			<?php
+			/*
+			 * The second half of the loop: once the front end has shown the flip,
+			 * the preview walks over to wp-admin and shows it again there. The two
+			 * addresses are handed over so the script can swap the one in the
+			 * chrome as it goes.
+			 */
+			?>
+			data-dkfd-admin="1"
+			data-dkfd-admin-hold="<?php echo esc_attr($data['admin_hold']); ?>"
+			data-dkfd-admin-dark-hold="<?php echo esc_attr($data['admin_dark_hold']); ?>"
+			data-dkfd-admin-url="<?php echo esc_attr($data['admin_url']); ?>"
+		<?php endif; ?>
 	<?php endif; ?>
+	data-dkfd-url="<?php echo esc_attr($data['url']); ?>"
 	data-dkfd-label-light="<?php echo esc_attr($data['label_light']); ?>"
 	data-dkfd-label-dark="<?php echo esc_attr($data['label_dark']); ?>"
 	style="--dkfd-max: <?php echo esc_attr($data['max_width']); ?>px; --dkfd-fade: <?php echo esc_attr($data['fade']); ?>ms;">
@@ -36,6 +51,15 @@ if (!defined('ABSPATH')) {
 			<div class="dkfd__chrome">
 				<span class="dkfd__dots" aria-hidden="true"><i></i><i></i><i></i></span>
 				<span class="dkfd__url"><?php echo esc_html($data['url']); ?></span>
+				<?php
+				/*
+				 * The walk to wp-admin is a page load, so it gets a page load's
+				 * tell: a thin bar that crosses the chrome while the frame is
+				 * behind its veil. Purely decorative, and driven by the same
+				 * timings as the dissolve.
+				 */
+				?>
+				<span class="dkfd__progress" aria-hidden="true"></span>
 				<?php if ($data['badge']) : ?>
 					<?php
 					/*

@@ -611,10 +611,32 @@
 			}
 		};
 
-		/** Where the switcher is, in the host window's coordinates. */
+		/**
+		 * Whatever the pointer is meant to press right now.
+		 *
+		 * On the front end that is Darkify's own floating switcher. In the admin
+		 * view it is the moon in the admin bar, which is where the plugin puts
+		 * its switch on a dashboard — so the pointer goes to the control a
+		 * visitor would actually reach for on the screen they are looking at.
+		 */
+		var switchTarget = function () {
+			var doc = instance.frame && instance.frame.doc;
+			if (!doc) {
+				return null;
+			}
+
+			var stage = doc.querySelector(".dkfh-stage");
+			if (stage && stage.classList.contains("is-admin")) {
+				return doc.querySelector(".dkfa-toggle");
+			}
+
+			return doc.querySelector(".darkify_switch");
+		};
+
+		/** Where that control is, in the host window's coordinates. */
 		var switchPoint = function () {
 			var frameEl = root.querySelector(".dkfd__frame");
-			var target = instance.frame && instance.frame.doc.querySelector(".darkify_switch");
+			var target = switchTarget();
 			if (!frameEl || !target) {
 				return null;
 			}
@@ -779,10 +801,22 @@
 
 		/** The switch gives under the press, the way a real one would. */
 		function pressSwitch(down) {
-			var fab = instance.frame && instance.frame.doc.querySelector(".dkfh-fab");
-			if (fab) {
-				fab.classList.toggle("is-pressed", down);
+			var doc = instance.frame && instance.frame.doc;
+			if (!doc) {
+				return;
 			}
+
+			var stage = doc.querySelector(".dkfh-stage");
+			var live = stage && stage.classList.contains("is-admin") ? ".dkfa-toggle" : ".dkfh-fab";
+
+			// Both are cleared on every pass, not only the one being pressed: the
+			// view can change between a press and its release.
+			[".dkfh-fab", ".dkfa-toggle"].forEach(function (selector) {
+				var control = doc.querySelector(selector);
+				if (control) {
+					control.classList.toggle("is-pressed", down && selector === live);
+				}
+			});
 		}
 	}
 
@@ -818,13 +852,26 @@
 		var timing = {
 			light: number("light-hold", 2800),
 			dark: number("dark-hold", 3600),
-			fade: number("fade", 260)
+			adminLight: number("admin-hold", 2800),
+			adminDark: number("admin-dark-hold", 3600),
+			fade: number("fade", 260),
+			// The extra beat the veil is held shut for while the preview walks
+			// between the front end and wp-admin. A flip is instant and should
+			// look it; moving to another screen is not.
+			travel: 340
 		};
 
 		var badge = root.querySelector("[data-dkfd-mode]");
 		var labels = {
 			light: root.getAttribute("data-dkfd-label-light") || "Light",
 			dark: root.getAttribute("data-dkfd-label-dark") || "Dark"
+		};
+
+		var stage = frame.doc.querySelector(".dkfh-stage");
+		var address = root.querySelector(".dkfd__url");
+		var urls = {
+			site: root.getAttribute("data-dkfd-url") || "",
+			admin: root.getAttribute("data-dkfd-admin-url") || ""
 		};
 
 		var timers = [];
@@ -916,52 +963,156 @@
 			);
 		};
 
-		var flip = function () {
+		/**
+		 * Throw the switch behind the veil: cover, flip, reveal.
+		 */
+		var flip = function (done) {
 			if (!veil || reducedMotion()) {
 				// No dissolve to run: throw the switch and move on.
 				throwSwitch();
 				announce();
-				schedule();
+				done();
 				return;
 			}
 
-			veil.style.backgroundColor = pageColor();
-
-			var cover = fade( 0, 1, timing.fade );
-
-			after( timing.fade, function () {
+			cover(function () {
 				throwSwitch();
 				announce();
-
-				// One frame for the engine to commit its repaint underneath,
-				// then reveal the page in its new mode.
-				frame.win.requestAnimationFrame( function () {
-					if ( ! running ) {
-						return;
-					}
-
-					if ( cover ) {
-						cover.cancel();
-					}
-
-					var reveal = fade( 1, 0, timing.fade );
-
-					after( timing.fade, function () {
-						if ( reveal ) {
-							reveal.cancel();
-						}
-						veil.style.opacity = "";
-						schedule();
-					} );
-				} );
-			} );
+			}, 0, done);
 		};
 
 		/**
-		 * One cycle: hold the mode, walk the pointer over, press, flip, and
-		 * withdraw. The walk overlaps the tail of the hold, so `light_hold` and
-		 * `dark_hold` stay what they say — time spent in that mode — rather than
-		 * time plus travel.
+		 * Walk to the other view — the front end to wp-admin, or back.
+		 *
+		 * It rides the same cover as a flip, held a beat longer so it reads as a
+		 * page load rather than a switch being thrown, with the address in the
+		 * window chrome and a loading bar carrying the rest of the story. The
+		 * preview always arrives in light mode: what the next half of the loop
+		 * is there to show is Darkify turning that screen dark.
+		 */
+		var travel = function (view, done) {
+			var arrive = function () {
+				// Order matters. The front end's switcher is taken off screen
+				// first, so it cannot be seen morphing above the veil while the
+				// page it belongs to is being swapped out.
+				if (stage) {
+					stage.classList.add("is-swapping");
+				}
+				if (isDark()) {
+					throwSwitch();
+				}
+				if (stage) {
+					stage.classList.toggle("is-admin", "admin" === view);
+				}
+				setAddress(view);
+				announce();
+			};
+
+			var settle = function () {
+				if (stage) {
+					stage.classList.remove("is-swapping");
+				}
+				root.classList.remove("is-loading");
+				done();
+			};
+
+			root.classList.add("is-loading");
+
+			if (!veil || reducedMotion()) {
+				arrive();
+				settle();
+				return;
+			}
+
+			cover(arrive, timing.travel, settle);
+		};
+
+		/**
+		 * The cross-dissolve itself: fade the veil in, run `change` while it is
+		 * opaque, hold for `dwell`, then fade it back out onto whatever is now
+		 * underneath.
+		 */
+		var cover = function (change, dwell, done) {
+			veil.style.backgroundColor = pageColor();
+
+			var closing = fade(0, 1, timing.fade);
+
+			after(timing.fade, function () {
+				change();
+
+				// One frame for the engine to commit its repaint underneath,
+				// then reveal the page in its new state.
+				frame.win.requestAnimationFrame(function () {
+					if (!running) {
+						return;
+					}
+
+					after(dwell, function () {
+						if (closing) {
+							closing.cancel();
+						}
+
+						var opening = fade(1, 0, timing.fade);
+
+						after(timing.fade, function () {
+							if (opening) {
+								opening.cancel();
+							}
+							veil.style.opacity = "";
+							done();
+						});
+					});
+				});
+			});
+		};
+
+		/** The address follows the view, with a beat of fade so it is noticed. */
+		var setAddress = function (view) {
+			if (!address || !urls[view]) {
+				return;
+			}
+
+			address.classList.add("is-changing");
+			address.textContent = urls[view];
+
+			after(240, function () {
+				address.classList.remove("is-changing");
+			});
+		};
+
+		/**
+		 * The loop, as a list of held moments.
+		 *
+		 * Each step is a mode the preview sits in and the move it makes when the
+		 * hold runs out: front end light, front end dark, over to wp-admin, admin
+		 * light, admin dark, and back. Without the admin half it is the two-step
+		 * loop it has always been.
+		 *
+		 * `light_hold` and `dark_hold` stay what they say — time spent in that
+		 * mode. The pointer's walk overlaps the tail of the hold rather than
+		 * being added to it.
+		 */
+		var admin = root.hasAttribute("data-dkfd-admin") && stage &&
+			!!frame.doc.querySelector(".dkfh-view--admin");
+
+		var steps = admin
+			? [
+				{ hold: timing.light, move: "flip" },
+				{ hold: timing.dark, move: "travel", view: "admin" },
+				{ hold: timing.adminLight, move: "flip" },
+				{ hold: timing.adminDark, move: "travel", view: "site" }
+			]
+			: [
+				{ hold: timing.light, move: "flip" },
+				{ hold: timing.dark, move: "flip" }
+			];
+
+		var step = 0;
+
+		/**
+		 * One cycle: hold, walk the pointer over, press, act, and withdraw. A
+		 * walk between views is not a click, so the pointer sits it out — nobody
+		 * presses a button to load a page.
 		 */
 		var schedule = function () {
 			if (!running) {
@@ -971,21 +1122,30 @@
 			// Deliberately not clearing here: the pointer's withdrawal is still
 			// pending when the next cycle is scheduled, and it belongs to the
 			// flip that just happened. start() and stop() own the timer list.
-			var hold = isDark() ? timing.dark : timing.light;
+			var current = steps[step % steps.length];
+			step = (step + 1) % steps.length;
 
-			if (!cursor) {
-				after(hold, flip);
+			var act = function () {
+				if ("travel" === current.move) {
+					travel(current.view, schedule);
+				} else {
+					flip(schedule);
+				}
+			};
+
+			if (!cursor || "travel" === current.move) {
+				after(current.hold, act);
 				return;
 			}
 
 			var lead = cursor.lead();
 
-			after(Math.max(0, hold - lead), function () {
+			after(Math.max(0, current.hold - lead), function () {
 				cursor.approach();
 
 				after(lead, function () {
 					cursor.press();
-					flip();
+					act();
 
 					after(cursor.pressDuration, cursor.release);
 					// Leaves once the new mode is on screen, not before — and
@@ -1001,6 +1161,10 @@
 				return;
 			}
 			running = true;
+			// Pick up at the step that matches the state the preview is actually
+			// in, so a hero told to open dark holds for `dark_hold` rather than
+			// for the light step it never played.
+			step = isDark() ? 1 : 0;
 			announce();
 			schedule();
 		};
@@ -1016,6 +1180,11 @@
 				});
 				veil.style.opacity = "";
 			}
+
+			if (stage) {
+				stage.classList.remove("is-swapping");
+			}
+			root.classList.remove("is-loading");
 
 			if (cursor) {
 				cursor.reset();

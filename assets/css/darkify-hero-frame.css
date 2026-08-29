@@ -6,6 +6,11 @@
  * this file. Busier than the interactive demo's sample on purpose — nav, type,
  * two button styles, a media block and cards — so the flip has something to
  * show on every kind of surface.
+ *
+ * Two views share the document: the sample front end (`.dkfh`) and a mock of
+ * wp-admin running Darkify's settings screen (`.dkfa`). The admin is laid over
+ * the front end rather than beside it, so switching between them cannot resize
+ * the window. Neither has dark-mode rules of its own either.
  */
 
 :root {
@@ -71,6 +76,34 @@ body {
 	pointer-events: none;
 	background-color: #ffffff;
 }
+
+/* The two views ----------------------------------------------------------- */
+
+/*
+ * The front end stays in flow and so gives the stage its height; the admin is
+ * absolutely positioned over it at exactly that size. Nothing about the swap
+ * can move the window, and because the admin is opaque it needs no hiding of
+ * the page underneath.
+ *
+ * The admin is not given a `z-index`: it must not open a stacking context, or
+ * the admin bar could not lift itself above the veil (z-index 3) the way the
+ * front end's switcher does.
+ */
+.dkfh-stage {
+	position: relative;
+}
+
+.dkfh-view--admin {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	visibility: hidden;
+}
+
+.dkfh-stage.is-admin .dkfh-view--admin {
+	visibility: visible;
+}
+
 
 /* Header ------------------------------------------------------------------ */
 
@@ -289,6 +322,519 @@ body {
 	transform: scale(0.93);
 }
 
+/*
+ * The front end's switcher belongs to the front end. It is taken off screen for
+ * the admin view — and for the moment of the walk between the two, so it never
+ * morphs in plain sight above the veil while the page it belongs to is being
+ * swapped out. No transition: both changes happen while the veil is closed.
+ */
+.dkfh-stage.is-admin ~ .dkfh-fab,
+.dkfh-stage.is-swapping ~ .dkfh-fab {
+	opacity: 0;
+	transition: none;
+}
+
+/* The admin view ---------------------------------------------------------- */
+
+/*
+ * A mock of wp-admin on Darkify's own settings screen, in light mode only —
+ * like the front end above it, every dark colour it shows in the second half of
+ * the loop is one the engine derived from these.
+ *
+ * Sized in absolute pixels rather than inherited from the page, because it has
+ * to read as a whole dashboard inside a ~640px window: this is the admin at a
+ * distance, and the type is small on purpose.
+ */
+
+.dkfa {
+	--dkfa-bar: #1d2327;
+	--dkfa-bar-text: #d7dade;
+	--dkfa-bg: #f5f6f8;
+	--dkfa-panel: #ffffff;
+	--dkfa-line: #e6e8ec;
+	--dkfa-ink: #111827;
+	--dkfa-muted: #6b7280;
+	--dkfa-faint: #9aa1ad;
+
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	background: var(--dkfa-bg);
+	font-size: 9px;
+	color: var(--dkfa-muted);
+}
+
+/* The admin bar ----------------------------------------------------------- */
+
+/*
+ * Dark in WordPress to begin with and dark in Darkify too, so it carries
+ * `darkify_ignore` and keeps these colours through the flip. It is lifted above
+ * the veil (z-index 3, below the switcher at 5) because the moon the pointer
+ * clicks lives here and has to stay crisp while the page dissolves behind it.
+ */
+.dkfa-bar {
+	position: relative;
+	z-index: 4;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex: none;
+	height: 22px;
+	padding: 0 8px 0 4px;
+	background: var(--dkfa-bar);
+	color: var(--dkfa-bar-text);
+	font-size: 8.5px;
+	line-height: 1;
+}
+
+.dkfa-bar__group {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	min-width: 0;
+}
+
+.dkfa-bar__item {
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	white-space: nowrap;
+}
+
+.dkfa-bar__item b {
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+.dkfa-bar__item--home {
+	/* The site logo is clipped by the window edge, the way the real bar's is on
+	   a narrow screen — it is what sells this as a shot of a wider dashboard. */
+	margin-left: -7px;
+}
+
+.dkfa-bar svg {
+	display: block;
+	width: 10px;
+	height: 10px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.7;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.dkfa-avatar {
+	display: inline-flex;
+	margin-left: 2px;
+	color: #b8bcc4;
+}
+
+/* Darkify's admin switch. The icon follows the engine's own state class, so it
+   can never disagree with the page behind it. */
+.dkfa-toggle {
+	display: inline-flex;
+	margin-left: 3px;
+	color: #ffffff;
+	transition: transform 140ms ease;
+}
+
+.dkfa-toggle svg {
+	width: 12px;
+	height: 12px;
+	stroke-width: 1.6;
+}
+
+/* Scoped through `.dkfa-bar` so these outrank the bar's own `svg` rule. */
+.dkfa-bar .dkfa-toggle__sun,
+.darkify_dark_mode_enabled .dkfa-bar .dkfa-toggle__moon {
+	display: none;
+}
+
+.darkify_dark_mode_enabled .dkfa-bar .dkfa-toggle__sun {
+	display: block;
+}
+
+/* Gives under the pointer, the way the switcher does. */
+.dkfa-toggle.is-pressed {
+	transform: scale(0.88);
+}
+
+/* Sidebar ----------------------------------------------------------------- */
+
+.dkfa-body {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+}
+
+.dkfa-side {
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	width: 132px;
+	border-right: 1px solid var(--dkfa-line);
+	background: var(--dkfa-panel);
+}
+
+.dkfa-side__head {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 9px 9px 10px;
+}
+
+/* A brand mark, not a surface: the engine maps a solid coloured box into the
+   palette, which is right for a panel and wrong for a logo. */
+.dkfa-logo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	width: 19px;
+	height: 19px;
+	border-radius: 6px;
+	background: #16181d;
+	color: #ffffff;
+}
+
+.dkfa-logo svg {
+	width: 12px;
+	height: 12px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.7;
+	stroke-linecap: round;
+}
+
+.dkfa-side__title {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+}
+
+.dkfa-side__title b {
+	font-size: 10px;
+	font-weight: 700;
+	color: var(--dkfa-ink);
+	letter-spacing: -0.01em;
+}
+
+.dkfa-side__title em {
+	font-size: 7px;
+	font-style: normal;
+	color: var(--dkfa-faint);
+}
+
+.dkfa-side__collapse {
+	display: flex;
+	flex: none;
+	color: var(--dkfa-faint);
+}
+
+.dkfa-side__collapse svg {
+	width: 11px;
+	height: 11px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.dkfa-menu {
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 8px;
+}
+
+.dkfa-menu__item {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	padding: 6px 9px;
+	font-size: 9.5px;
+	color: var(--dkfa-ink);
+}
+
+.dkfa-menu__item svg {
+	flex: none;
+	width: 12px;
+	height: 12px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.6;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	opacity: 0.72;
+}
+
+.dkfa-menu__item em {
+	flex: 1;
+	font-style: normal;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.dkfa-menu__chevron {
+	width: 9px !important;
+	height: 9px !important;
+	opacity: 0.45 !important;
+}
+
+.dkfa-menu__item.is-open {
+	background: var(--dkfa-bg);
+	font-weight: 600;
+}
+
+.dkfa-menu__item.is-open .dkfa-menu__chevron {
+	transform: rotate(90deg);
+}
+
+.dkfa-menu__sub {
+	display: flex;
+	flex-direction: column;
+	background: var(--dkfa-bg);
+	padding-bottom: 4px;
+}
+
+.dkfa-menu__item--sub {
+	padding: 5px 9px 5px 16px;
+	font-size: 9px;
+	color: var(--dkfa-muted);
+}
+
+/* The current screen, marked the way the real menu marks it: a rule down the
+   left edge and the label in full ink. */
+.dkfa-menu__item--sub.is-active {
+	box-shadow: inset 2px 0 0 0 var(--dkfa-ink);
+	font-weight: 600;
+	color: var(--dkfa-ink);
+}
+
+/* Main column ------------------------------------------------------------- */
+
+.dkfa-main {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+	background: var(--dkfa-bg);
+}
+
+.dkfa-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	flex: none;
+	padding: 8px 12px;
+}
+
+.dkfa-head__title {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.dkfa-head__title em {
+	font-size: 7px;
+	font-style: normal;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--dkfa-faint);
+}
+
+.dkfa-head__title b {
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: -0.015em;
+	color: var(--dkfa-ink);
+}
+
+.dkfa-head__tools {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+}
+
+.dkfa-icon {
+	display: flex;
+	color: var(--dkfa-muted);
+}
+
+.dkfa-head svg {
+	display: block;
+	width: 12px;
+	height: 12px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.6;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.dkfa-save {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 5px 10px;
+	border-radius: 6px;
+	background: #e4e6eb;
+	font-size: 9.5px;
+	font-weight: 600;
+	color: var(--dkfa-muted);
+}
+
+.dkfa-content {
+	flex: 1;
+	min-height: 0;
+	/* The card runs past the bottom edge on purpose: a settings screen is taller
+	   than a hero preview, and a page cut off by the window reads as a real one
+	   scrolled to the top rather than a shortened mock-up. */
+	overflow: hidden;
+	padding: 2px 12px 0;
+}
+
+.dkfa-intro {
+	margin: 0 0 10px;
+	font-size: 9px;
+	line-height: 1.5;
+	color: var(--dkfa-muted);
+}
+
+.dkfa-link {
+	color: var(--dkfa-ink);
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.dkfa-section {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 7.5px;
+	font-weight: 700;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	color: var(--dkfa-faint);
+}
+
+.dkfa-card {
+	border: 1px solid var(--dkfa-line);
+	border-radius: 8px;
+	background: var(--dkfa-panel);
+}
+
+.dkfa-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 9px 11px;
+}
+
+.dkfa-row + .dkfa-row {
+	border-top: 1px solid var(--dkfa-line);
+}
+
+.dkfa-row__text {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.dkfa-row__text b {
+	font-size: 9.5px;
+	font-weight: 600;
+	color: var(--dkfa-ink);
+}
+
+.dkfa-row__text em {
+	font-size: 8.5px;
+	font-style: normal;
+	line-height: 1.45;
+	color: var(--dkfa-muted);
+}
+
+.dkfa-select {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	width: 132px;
+	margin-top: 6px;
+	padding: 5px 7px;
+	border: 1px solid var(--dkfa-line);
+	border-radius: 6px;
+	background: var(--dkfa-panel);
+	font-size: 8.5px;
+	white-space: nowrap;
+	color: var(--dkfa-ink);
+}
+
+.dkfa-select svg {
+	width: 9px;
+	height: 9px;
+	margin-left: auto;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	opacity: 0.5;
+}
+
+.dkfa-select__dot {
+	flex: none;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #22262e;
+}
+
+.dkfa-onoff {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	flex: none;
+	font-size: 8.5px;
+	font-weight: 600;
+	color: var(--dkfa-ink);
+}
+
+.dkfa-onoff em {
+	font-style: normal;
+}
+
+/*
+ * Switched on, and it stays that way through the flip: a control that is on is
+ * the same shape and the same solid pill on a dark dashboard as on a light one,
+ * so `darkify_ignore` keeps the engine off it — exactly as in the references.
+ */
+.dkfa-switch {
+	position: relative;
+	display: block;
+	width: 21px;
+	height: 12px;
+	border-radius: 999px;
+	background: #16181d;
+}
+
+.dkfa-switch i {
+	position: absolute;
+	top: 2px;
+	left: 11px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #ffffff;
+}
+
 /* Responsive -------------------------------------------------------------- */
 
 @media (max-width: 560px) {
@@ -320,6 +866,45 @@ body {
 
 	.dkfh-cards .dkfh-card:last-child {
 		display: none;
+	}
+
+	/* Narrow: the menu collapses to icons, the way the real one does, and the
+	   settings text loses its second line rather than wrapping into the row
+	   below it. */
+	.dkfa-side {
+		width: 40px;
+	}
+
+	.dkfa-side__title,
+	.dkfa-side__collapse,
+	.dkfa-menu__item em,
+	.dkfa-menu__chevron {
+		display: none;
+	}
+
+	.dkfa-menu__item {
+		justify-content: center;
+		padding: 6px 0;
+	}
+
+	.dkfa-menu__item--sub {
+		padding: 5px 0;
+	}
+
+	.dkfa-bar__group .dkfa-bar__item:nth-child(2),
+	.dkfa-bar__group .dkfa-bar__item:nth-child(3) {
+		display: none;
+	}
+
+	.dkfa-row__text em {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.dkfa-select {
+		width: 118px;
 	}
 }
 

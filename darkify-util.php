@@ -26,7 +26,8 @@ add_action('wp_enqueue_scripts', 'darkify_enqueue_scripts');
 /**
  * The preview shortcodes. Both render a sample site into an isolated frame and
  * run the real Darkify engine inside it — [darkify_demo] for the visitor to
- * play with, [darkify_hero_demo] flipping itself on a loop.
+ * play with, [darkify_hero_demo] flipping itself on a loop — front end, then
+ * wp-admin.
  */
 require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-preview.php';
 require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-demo.php';

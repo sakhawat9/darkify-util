@@ -9,7 +9,7 @@ site's own settings.
 | Shortcode | What it is |
 | --- | --- |
 | `[darkify_demo]` | The interactive "Try it yourself" demo — the visitor throws the switch, and controls change the preset, size and position live. |
-| `[darkify_hero_demo]` | The hero preview — no interaction, it flips itself on a loop. |
+| `[darkify_hero_demo]` | The hero preview — no interaction, it flips itself on a loop, front end then wp-admin. |
 
 `includes/class-darkify-util-preview.php` holds what they share: the frame
 machinery, the Darkify lookups, the asset wiring and the switcher markup. Each
@@ -146,8 +146,19 @@ Placing it inside a section that already has its own heading? Leave `heading`,
 ## `[darkify_hero_demo]` — the auto-playing hero preview
 
 The same preview, driven by a timer instead of a visitor: it opens in light
-mode, flips to dark, holds long enough for the difference to register, flips
-back, and loops. Nobody clicks anything.
+mode, flips to dark, holds long enough for the difference to register, walks
+over to wp-admin, flips that too, and comes back. Nobody clicks anything.
+
+The loop is four held moments:
+
+| | View | Mode | Address | Ends with |
+| --- | --- | --- | --- | --- |
+| 1 | Front end | Light | `yoursite.com` | The pointer clicks the switcher |
+| 2 | Front end | Dark | `yoursite.com` | The walk to wp-admin |
+| 3 | Admin | Light | `yoursite.com/wp-admin` | The pointer clicks the admin bar's moon |
+| 4 | Admin | Dark | `yoursite.com/wp-admin` | The walk back |
+
+`admin="no"` cuts it back to the two front-end steps.
 
 The flip is Darkify's own `darkify_switch_trigger()` called inside the frame —
 the same call the switcher's click makes — so what plays is the engine
@@ -167,10 +178,13 @@ still reads as a switch being thrown.
 ### The pointer
 
 The switch is not thrown invisibly: an animated cursor walks in from the side,
-settles on the switcher, presses it — the switcher gives under it, and a ring
+settles on the control, presses it — the control gives under it, and a ring
 opens out from the pointer's tip — and withdraws once the new mode is on screen.
 It genuinely clicks the switcher (`element.click()`, the same path a visitor's
-click takes), so what the pointer appears to do is what actually happens.
+click takes), so what the pointer appears to do is what actually happens. Which
+control it walks to follows the view: the floating switcher on the front end,
+the admin bar's moon in wp-admin. It sits out the walk between the two — nobody
+presses a button to load a page.
 
 The cursor lives on the host page, above the frame, rather than inside it: the
 preview dips while the engine repaints, and the hand doing the clicking has to
@@ -195,6 +209,35 @@ tab is visible, and **not at all** under `prefers-reduced-motion: reduce` —
 including when the visitor turns that on mid-visit. The cursor is not rendered
 at all in that case.
 
+### The admin half
+
+Steps 3 and 4 are a mock of wp-admin on Darkify's own settings screen, in the
+same frame and under the same engine — not a screenshot, and with no dark-mode
+rules of its own, so the dark dashboard a visitor sees is Darkify deriving those
+colours live. The pointer clicks the moon in the admin bar rather than the
+floating switcher, because that is where the plugin puts its switch on a
+dashboard; the switcher itself steps aside for the admin view.
+
+**The two views never resize the window.** The front end stays in flow and gives
+the frame its height; the admin is absolutely positioned over it at exactly that
+size and is opaque, so the swap cannot move anything. The settings card runs
+past the bottom edge on purpose — a page cut off by the window reads as a real
+one scrolled to the top rather than a shortened mock-up.
+
+The walk between them rides the same veil the flip does, held ~340ms longer so
+it reads as a page load rather than a switch being thrown, with the address in
+the window chrome swapping and a thin progress bar crossing it. The preview
+always *arrives* in light mode: what the next half of the loop is there to show
+is Darkify turning that screen dark.
+
+The admin bar keeps WordPress's own colours in both modes — that is what the
+plugin leaves alone — so it carries `darkify_ignore` (`.darkify_ignore *` is in
+Darkify's disallowed selectors, so the whole subtree is skipped). It is also the
+one strip lifted above the veil, for the same reason the switcher is: the
+control the pointer is about to click has to stay crisp while the page dissolves
+behind it. The "On" toggles are ignored too — a switched-on control is the same
+solid pill on a dark dashboard as on a light one.
+
 ### Attributes
 
 | Attribute | Default | Description |
@@ -202,11 +245,16 @@ at all in that case.
 | `autoplay` | `yes` | `no` renders the preview without the loop. |
 | `light_hold` | `3000` | Milliseconds spent in light mode (600–20000). |
 | `dark_hold` | `3800` | Milliseconds spent in dark mode (600–20000). |
+| `admin` | `yes` | `no` drops the wp-admin half of the loop. Needs `autoplay="yes"`. |
+| `admin_hold` | `3000` | Milliseconds spent in light mode in the admin (600–20000). |
+| `admin_dark_hold` | `3800` | Milliseconds spent in dark mode in the admin (600–20000). |
+| `admin_url` | `yoursite.com/wp-admin` | Address shown while the admin view is on screen. |
+| `admin_brand` / `admin_version` / `admin_user` | `Darkify Pro` / `v2.1.0` / `admin` | The admin mock's sidebar title, version and "Howdy, …". |
 | `fade` | `260` | Cross-fade duration in milliseconds (0–1200). |
 | `start` | `light` | Which mode the preview opens in. |
 | `heading` / `text` | sample copy | The sample site's headline and paragraph. |
 | `cta` / `cta_alt` | `Get Started` / `See Features` | The two button labels. |
-| `brand` / `url` | `Your Brand` / `yoursite.com` | Brand name and address bar. |
+| `brand` / `url` | `Your Brand` / `yoursite.com` | Brand name and the address shown for the front end. |
 | `menu` / `nav` / `menu_limit` | — | Same menu resolution as `[darkify_demo]`; falls back to short generic labels. |
 | `max_width` | `640` | Window width in pixels. |
 | `switch` / `switch_size` / `radius` | `classic` / `80` / — | The switcher riding along in the corner. |

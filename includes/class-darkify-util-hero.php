@@ -15,6 +15,12 @@
  * animation between two hand-drawn states either: every colour in the dark half
  * is one the engine derived from this site's palette, the same way it would on
  * the visitor's own pages.
+ *
+ * The loop then covers the plugin's other half. Once the front end has shown
+ * the flip, the preview walks to wp-admin — a mock of Darkify's own settings
+ * screen, in the same frame and under the same engine — throws the switch from
+ * the admin bar, and comes back. Two views, one document, one continuous loop,
+ * and the address in the window chrome follows along.
  */
 
 if (!defined('ABSPATH')) {
@@ -53,6 +59,12 @@ if (!class_exists('Darkify_Util_Hero')) {
                 'menu'       => '',
                 'nav'        => '',
                 'menu_limit' => '4',
+                // The admin half of the loop.
+                'admin'      => 'yes',
+                'admin_url'  => 'yoursite.com/wp-admin',
+                'admin_brand' => 'Darkify Pro',
+                'admin_version' => 'v2.1.0',
+                'admin_user' => 'admin',
                 // The window.
                 'max_width'  => '640',
                 'switch'     => 'classic',
@@ -66,6 +78,8 @@ if (!class_exists('Darkify_Util_Hero')) {
                 'autoplay'   => 'yes',
                 'light_hold' => '3000',
                 'dark_hold'  => '3800',
+                'admin_hold' => '3000',
+                'admin_dark_hold' => '3800',
                 'fade'       => '260',
                 'start'      => 'light',
             ), $atts, self::SHORTCODE);
@@ -91,6 +105,14 @@ if (!class_exists('Darkify_Util_Hero')) {
                 'badge'       => $this->is_truthy($atts['badge']),
                 'brand'       => $atts['brand'],
                 'url'         => $atts['url'],
+                // The admin view is the second half of the loop: the same flip,
+                // shown where the plugin's other half lives. It needs the loop
+                // to drive it, so it follows autoplay.
+                'admin'       => $this->is_truthy($atts['admin']) && $this->is_truthy($atts['autoplay']),
+                'admin_url'   => $atts['admin_url'],
+                'admin_brand' => $atts['admin_brand'],
+                'admin_version' => $atts['admin_version'],
+                'admin_user'  => $atts['admin_user'],
                 'heading'     => $atts['heading'],
                 'text'        => $atts['text'],
                 'cta'         => $atts['cta'],
@@ -109,6 +131,8 @@ if (!class_exists('Darkify_Util_Hero')) {
                 // a very long one looks like the loop has stopped.
                 'light_hold'  => max(600, min(20000, (int) $atts['light_hold'])),
                 'dark_hold'   => max(600, min(20000, (int) $atts['dark_hold'])),
+                'admin_hold'  => max(600, min(20000, (int) $atts['admin_hold'])),
+                'admin_dark_hold' => max(600, min(20000, (int) $atts['admin_dark_hold'])),
                 'fade'        => max(0, min(1200, (int) $atts['fade'])),
                 'start'       => 'dark' === strtolower(trim($atts['start'])) ? 'dark' : 'light',
                 'label_light' => __('Light', 'darkify-util'),
