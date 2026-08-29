@@ -1,1 +1,134 @@
-.darkify-changelog-editor__paste,.darkify-changelog-editor__placeholder .components-placeholder__fieldset{width:100%}.darkify-changelog-editor__textarea textarea{font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.6;width:100%}.darkify-changelog-editor__actions{align-items:center;display:flex;gap:10px;margin-top:12px}.darkify-changelog-editor__notice{margin:0 0 12px}.darkify-changelog-editor__versions{display:flex;flex-direction:column;gap:14px}.darkify-changelog-editor__version{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:14px 16px}.darkify-changelog-editor__version-header{align-items:end;display:grid;gap:10px;grid-template-columns:1fr 1.2fr 1fr auto;margin-bottom:12px}.darkify-changelog-editor__entry-tools,.darkify-changelog-editor__version-tools{display:flex;gap:2px}.darkify-changelog-editor__entries{display:flex;flex-direction:column;gap:8px;list-style:none;margin:0 0 10px;padding:0}.darkify-changelog-editor__entry{background:#fbfbfb;border:1px solid #f0f0f0;border-radius:6px;padding:8px}.darkify-changelog-editor__entry-main{align-items:start;display:grid;gap:8px;grid-template-columns:150px 1fr auto}.darkify-changelog-editor__entry-link{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-top:8px}.darkify-changelog-editor__add-version{align-items:center;display:flex;gap:12px}.darkify-changelog-editor__count{color:#757575;font-size:12px}.darkify-changelog-editor__colors{display:flex;flex-direction:column;gap:4px;list-style:none;margin:0;padding:0}.darkify-changelog-editor__color-toggle{align-items:center;display:flex;gap:8px;justify-content:flex-start;width:100%}.darkify-changelog-editor__color-picker{padding:12px}.darkify-changelog-editor__color-empty{color:#757575;font-size:12px}@media(max-width:960px){.darkify-changelog-editor__entry-main,.darkify-changelog-editor__version-header{grid-template-columns:1fr}}.darkify-changelog-editor__preview>.components-placeholder{margin:0}.darkify-changelog-editor__loading{align-items:center;color:#757575;display:flex;gap:8px;padding:24px}
+/*!****************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/editor.scss ***!
+  \****************************************************************************************************************************************************************************************************************************************/
+/**
+ * Editor-only styling for darkify-util/changelog.
+ *
+ * The rendered component's own styles come from style.scss, which loads in the
+ * editor too; this file dresses the editing surface around it.
+ */
+.darkify-changelog-editor__placeholder .components-placeholder__fieldset {
+  width: 100%;
+}
+.darkify-changelog-editor__paste {
+  width: 100%;
+}
+.darkify-changelog-editor__textarea textarea {
+  width: 100%;
+  font-family: Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.darkify-changelog-editor__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+.darkify-changelog-editor__notice {
+  margin: 0 0 12px;
+}
+.darkify-changelog-editor__versions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.darkify-changelog-editor__version {
+  padding: 14px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+}
+.darkify-changelog-editor__version-header {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr auto;
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.darkify-changelog-editor__version-tools, .darkify-changelog-editor__entry-tools {
+  display: flex;
+  gap: 2px;
+}
+.darkify-changelog-editor__entries {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.darkify-changelog-editor__entry {
+  padding: 8px;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  background: #fbfbfb;
+}
+.darkify-changelog-editor__entry-main {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  align-items: start;
+  gap: 8px;
+}
+.darkify-changelog-editor__entry-link {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.darkify-changelog-editor__add-version {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.darkify-changelog-editor__count {
+  font-size: 12px;
+  color: #757575;
+}
+.darkify-changelog-editor__colors {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.darkify-changelog-editor__color-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-start;
+}
+.darkify-changelog-editor__color-picker {
+  padding: 12px;
+}
+.darkify-changelog-editor__color-empty {
+  font-size: 12px;
+  color: #757575;
+}
+
+@media (max-width: 960px) {
+  .darkify-changelog-editor__version-header,
+  .darkify-changelog-editor__entry-main {
+    grid-template-columns: 1fr;
+  }
+}
+/**
+ * The preview.
+ *
+ * Deliberately unstyled beyond a little breathing room: what is inside it is
+ * the server's own markup wearing style.scss, which the editor loads too, so
+ * the less this file says about it the closer the preview stays to the page.
+ */
+.darkify-changelog-editor__preview > .components-placeholder {
+  margin: 0;
+}
+
+.darkify-changelog-editor__loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  color: #757575;
+}

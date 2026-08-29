@@ -1,12 +1,32 @@
-.darkify_header .wp-block-site-logo {margin-right: 10px !important;}
-.darkify_header .wp-block-site-logo img {width: 90px !important;}
+.darkify_header .wp-block-site-logo {
+  margin-right: 10px !important;
+}
+.darkify_header .wp-block-site-logo img {
+  width: 90px !important;
+}
 .darkify_header .darkify_menu .kb-nav-link-content {
   padding: 0;
   font-size: 14px !important;
 }
-.darkify_header .darkify_menu .kb-nav-dropdown-toggle-btn {left: -15px;}
-.darkify_header .darkify_menu.wp-block-kadence-navigation .menu-item-has-children>.kb-link-wrap>.kb-nav-link-content {
-  padding-right: 15px;
+.darkify_header .darkify_menu .kb-nav-dropdown-toggle-btn {
+  left: -15px;
+}
+.darkify_header
+  .darkify_menu.wp-block-kadence-navigation
+  .menu-item-has-children
+  > .kb-link-wrap
+  > .kb-nav-link-content {
+  padding-right: 15px !important;
+}
+.darkify_header ul li a {
+  padding: 20px 0px !important;
+}
+.darkify_header ul li:hover button svg,
+.darkify_header ul li:hover a:not(.sub-menu a) {
+  color: #b8390a !important;
+}
+.darkify_header .sub-menu li a {
+  padding: 10px 15px !important;
 }
 .darkify_sub_menu .sub-menu:before {
   position: absolute;
@@ -20,7 +40,6 @@
 }
 .darkify_sub_menu > ul {
   width: 300px !important;
-  margin-top: 15px !important;
   padding: 10px !important;
   box-shadow: 0 6px 15px 0 rgba(0, 0, 0, 0.05);
 }
@@ -91,8 +110,50 @@ footer ul li {
 footer ul li a {
   text-decoration: none;
 }
-footer.wp-block-template-part {margin-block-start: 0;}
+footer.wp-block-template-part {
+  margin-block-start: 0;
+}
 .compare_table table {
   border-radius: 12px;
   overflow: hidden;
+}
+.darkify_blog li {
+  padding: 0;
+  border: 1px solid #e6e8ef;
+  box-shadow: 0 1px 2px 0 #1014280d;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.darkify_blog li:hover {
+  border-color: #b8390a;
+}
+.darkify_blog li .wp-block-group {
+  padding: 15px !important;
+}
+.darkify_blog li h2 {
+  font-size: 16px !important;
+}
+.darkify_blog li h2 a:hover {
+  text-decoration: none !important;
+  color: #b8390a !important;
+}
+.darkify_blog li p {
+  font-size: 14px !important;
+  color: #656d81 !important;
+}
+.darkify_blog .taxonomy-category a {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #656d81;
+  background: var(--alt);
+  border: 1px solid #e6e8ef;
+  padding: 4px 9px;
+  border-radius: 999px;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 5px;
+  margin-right: 5px;
+}
+.darkify_blog .taxonomy-category .wp-block-post-terms__separator {
+  display: none;
 }

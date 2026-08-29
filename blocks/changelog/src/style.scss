@@ -156,12 +156,13 @@
 }
 
 .darkify-changelog__filter-count {
-	padding: 1px 8px;
+	padding: 3px 8px;
 	border-radius: 999px;
 	background-color: var(--darkify-changelog-raised);
 	font-size: 12px;
 	font-weight: 700;
 	color: var(--darkify-changelog-muted);
+	line-height: 1;
 }
 
 .darkify-changelog__filter.is-active .darkify-changelog__filter-count {
