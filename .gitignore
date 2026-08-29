@@ -1,0 +1,20 @@
+# Build tooling. Installed inside the block it belongs to
+# (blocks/changelog/node_modules); this pattern matches at any depth.
+node_modules/
+
+# Generated block assets.
+#
+# Deliberately NOT ignored: this plugin is deployed by copying the folder onto
+# the site, so an ignored build/ would mean a fresh clone has no working block
+# until someone runs `npm install && npm run build`. Uncomment only if you move
+# to a release pipeline that builds before deploying.
+# blocks/*/build/
+
+# Source maps. `npm run start` emits them into build/; a production
+# `npm run build` does not. They are development output, so they are not part of
+# what gets committed or deployed.
+blocks/*/build/*.map
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

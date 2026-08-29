@@ -1,0 +1,657 @@
+/**
+ * darkify-util/changelog — shared editor and front-end styling.
+ *
+ * Every colour is a custom property on the block root, with the dark values
+ * declared under Darkify's own dark-mode class — the site's state, not the
+ * operating system's. Nothing here uses !important.
+ */
+
+.darkify-changelog {
+	--darkify-changelog-text: #1f2433;
+	--darkify-changelog-muted: #5b6479;
+	--darkify-changelog-heading: #0f1222;
+	--darkify-changelog-surface: #ffffff;
+	--darkify-changelog-raised: #f7f8fb;
+	--darkify-changelog-border: #e5e9f2;
+	--darkify-changelog-accent: #c2381f;
+	--darkify-changelog-focus: #2563eb;
+	--darkify-changelog-pill: #171b2c;
+	--darkify-changelog-pill-text: #ffffff;
+	--darkify-changelog-latest: #fdece6;
+	--darkify-changelog-latest-text: #a32d16;
+	--darkify-changelog-active: #fbe3da;
+	--darkify-changelog-badge: #64748b;
+	--darkify-changelog-badge-bg: rgba(100, 116, 139, 0.12);
+	/* How far the badge's own colour is lifted toward white, and how strong its
+	   tint is. Light mode needs neither; dark mode raises both. */
+	--darkify-changelog-badge-mix: 0%;
+	--darkify-changelog-badge-alpha: 14%;
+	--darkify-changelog-radius: 12px;
+	--darkify-changelog-gap: 28px;
+	--darkify-changelog-nav-width: 240px;
+	--darkify-changelog-sticky-top: 32px;
+
+	box-sizing: border-box;
+	color: var(--darkify-changelog-text);
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+}
+
+/* Dark mode ---------------------------------------------------------------
+
+   Keyed to Darkify's own class and nothing else. There is deliberately no
+   `prefers-color-scheme` branch: that reports what the visitor's *operating
+   system* is set to, which is unrelated to whether this site is showing its
+   light or dark theme. With one, a visitor on a dark-mode laptop got a black
+   changelog sitting in the middle of a white page. The site's state is the only
+   thing that decides.
+
+   Without this section the reverse happens — the block keeps its light palette
+   while the page goes dark, and it cannot be rescued by the engine, because the
+   wrapper carries `darkify_ignore` precisely so that Darkify leaves the block's
+   own theming alone. The class rule and that opt-out have to travel together. */
+
+@mixin darkify-changelog-dark {
+	/*
+	 * Borrowed from Darkify rather than invented here.
+	 *
+	 * The engine publishes the active palette as custom properties on :root —
+	 * the same ones every Darkify preset writes — so taking the block's dark
+	 * surfaces from them means the changelog sits on the page's own colours
+	 * instead of a near-black of its own that never quite lines up. It also
+	 * means the block follows the visitor's chosen preset: Carbon Mist, Midnight
+	 * Reverie or anything else, with no extra work.
+	 *
+	 * Cards take the *secondary* background and the page/panel takes the
+	 * primary, which preserves the light design's relationship (a card that
+	 * stands slightly proud of the page behind it).
+	 *
+	 * The literals are fallbacks for a page where the palette variables are not
+	 * present for some reason; in practice Darkify always publishes them.
+	 */
+	--darkify-changelog-text: var(--darkify_dark_mode_text_color, #c3c9d6);
+	--darkify-changelog-heading: var(--darkify_dark_mode_link_color, #f2f4f9);
+	--darkify-changelog-surface: var(--darkify_dark_mode_secondary_bg, #161a21);
+	--darkify-changelog-raised: var(--darkify_dark_mode_bg, #0f1115);
+	--darkify-changelog-border: var(--darkify_dark_mode_border_color, #262c38);
+	--darkify-changelog-accent: #ff7a5c;
+	--darkify-changelog-focus: #7aa2ff;
+	--darkify-changelog-pill: var(--darkify_dark_mode_btn_bg, #e7eaf2);
+	--darkify-changelog-pill-text: var(--darkify_dark_mode_btn_text_color, #12151c);
+	--darkify-changelog-latest: rgba(255, 122, 92, 0.18);
+	--darkify-changelog-latest-text: #ff9d85;
+	--darkify-changelog-active: rgba(255, 122, 92, 0.16);
+
+	/*
+	 * Muted text is mixed toward the page rather than pointed at the palette's
+	 * text colour, which would make it identical to body copy and not muted at
+	 * all. The literal is the no-color-mix fallback.
+	 */
+	--darkify-changelog-muted: #8b93a7;
+	--darkify-changelog-muted: color-mix(
+		in srgb,
+		var(--darkify_dark_mode_text_color, #c3c9d6) 62%,
+		var(--darkify_dark_mode_bg, #0f1115)
+	);
+
+	/*
+	 * Category colours are picked to sit on white — #c2381f for Fixed, #64748b
+	 * for Removed — and on a near-black card those read as muddy smudges. In
+	 * dark mode the badge lifts its own colour toward white and leans on a
+	 * slightly stronger tint, so a category stays recognisably itself while
+	 * staying legible. Any colour set in the inspector is handled, including
+	 * ones generated for categories the table has never seen.
+	 */
+	--darkify-changelog-badge-mix: 58%;
+	--darkify-changelog-badge-alpha: 22%;
+}
+
+.darkify_dark_mode_enabled .darkify-changelog {
+	@include darkify-changelog-dark;
+}
+
+/* Filter bar ------------------------------------------------------------ */
+
+.darkify-changelog__filters {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 26px;
+}
+
+.darkify-changelog__filter {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 16px;
+	border: 1px solid var(--darkify-changelog-border);
+	border-radius: 999px;
+	background-color: var(--darkify-changelog-surface);
+	color: var(--darkify-changelog-text);
+	font-size: 13.5px;
+	font-weight: 600;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+
+	&:hover {
+		border-color: var(--darkify-changelog-pill);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-changelog-focus);
+		outline-offset: 2px;
+	}
+
+	&.is-active {
+		background-color: var(--darkify-changelog-pill);
+		border-color: var(--darkify-changelog-pill);
+		color: var(--darkify-changelog-pill-text);
+	}
+}
+
+.darkify-changelog__filter-count {
+	padding: 1px 8px;
+	border-radius: 999px;
+	background-color: var(--darkify-changelog-raised);
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--darkify-changelog-muted);
+}
+
+.darkify-changelog__filter.is-active .darkify-changelog__filter-count {
+	/* On the filled chip the count sits on the dark pill, so it borrows the
+	   chip's own foreground rather than the page's muted grey. */
+	background-color: rgba(255, 255, 255, 0.16);
+	color: var(--darkify-changelog-pill-text);
+}
+
+/* Layout ---------------------------------------------------------------- */
+
+.darkify-changelog__layout {
+	display: grid;
+	gap: var(--darkify-changelog-gap);
+	align-items: start;
+	grid-template-columns: minmax(0, 1fr) var(--darkify-changelog-nav-width);
+
+	/* The nav comes first in the markup so it stacks above the entries on a
+	   phone and reaches screen readers before the list it navigates. Placing it
+	   on the right is therefore an ordering job, not a markup one. */
+	&--right .darkify-changelog__nav {
+		order: 2;
+	}
+
+	&--left {
+		grid-template-columns: var(--darkify-changelog-nav-width) minmax(0, 1fr);
+	}
+
+	&--none {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+.darkify-changelog__main {
+	min-width: 0;
+}
+
+/* Version navigation ---------------------------------------------------- */
+
+.darkify-changelog__nav {
+	position: sticky;
+	top: var(--darkify-changelog-sticky-top);
+	max-height: calc(100vh - var(--darkify-changelog-sticky-top) - 24px);
+	overflow-y: auto;
+	padding: 18px;
+	border: 1px solid var(--darkify-changelog-border);
+	border-radius: var(--darkify-changelog-radius);
+	background-color: var(--darkify-changelog-raised);
+}
+
+.darkify-changelog__nav-title {
+	margin: 0 0 12px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--darkify-changelog-muted);
+}
+
+.darkify-changelog__nav-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.darkify-changelog__nav-link {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 7px 10px;
+	border-radius: 8px;
+	color: var(--darkify-changelog-text);
+	text-decoration: none;
+	font-size: 13px;
+	transition: background-color 150ms ease, color 150ms ease;
+
+	&:hover,
+	&:focus-visible {
+		background-color: var(--darkify-changelog-surface);
+		color: var(--darkify-changelog-heading);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-changelog-focus);
+		outline-offset: 2px;
+	}
+
+	&.is-active {
+		background-color: var(--darkify-changelog-active);
+		color: var(--darkify-changelog-heading);
+		font-weight: 700;
+	}
+}
+
+/* Search ---------------------------------------------------------------- */
+
+.darkify-changelog__search {
+	margin-bottom: 18px;
+}
+
+.darkify-changelog__search-input {
+	width: 100%;
+	padding: 10px 14px;
+	border: 1px solid var(--darkify-changelog-border);
+	border-radius: 10px;
+	background-color: var(--darkify-changelog-surface);
+	color: var(--darkify-changelog-text);
+	font-size: 14px;
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-changelog-focus);
+		outline-offset: 1px;
+	}
+}
+
+.darkify-changelog__no-results,
+.darkify-changelog__empty {
+	margin: 0;
+	padding: 22px;
+	border: 1px dashed var(--darkify-changelog-border);
+	border-radius: var(--darkify-changelog-radius);
+	color: var(--darkify-changelog-muted);
+	text-align: center;
+}
+
+/* Version cards --------------------------------------------------------- */
+
+.darkify-changelog__versions {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+
+.darkify-changelog__version {
+	padding: 20px 22px;
+	border: 1px solid var(--darkify-changelog-border);
+	border-radius: var(--darkify-changelog-radius);
+	background-color: var(--darkify-changelog-surface);
+	scroll-margin-top: var(--darkify-changelog-sticky-top);
+
+	&.is-revealing {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+
+	&.is-revealed {
+		opacity: 1;
+		transform: none;
+		transition: opacity 320ms ease, transform 320ms ease;
+	}
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.darkify-changelog__version-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 10px;
+	margin-bottom: 14px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--darkify-changelog-border);
+}
+
+.darkify-changelog__version-number {
+	margin: 0;
+	font-size: 20px;
+	line-height: 1.2;
+	font-weight: 700;
+	color: var(--darkify-changelog-heading);
+}
+
+.darkify-changelog__pill {
+	display: inline-block;
+	padding: 5px 13px;
+	border-radius: 10px;
+	background-color: var(--darkify-changelog-pill);
+	color: var(--darkify-changelog-pill-text);
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.darkify-changelog__latest {
+	padding: 4px 10px;
+	border-radius: 999px;
+	background-color: var(--darkify-changelog-latest);
+	color: var(--darkify-changelog-latest-text);
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+}
+
+.darkify-changelog__version-label {
+	padding: 3px 9px;
+	border-radius: 999px;
+	background-color: var(--darkify-changelog-raised);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--darkify-changelog-muted);
+}
+
+.darkify-changelog__version-date {
+	font-size: 13px;
+	color: var(--darkify-changelog-muted);
+}
+
+.darkify-changelog__toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 0;
+	border: 0;
+	background-color: none;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-changelog-focus);
+		outline-offset: 3px;
+		border-radius: 4px;
+	}
+}
+
+.darkify-changelog__toggle-icon {
+	width: 9px;
+	height: 9px;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: rotate(45deg);
+	transition: transform 150ms ease;
+}
+
+.darkify-changelog__toggle[aria-expanded='false'] .darkify-changelog__toggle-icon {
+	transform: rotate(-45deg);
+}
+
+/* Entries --------------------------------------------------------------- */
+
+.darkify-changelog__entries {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	overflow: hidden;
+	transition: height 240ms ease;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.darkify-changelog__entry {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	font-size: 14.5px;
+	line-height: 1.6;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.darkify-changelog__badge {
+	flex: none;
+	min-width: 84px;
+	padding: 3px 10px;
+	border-radius: 999px;
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	text-align: center;
+	line-height: 1.8;
+	/* Plain colour first for browsers without color-mix; the mix wins where it
+	   is supported and keeps both the text and the tint tied to whatever colour
+	   the category is set to in the inspector. */
+	color: var(--darkify-changelog-badge);
+	color: color-mix(
+		in srgb,
+		#ffffff var(--darkify-changelog-badge-mix),
+		var(--darkify-changelog-badge)
+	);
+
+	background-color: var(--darkify-changelog-badge-bg);
+	background-color: color-mix(
+		in srgb,
+		var(--darkify-changelog-badge) var(--darkify-changelog-badge-alpha),
+		transparent
+	);
+}
+
+.darkify-changelog__entry-text {
+	min-width: 0;
+
+	code {
+		padding: 1px 5px;
+		border-radius: 4px;
+		background-color: var(--darkify-changelog-raised);
+		font-size: 0.9em;
+	}
+}
+
+.darkify-changelog__entry-link {
+	margin-left: 6px;
+	color: var(--darkify-changelog-accent);
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	transition: border-color 150ms ease;
+
+	&:hover,
+	&:focus-visible {
+		border-bottom-color: currentColor;
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-changelog-focus);
+		outline-offset: 2px;
+	}
+}
+
+/* Pagination ------------------------------------------------------------ */
+
+.darkify-changelog__more {
+	margin-top: 22px;
+	text-align: center;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.darkify-changelog__more-button {
+	padding: 11px 24px;
+	border: 1px solid var(--darkify-changelog-border);
+	border-radius: 10px;
+	background-color: var(--darkify-changelog-raised);
+	color: var(--darkify-changelog-heading);
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: border-color 150ms ease, background-color 150ms ease;
+
+	&:hover {
+		border-color: var(--darkify-changelog-accent);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-changelog-focus);
+		outline-offset: 2px;
+	}
+}
+
+.darkify-changelog__more-status {
+	margin: 8px 0 0;
+	font-size: 12px;
+	color: var(--darkify-changelog-muted);
+}
+
+.darkify-changelog__pagination {
+	margin-top: 22px;
+}
+
+.darkify-changelog__pagination-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 6px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	a,
+	span {
+		display: inline-block;
+		padding: 7px 12px;
+		border: 1px solid var(--darkify-changelog-border);
+		border-radius: 8px;
+		color: var(--darkify-changelog-text);
+		text-decoration: none;
+		font-size: 13px;
+	}
+
+	a:hover {
+		border-color: var(--darkify-changelog-accent);
+	}
+
+	a:focus-visible {
+		outline: 2px solid var(--darkify-changelog-focus);
+		outline-offset: 2px;
+	}
+
+	.current {
+		background-color: var(--darkify-changelog-raised);
+		font-weight: 700;
+		color: var(--darkify-changelog-heading);
+	}
+}
+
+/* Responsive ------------------------------------------------------------ */
+
+@media (max-width: 782px) {
+	.darkify-changelog__layout,
+	.darkify-changelog__layout--left,
+	.darkify-changelog__layout--none {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 18px;
+	}
+
+	.darkify-changelog__nav {
+		position: static;
+		max-height: none;
+		order: -1;
+		padding: 12px;
+	}
+
+	.darkify-changelog__nav-list {
+		flex-direction: row;
+		gap: 8px;
+		overflow-x: auto;
+		scrollbar-width: thin;
+		padding-bottom: 4px;
+	}
+
+	.darkify-changelog__nav-item {
+		flex: none;
+	}
+
+	.darkify-changelog__nav-link {
+		white-space: nowrap;
+	}
+
+	.darkify-changelog__version {
+		padding: 16px;
+	}
+
+	.darkify-changelog__filters {
+		justify-content: flex-start;
+		gap: 8px;
+		overflow-x: auto;
+		flex-wrap: nowrap;
+		padding-bottom: 4px;
+		scrollbar-width: thin;
+	}
+
+	.darkify-changelog__filter {
+		flex: none;
+		padding: 8px 13px;
+		font-size: 12.5px;
+	}
+
+	.darkify-changelog__entry {
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.darkify-changelog__badge {
+		align-self: flex-start;
+	}
+}
+
+/* Motion ---------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+	.darkify-changelog__version,
+	.darkify-changelog__version.is-revealing,
+	.darkify-changelog__version.is-revealed {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	.darkify-changelog__entries,
+	.darkify-changelog__filter,
+	.darkify-changelog__nav-link,
+	.darkify-changelog__more-button,
+	.darkify-changelog__entry-link,
+	.darkify-changelog__toggle-icon {
+		transition: none;
+	}
+}

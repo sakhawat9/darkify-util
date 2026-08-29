@@ -1,0 +1,50 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "darkify-util/changelog",
+	"version": "1.0.0",
+	"title": "Darkify Changelog",
+	"category": "darkify",
+	"icon": "backup",
+	"description": "Turn a pasted changelog into a versioned, navigable release history.",
+	"keywords": ["changelog", "release notes", "versions", "updates", "releases"],
+	"textdomain": "darkify-util",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": ["wide", "full"],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"attributes": {
+		"schemaVersion": { "type": "number", "default": 1 },
+		"source": { "type": "string", "default": "" },
+		"versions": { "type": "array", "default": [] },
+		"categories": {
+			"type": "array",
+			"default": [
+				{ "slug": "added", "label": "New", "color": "#1f9d55" },
+				{ "slug": "improved", "label": "Improved", "color": "#2563eb" },
+				{ "slug": "fixed", "label": "Fixed", "color": "#c2381f" },
+				{ "slug": "removed", "label": "Removed", "color": "#64748b" },
+				{ "slug": "updated", "label": "Compatibility", "color": "#8b3ffd" }
+			]
+		},
+		"versionsPosition": { "type": "string", "default": "right" },
+		"perPage": { "type": "number", "default": 10 },
+		"paginationType": { "type": "string", "default": "load-more" },
+		"loadMoreText": { "type": "string", "default": "Load More" },
+		"showDates": { "type": "boolean", "default": true },
+		"showBadges": { "type": "boolean", "default": true },
+		"showSearch": { "type": "boolean", "default": false },
+		"showFilters": { "type": "boolean", "default": true },
+		"collapsible": { "type": "boolean", "default": false }
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js",
+	"render": "file:./render.php"
+}

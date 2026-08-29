@@ -34,3 +34,18 @@ require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-hero.php';
 
 add_action('plugins_loaded', array('Darkify_Util_Demo', 'instance'));
 add_action('plugins_loaded', array('Darkify_Util_Hero', 'instance'));
+
+/**
+ * The changelog block and its [darkify_changelog] shortcode, plus the one-time
+ * migration off the third-party block the Changelogs page used to depend on.
+ *
+ * The parser is shared: the block's editor parses in JavaScript, the migration
+ * parses in PHP, and both read the same category table from
+ * includes/changelog-categories.json.
+ */
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-changelog-parser.php';
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-changelog.php';
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-changelog-migrator.php';
+
+add_action('plugins_loaded', array('Darkify_Util_Changelog', 'instance'));
+add_action('plugins_loaded', array('Darkify_Util_Changelog_Migrator', 'instance'));

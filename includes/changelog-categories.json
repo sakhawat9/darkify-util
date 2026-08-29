@@ -1,0 +1,74 @@
+{
+	"_comment": "Canonical changelog categories and the alias table. Single source of truth: read by class-darkify-util-changelog-parser.php (PHP) and imported by blocks/changelog/src/parser.js (JS) so the editor and the migration can never disagree about what 'Fix' means.",
+	"canonical": [
+		{
+			"slug": "added",
+			"label": "New",
+			"color": "#1f9d55"
+		},
+		{
+			"slug": "improved",
+			"label": "Improved",
+			"color": "#2563eb"
+		},
+		{
+			"slug": "fixed",
+			"label": "Fixed",
+			"color": "#c2381f"
+		},
+		{
+			"slug": "removed",
+			"label": "Removed",
+			"color": "#64748b"
+		},
+		{
+			"slug": "updated",
+			"label": "Compatibility",
+			"color": "#8b3ffd"
+		}
+	],
+	"fallback": {
+		"slug": "uncategorised",
+		"label": "Note",
+		"color": "#475569"
+	},
+	"aliases": {
+		"add": "added",
+		"added": "added",
+		"new": "added",
+		"feature": "added",
+		"features": "added",
+		"fix": "fixed",
+		"fixed": "fixed",
+		"fixes": "fixed",
+		"bugfix": "fixed",
+		"bug fix": "fixed",
+		"improve": "improved",
+		"improved": "improved",
+		"improvement": "improved",
+		"improvements": "improved",
+		"enhanced": "improved",
+		"enhancement": "improved",
+		"update": "updated",
+		"updated": "updated",
+		"updates": "updated",
+		"tested": "updated",
+		"compatibility": "updated",
+		"remove": "removed",
+		"removed": "removed",
+		"deprecated": "removed",
+		"note": "uncategorised",
+		"notes": "uncategorised",
+		"other": "uncategorised"
+	},
+	"generatedColors": [
+		"#0f766e",
+		"#b45309",
+		"#7c3aed",
+		"#be123c",
+		"#0369a1",
+		"#4d7c0f",
+		"#9d174d",
+		"#1e40af"
+	]
+}

@@ -1,0 +1,9 @@
+.git
+.gitignore
+.distignore
+.DS_Store
+node_modules
+blocks/changelog/src
+blocks/changelog/package.json
+blocks/changelog/package-lock.json
+blocks/changelog/build/*.map

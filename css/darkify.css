@@ -1,4 +1,65 @@
-.sub-menu.kb-nav-sub-menu {
+.darkify_header .wp-block-site-logo {margin-right: 10px !important;}
+.darkify_header .wp-block-site-logo img {width: 90px !important;}
+.darkify_header .darkify_menu .kb-nav-link-content {
+  padding: 0;
+  font-size: 14px !important;
+}
+.darkify_header .darkify_menu .kb-nav-dropdown-toggle-btn {left: -15px;}
+.darkify_header .darkify_menu.wp-block-kadence-navigation .menu-item-has-children>.kb-link-wrap>.kb-nav-link-content {
+  padding-right: 15px;
+}
+.darkify_sub_menu .sub-menu:before {
+  position: absolute;
+  content: "";
+  top: -30px;
+  border-width: 15px;
+  border-color: transparent transparent #ffffff transparent;
+  border-style: solid;
+  left: 10%;
+  transform: translateX(-50%);
+}
+.darkify_sub_menu > ul {
+  width: 300px !important;
+  margin-top: 15px !important;
+  padding: 10px !important;
+  box-shadow: 0 6px 15px 0 rgba(0, 0, 0, 0.05);
+}
+.darkify_sub_menu_mobile > ul li a,
+.darkify_sub_menu > ul li a {
+  font-weight: 500 !important;
+  width: 100% !important;
+  border-radius: 12px !important;
+  padding: 10px 15px !important;
+}
+.darkify_sub_menu_mobile > ul li a:hover,
+.darkify_sub_menu > ul li a:hover {
+  background-color: #fdf0e8 !important;
+  color: #2d3332 !important;
+}
+
+.darkify_sub_menu ul {
+  filter: drop-shadow(1px 3px 25px rgba(0, 0, 0, 0.2));
+}
+.darkify_sub_menu .kb-nav-link-content::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  background: url(https://easyaccordion.io/wp-content/uploads/2026/04/arrow-right-1.svg)
+    no-repeat center;
+  transform: translateX(-6px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.darkify_sub_menu .menu-item:hover .kb-nav-link-content::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+.darkify_header .darkify_menu .sub-menu.kb-nav-sub-menu {
   box-shadow: 0px 6px 15px 0px rgba(0, 0, 0, 0.05) !important;
   border-radius: 12px !important;
   padding: 10px !important;
@@ -11,12 +72,27 @@
   width: 15px;
 }
 .product_list_wrapper li a {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 5px;
-    align-items: center;
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+  align-items: center;
 }
-footer ul {padding: 0;list-style: none;}
-footer ul {padding: 0;list-style: none;}
-footer ul li {margin: 0 !important;}
-footer ul li a {text-decoration: none;}
+footer ul {
+  padding: 0;
+  list-style: none;
+}
+footer ul {
+  padding: 0;
+  list-style: none;
+}
+footer ul li {
+  margin: 0 !important;
+}
+footer ul li a {
+  text-decoration: none;
+}
+footer.wp-block-template-part {margin-block-start: 0;}
+.compare_table table {
+  border-radius: 12px;
+  overflow: hidden;
+}

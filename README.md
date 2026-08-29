@@ -231,6 +231,37 @@ shows through it is whatever Darkify painted underneath. The cards are tinted
 rather than white for the same reason — a white panel maps onto the palette's
 base background, which is also what the page becomes.
 
+## Building the changelog block
+
+The block owns its tooling. Everything is run **from the block directory**:
+
+```bash
+cd blocks/changelog
+npm install        # once
+npm run build      # production build into blocks/changelog/build
+npm run start      # watch while developing
+```
+
+`build/` is committed, because the plugin is deployed by copying the folder.
+
+Two things about this setup are deliberate, and both fix a way the build can
+appear to do nothing:
+
+* **No `--webpack-src-dir` / `--output-path` flags.** wp-scripts' defaults are
+  `src/` → `build/` relative to the working directory, which is exactly the
+  block's own layout. When the tooling lived in the plugin root those flags were
+  needed, and running the same command from inside the block wrote the output to
+  `blocks/changelog/blocks/changelog/build/` — a stray nested folder — while the
+  real `build/` sat untouched and every change looked like it had been ignored.
+  With no flags, the command is either correct or it fails loudly.
+* **`--experimental-modules` is baked into the scripts.** `view.js` is declared
+  as `viewScriptModule` so the front end gets a real ES module. Without that flag
+  wp-scripts skips the module pass entirely: the build reports success, and
+  `view.js` is silently never rebuilt.
+
+To confirm a change reached the output: `grep` for it in `build/style-index.css`,
+`build/view.js` or `build/index.js`.
+
 ## Files
 
 ```
