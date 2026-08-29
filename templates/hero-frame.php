@@ -24,6 +24,25 @@ if (!defined('ABSPATH')) {
     exit;
 }
 ?>
+<?php
+/*
+ * The veil is what makes the flip seamless.
+ *
+ * Darkify repaints the sample page in one frame — body background included —
+ * and a background cannot be cross-faded from outside: the engine suspends CSS
+ * transitions while it reads colours, and the page's background is painted on
+ * the canvas *behind* the content, so dimming the content does not dim it. The
+ * result was a white-to-black slam at full contrast: the flash.
+ *
+ * So the swap happens behind cover. The veil takes the page's current colour,
+ * fades in, the switch is thrown while it is opaque, and it fades out onto the
+ * new colour — one continuous cross-dissolve with nothing to catch the eye.
+ * `darkify_ignore` keeps the engine's hands off the veil itself, and it sits
+ * below the switcher so the toggle stays visible throughout.
+ */
+?>
+<div class="dkfh-veil darkify_ignore" aria-hidden="true"></div>
+
 <div class="dkfh">
 	<header class="dkfh-bar">
 		<span class="dkfh-brand">

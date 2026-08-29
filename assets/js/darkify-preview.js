@@ -831,10 +831,6 @@
 		var running = false;
 		var cursor = createCursor(instance);
 
-		// The dip that covers the repaint lives inside the frame, so the
-		// switcher and the pointer clicking it stay crisp on top of it.
-		frame.doc.documentElement.style.setProperty("--dkfh-fade", timing.fade + "ms");
-
 		var after = function (delay, fn) {
 			var id = window.setTimeout(function () {
 				if (running) {
@@ -876,20 +872,89 @@
 			}
 		};
 
-		var flip = function () {
-			frame.doc.documentElement.classList.add("dkfh-flipping");
+		/**
+		 * Cross-dissolve the flip.
+		 *
+		 * Darkify repaints the sample page in a single frame, background and
+		 * all, and that background cannot be tweened from out here: the engine
+		 * suspends CSS transitions while it reads colours (so it classifies
+		 * settled ones), and the page background is painted on the canvas behind
+		 * the content, so dimming the content leaves it untouched. Measured, it
+		 * went rgb(255,255,255) to rgb(15,15,15) in one frame at full contrast —
+		 * the flash.
+		 *
+		 * So the swap happens behind a veil: it takes the colour the page is
+		 * already showing, fades in over it, the switch is thrown while it is
+		 * opaque, and it fades out onto the new colour. The veil is driven with
+		 * the Web Animations API, which the engine's transition suspension does
+		 * not touch, and it is marked `darkify_ignore` so the engine never
+		 * repaints the veil itself mid-dissolve.
+		 */
+		var veil = frame.doc.querySelector(".dkfh-veil");
 
-			// Long enough for the dip to have covered the page before the
-			// repaint lands underneath it.
-			after(timing.fade, function () {
+		var pageColor = function () {
+			var body = frame.doc.body;
+			var color = frame.win.getComputedStyle(body).backgroundColor;
+
+			// A transparent body would make the veil invisible and defeat the
+			// point; fall back to the html element, then to white.
+			if (!color || "rgba(0, 0, 0, 0)" === color || "transparent" === color) {
+				color = frame.win.getComputedStyle(frame.doc.documentElement).backgroundColor;
+			}
+
+			return !color || "rgba(0, 0, 0, 0)" === color ? "#ffffff" : color;
+		};
+
+		var fade = function (from, to, duration) {
+			if (!veil || typeof veil.animate !== "function") {
+				return null;
+			}
+
+			return veil.animate(
+				[ { opacity: from }, { opacity: to } ],
+				{ duration: duration, easing: "ease-in-out", fill: "forwards" }
+			);
+		};
+
+		var flip = function () {
+			if (!veil || reducedMotion()) {
+				// No dissolve to run: throw the switch and move on.
+				throwSwitch();
+				announce();
+				schedule();
+				return;
+			}
+
+			veil.style.backgroundColor = pageColor();
+
+			var cover = fade( 0, 1, timing.fade );
+
+			after( timing.fade, function () {
 				throwSwitch();
 				announce();
 
-				after(40, function () {
-					frame.doc.documentElement.classList.remove("dkfh-flipping");
-					schedule();
-				});
-			});
+				// One frame for the engine to commit its repaint underneath,
+				// then reveal the page in its new mode.
+				frame.win.requestAnimationFrame( function () {
+					if ( ! running ) {
+						return;
+					}
+
+					if ( cover ) {
+						cover.cancel();
+					}
+
+					var reveal = fade( 1, 0, timing.fade );
+
+					after( timing.fade, function () {
+						if ( reveal ) {
+							reveal.cancel();
+						}
+						veil.style.opacity = "";
+						schedule();
+					} );
+				} );
+			} );
 		};
 
 		/**
@@ -943,7 +1008,15 @@
 		var stop = function () {
 			running = false;
 			clearTimers();
-			frame.doc.documentElement.classList.remove("dkfh-flipping");
+
+			// Leave nothing half-dissolved behind.
+			if (veil) {
+				veil.getAnimations().forEach(function (animation) {
+					animation.cancel();
+				});
+				veil.style.opacity = "";
+			}
+
 			if (cursor) {
 				cursor.reset();
 			}

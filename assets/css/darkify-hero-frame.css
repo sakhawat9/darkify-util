@@ -50,32 +50,26 @@ body {
 	overflow: hidden;
 }
 
-/*
- * The flip is masked here rather than by fading the whole frame, so the
- * switcher being clicked — and the cursor clicking it — stay crisp while the
- * page behind them changes.
- *
- * It is a dip, not a colour tween, because Darkify suspends transitions while
- * it repaints (`darkify_suspend_transitions` sets `transition-property: none`
- * on everything it reads) so it classifies settled colours rather than
- * interpolated ones. That is the right call for the plugin and it makes tweening
- * individual colours impossible from outside, so the page dips out, the engine
- * repaints while it is faint, and it comes back in the other mode.
- */
 .dkfh {
 	padding: 18px 22px 24px;
-	transition: opacity var(--dkfh-fade, 260ms) ease, transform var(--dkfh-fade, 260ms) ease;
 }
 
-html.dkfh-flipping .dkfh {
-	opacity: 0.16;
-	transform: scale(0.995);
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.dkfh {
-		transition: none;
-	}
+/*
+ * The cross-dissolve. Its colour and opacity are set from JavaScript with the
+ * Web Animations API rather than a CSS transition: the engine's repaint pass
+ * suspends CSS transitions on everything it reads, and an animation is not a
+ * transition, so this keeps running through the repaint.
+ *
+ * Sits below the switcher (z-index 5) on purpose, so the toggle and its
+ * sun-to-moon morph stay visible while the page changes behind the veil.
+ */
+.dkfh-veil {
+	position: fixed;
+	inset: 0;
+	z-index: 3;
+	opacity: 0;
+	pointer-events: none;
+	background-color: #ffffff;
 }
 
 /* Header ------------------------------------------------------------------ */
