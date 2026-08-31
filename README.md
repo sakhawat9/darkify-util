@@ -225,6 +225,14 @@ colours live. The pointer clicks the moon in the admin bar rather than the
 floating switcher, because that is where the plugin puts its switch on a
 dashboard; the switcher itself steps aside for the admin view.
 
+**The top of the screen is one band across both columns.** The header sits on
+the panel colour rather than the content colour, the logo has a cell of its own
+exactly as tall as it (`--dkfa-band`, shared by both so they cannot drift), and
+the two close on a single unbroken rule — the grey below it is where the
+settings begin. The search and overflow controls are soft squares either side of
+Save rather than bare icons, the way the real header sets them out. All of it
+follows the engine into dark mode like any other panel.
+
 **The menu is the collapsed icon rail**, not the expanded one. That is a layout
 decision the settings screen forces rather than a stylistic one: at this size
 the labels cost about 100px of the content column, and without them every row's

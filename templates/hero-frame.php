@@ -231,8 +231,18 @@ if (!defined('ABSPATH')) {
 
 				<div class="dkfa-body">
 					<div class="dkfa-rail">
-						<span class="dkfa-logo darkify_ignore" aria-hidden="true">
-							<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3m12.8 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1M5.6 18.4l2.1-2.1m8.6-8.6 2.1-2.1"/></svg>
+						<?php
+						/*
+						 * The logo has a cell of its own, exactly as tall as the header
+						 * beside it and closing on the same rule, so the top of the screen
+						 * reads as one band across both columns rather than as a header
+						 * with a logo floating above the menu.
+						 */
+						?>
+						<span class="dkfa-rail__head">
+							<span class="dkfa-logo darkify_ignore" aria-hidden="true">
+								<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3m12.8 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1M5.6 18.4l2.1-2.1m8.6-8.6 2.1-2.1"/></svg>
+							</span>
 						</span>
 
 						<span class="dkfa-rail__menu">

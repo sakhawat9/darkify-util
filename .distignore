@@ -7,3 +7,8 @@ blocks/changelog/src
 blocks/changelog/package.json
 blocks/changelog/package-lock.json
 blocks/changelog/build/*.map
+build
+*.zip
+package.json
+package-lock.json
+gulpfile.js

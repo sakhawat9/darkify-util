@@ -359,6 +359,9 @@ body {
 	--dkfa-ink: #0d1117;
 	--dkfa-muted: #454d5a;
 	--dkfa-faint: #6d7684;
+	/* The top band. Shared by the header and the logo cell beside it so the two
+	   are exactly as tall as each other and close on the same rule. */
+	--dkfa-band: 46px;
 
 	display: flex;
 	flex-direction: column;
@@ -475,11 +478,21 @@ body {
 	display: flex;
 	flex: none;
 	flex-direction: column;
-	align-items: center;
+	/* Stretched, not centred: the logo cell's rule has to run the full width of
+	   the rail to meet the header's. */
+	align-items: stretch;
 	width: 46px;
-	padding-top: 9px;
 	border-right: 1px solid var(--dkfa-line);
 	background: var(--dkfa-panel);
+}
+
+.dkfa-rail__head {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	height: var(--dkfa-band);
+	border-bottom: 1px solid var(--dkfa-line);
 }
 
 /* A brand mark, not a surface: the engine maps a solid coloured box into the
@@ -491,7 +504,6 @@ body {
 	flex: none;
 	width: 24px;
 	height: 24px;
-	margin-bottom: 11px;
 	border-radius: 7px;
 	background: #16181d;
 	color: #ffffff;
@@ -511,6 +523,7 @@ body {
 	width: 100%;
 	flex-direction: column;
 	align-items: stretch;
+	padding-top: 8px;
 }
 
 .dkfa-rail__item {
@@ -549,13 +562,21 @@ body {
 	background: var(--dkfa-bg);
 }
 
+/*
+ * The header sits on the panel colour, not the content colour — it is the same
+ * white as the rail beside it, so the two read as one band across the top of
+ * the screen, and the grey below is where the settings begin.
+ */
 .dkfa-head {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 10px;
 	flex: none;
-	padding: 9px 13px;
+	height: var(--dkfa-band);
+	padding: 0 13px;
+	border-bottom: 1px solid var(--dkfa-line);
+	background: var(--dkfa-panel);
 }
 
 .dkfa-head__title {
@@ -587,9 +608,18 @@ body {
 	gap: 8px;
 }
 
+/* The two flanking controls are buttons, not bare icons: a soft square either
+   side of the primary action, the way the real header sets them out. */
 .dkfa-icon {
 	display: flex;
-	color: var(--dkfa-muted);
+	align-items: center;
+	justify-content: center;
+	width: 25px;
+	height: 25px;
+	border: 1px solid var(--dkfa-line);
+	border-radius: 7px;
+	background: var(--dkfa-bg);
+	color: var(--dkfa-ink);
 }
 
 .dkfa-head svg {
@@ -631,7 +661,7 @@ body {
 	flex: 1;
 	min-height: 0;
 	overflow: hidden;
-	padding: 2px 13px 0;
+	padding: 11px 13px 0;
 }
 
 .dkfa-intro {

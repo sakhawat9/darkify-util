@@ -1,0 +1,24 @@
+{
+  "name": "darkify-util",
+  "version": "1.1.0",
+  "description": "Build tooling for the Darkify Util plugin: minification, .pot generation and release zip.",
+  "private": true,
+  "scripts": {
+    "block:install": "npm --prefix blocks/changelog install",
+    "block:build": "npm --prefix blocks/changelog run build",
+    "block:start": "npm --prefix blocks/changelog run start",
+    "build": "npm run block:build && gulp",
+    "watch": "gulp watch"
+  },
+  "author": "ThemeAtelier",
+  "license": "GPL-2.0+",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-notify": "^4.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-uglify": "^3.0.2",
+    "gulp-zip": "^4.2.0"
+  }
+}

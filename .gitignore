@@ -18,3 +18,7 @@ blocks/*/build/*.map
 # OS / editor noise
 .DS_Store
 Thumbs.db
+
+# Release output from `gulp` (build/ is staged, the zip is the artefact).
+/build/
+*.zip
