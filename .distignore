@@ -7,6 +7,10 @@ blocks/changelog/src
 blocks/changelog/package.json
 blocks/changelog/package-lock.json
 blocks/changelog/build/*.map
+blocks/collection/src
+blocks/collection/package.json
+blocks/collection/package-lock.json
+blocks/collection/build/*.map
 build
 *.zip
 package.json

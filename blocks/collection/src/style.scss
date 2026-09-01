@@ -1,0 +1,1073 @@
+/**
+ * darkify-util/collection — shared editor and front-end styling.
+ *
+ * Every colour is a custom property on the block root, with the dark values
+ * declared under Darkify's own dark-mode class, and the inspector's choices
+ * arriving as inline overrides of those same properties. Nothing here uses
+ * !important.
+ */
+
+.darkify-collection {
+	--darkify-collection-text: #1f2433;
+	--darkify-collection-muted: #5b6479;
+	--darkify-collection-heading: #0f1222;
+	--darkify-collection-surface: #ffffff;
+	--darkify-collection-raised: #f7f8fb;
+	--darkify-collection-border: #e5e9f2;
+	--darkify-collection-accent: #171b2c;
+	--darkify-collection-accent-text: #ffffff;
+	--darkify-collection-focus: #2563eb;
+	--darkify-collection-badge: #171b2c;
+	--darkify-collection-badge-text: #ffffff;
+	--darkify-collection-shadow: 0 1px 2px rgba(15, 18, 34, 0.04);
+	--darkify-collection-shadow-hover: 0 12px 28px rgba(15, 18, 34, 0.1);
+
+	/* Overwritten inline by the template, so a second collection on the page can
+	   be laid out differently without either one's rules reaching the other. */
+	--darkify-collection-columns: 3;
+	--darkify-collection-columns-tablet: 2;
+	--darkify-collection-columns-mobile: 1;
+	--darkify-collection-gap: 24px;
+	--darkify-collection-radius: 12px;
+	/* `auto` is the value that survives: the template writes a real ratio inline
+	   for every setting except "Original", which leaves this default in place and
+	   lets each image keep its own proportions. */
+	--darkify-collection-ratio: auto;
+	--darkify-collection-fit: cover;
+	--darkify-collection-title-size: 1.25rem;
+
+	box-sizing: border-box;
+	color: var(--darkify-collection-text);
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+}
+
+/* Dark mode ---------------------------------------------------------------
+
+   Keyed to Darkify's own class and nothing else, for the reason set out at
+   length in the changelog block's style.scss: `prefers-color-scheme` reports
+   what the visitor's *operating system* is set to, which has nothing to do with
+   whether this site is currently showing its light or dark theme.
+
+   The surfaces are borrowed from the palette Darkify publishes on :root rather
+   than invented here, so the cards sit on the page's own colours and follow
+   whichever preset the visitor has chosen. The literals are fallbacks for a page
+   where those variables are absent. */
+
+@mixin darkify-collection-dark {
+	--darkify-collection-text: var(--darkify_dark_mode_text_color, #c3c9d6);
+	--darkify-collection-heading: var(--darkify_dark_mode_link_color, #f2f4f9);
+	--darkify-collection-surface: var(--darkify_dark_mode_secondary_bg, #161a21);
+	--darkify-collection-raised: var(--darkify_dark_mode_bg, #0f1115);
+	--darkify-collection-border: var(--darkify_dark_mode_border_color, #262c38);
+	--darkify-collection-accent: var(--darkify_dark_mode_btn_bg, #e7eaf2);
+	--darkify-collection-accent-text: var(--darkify_dark_mode_btn_text_color, #12151c);
+	--darkify-collection-focus: #7aa2ff;
+	--darkify-collection-badge: #f2f4f9;
+	--darkify-collection-badge-text: #12151c;
+
+	/* Shadows do nothing on a near-black card; the border carries the elevation
+	   instead, which is why the hover state below brightens it rather than
+	   deepening a shadow nobody can see. */
+	--darkify-collection-shadow: none;
+	--darkify-collection-shadow-hover: none;
+
+	/* Mixed toward the page rather than pointed at the palette's text colour,
+	   which would make muted text identical to body copy and not muted at all. */
+	--darkify-collection-muted: #8b93a7;
+	--darkify-collection-muted: color-mix(
+		in srgb,
+		var(--darkify_dark_mode_text_color, #c3c9d6) 62%,
+		var(--darkify_dark_mode_bg, #0f1115)
+	);
+}
+
+.darkify_dark_mode_enabled .darkify-collection {
+	@include darkify-collection-dark;
+}
+
+/* Filter bar and search -------------------------------------------------- */
+
+.darkify-collection__bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 14px;
+	margin-bottom: 26px;
+
+	&--center {
+		justify-content: center;
+	}
+
+	&--right {
+		justify-content: flex-end;
+	}
+}
+
+.darkify-collection__filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	min-width: 0;
+}
+
+.darkify-collection__bar--center .darkify-collection__filters {
+	justify-content: center;
+}
+
+.darkify-collection__filter {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 16px;
+	border: 1px solid var(--darkify-collection-border);
+	border-radius: 999px;
+	background-color: var(--darkify-collection-surface);
+	color: var(--darkify-collection-text);
+	font-size: 13.5px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+	transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+
+	&:hover {
+		border-color: var(--darkify-collection-accent);
+		color: var(--darkify-collection-heading);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-collection-focus);
+		outline-offset: 2px;
+	}
+
+	&.is-active {
+		background-color: var(--darkify-collection-accent);
+		border-color: var(--darkify-collection-accent);
+		color: var(--darkify-collection-accent-text);
+	}
+}
+
+.darkify-collection__filter-count {
+	padding: 3px 8px;
+	border-radius: 999px;
+	background-color: var(--darkify-collection-raised);
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--darkify-collection-muted);
+}
+
+.darkify-collection__filter.is-active .darkify-collection__filter-count {
+	/* On the filled chip the count sits on the accent, so it borrows the chip's
+	   own foreground rather than the page's muted grey. */
+	background-color: rgba(127, 127, 127, 0.28);
+	color: var(--darkify-collection-accent-text);
+}
+
+.darkify-collection__search {
+	position: relative;
+	display: flex;
+	align-items: center;
+	flex: 1 1 240px;
+	max-width: 420px;
+	margin-left: auto;
+}
+
+.darkify-collection__bar--center .darkify-collection__search {
+	margin-left: 0;
+}
+
+.darkify-collection__search-input {
+	width: 100%;
+	padding: 11px 44px 11px 16px;
+	border: 1px solid var(--darkify-collection-border);
+	border-radius: 999px;
+	background-color: var(--darkify-collection-surface);
+	color: var(--darkify-collection-text);
+	font-size: 14px;
+	line-height: 1.4;
+
+	&::placeholder {
+		color: var(--darkify-collection-muted);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-collection-focus);
+		outline-offset: 1px;
+	}
+}
+
+.darkify-collection__search-submit {
+	position: absolute;
+	right: 4px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: none;
+	color: var(--darkify-collection-muted);
+	cursor: pointer;
+
+	&:hover {
+		color: var(--darkify-collection-heading);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-collection-focus);
+		outline-offset: 2px;
+	}
+}
+
+/* A magnifier drawn in CSS: a circle and a stroke. One less request, and it
+   inherits the colour of the button it sits in. */
+.darkify-collection__search-icon {
+	position: relative;
+	display: block;
+	width: 11px;
+	height: 11px;
+	border: 2px solid currentColor;
+	border-radius: 50%;
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 10px;
+		left: 8px;
+		width: 6px;
+		height: 2px;
+		background-color: currentColor;
+		border-radius: 2px;
+		transform: rotate(45deg);
+		transform-origin: left center;
+	}
+}
+
+/* Grid ------------------------------------------------------------------- */
+
+.darkify-collection__results {
+	position: relative;
+	min-height: 40px;
+}
+
+.darkify-collection__grid {
+	display: grid;
+	gap: var(--darkify-collection-gap);
+	grid-template-columns: repeat(var(--darkify-collection-columns), minmax(0, 1fr));
+	align-items: stretch;
+}
+
+/* The list arrangement belongs to the default card, which is the only template
+   that draws a media box and a body it can put side by side. The other three
+   arrange themselves — rows, panels, tiles — and this rule would fight them. */
+.darkify-collection__grid--list.is-template-default {
+	grid-template-columns: minmax(0, 1fr);
+
+	.darkify-collection__item {
+		display: grid;
+		grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+		align-items: stretch;
+	}
+
+	.darkify-collection__media {
+		height: 100%;
+	}
+}
+
+.darkify-collection__item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border: 1px solid var(--darkify-collection-border);
+	border-radius: var(--darkify-collection-radius);
+	background-color: var(--darkify-collection-surface);
+	box-shadow: var(--darkify-collection-shadow);
+	transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+
+	&.is-revealing {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	&.is-revealed {
+		opacity: 1;
+		transform: none;
+		transition: opacity 320ms ease, transform 320ms ease;
+	}
+}
+
+/* Flat cards drop the frame and let the images do the separating — the layout
+   the showcase grids use, where a border around every tile becomes noise.
+   Scoped to the default template: the other three own their own frame (a dashed
+   panel, a hairline row, a full-bleed tile) and stripping it breaks them. */
+.darkify-collection__grid.is-template-default.is-flat .darkify-collection__item {
+	border-color: transparent;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+.darkify-collection__grid.is-hover-lift .darkify-collection__item:hover {
+	transform: translateY(-4px);
+	border-color: var(--darkify-collection-accent);
+	box-shadow: var(--darkify-collection-shadow-hover);
+}
+
+.darkify-collection__grid.is-hover-zoom .darkify-collection__item:hover .darkify-collection__image {
+	transform: scale(1.05);
+}
+
+.darkify-collection__grid.is-align-center .darkify-collection__body {
+	text-align: center;
+	align-items: center;
+}
+
+/* Media ------------------------------------------------------------------ */
+
+.darkify-collection__media {
+	position: relative;
+	overflow: hidden;
+	background-color: var(--darkify-collection-raised);
+	aspect-ratio: var(--darkify-collection-ratio);
+}
+
+.darkify-collection__media-link {
+	display: block;
+	height: 100%;
+}
+
+.darkify-collection__image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: var(--darkify-collection-fit);
+	transition: transform 320ms ease;
+}
+
+.darkify-collection__badge {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	padding: 5px 10px;
+	border-radius: 999px;
+	background-color: var(--darkify-collection-badge);
+	color: var(--darkify-collection-badge-text);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	line-height: 1.4;
+}
+
+/* Body ------------------------------------------------------------------- */
+
+.darkify-collection__body {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 20px 22px 22px;
+	/* Pushes the button to the bottom edge, so a row of cards with descriptions
+	   of different lengths still lines its calls to action up. */
+	flex: 1 1 auto;
+}
+
+.darkify-collection__terms {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 0;
+}
+
+.darkify-collection__term {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--darkify-collection-muted);
+
+	& + .darkify-collection__term::before {
+		content: '·';
+		margin-right: 6px;
+	}
+}
+
+.darkify-collection__title {
+	margin: 0;
+	font-size: var(--darkify-collection-title-size);
+	line-height: 1.3;
+	font-weight: 700;
+	color: var(--darkify-collection-heading);
+}
+
+.darkify-collection__title-link {
+	color: inherit;
+	text-decoration: none;
+
+	&:hover,
+	&:focus-visible {
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-collection-focus);
+		outline-offset: 3px;
+		border-radius: 4px;
+	}
+}
+
+.darkify-collection__subtitle {
+	margin: 0;
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--darkify-collection-muted);
+}
+
+.darkify-collection__meta {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.darkify-collection__meta-label {
+	font-weight: 700;
+	color: var(--darkify-collection-heading);
+
+	&::after {
+		content: ':';
+	}
+}
+
+.darkify-collection__meta-value {
+	margin-left: 4px;
+	color: var(--darkify-collection-text);
+}
+
+.darkify-collection__description {
+	margin: 0;
+	font-size: 14.5px;
+	line-height: 1.65;
+	color: var(--darkify-collection-text);
+
+	p {
+		margin: 0 0 8px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	a {
+		color: var(--darkify-collection-heading);
+	}
+}
+
+.darkify-collection__footer {
+	margin-top: auto;
+	padding-top: 4px;
+}
+
+.darkify-collection__button {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 18px;
+	border-radius: calc(var(--darkify-collection-radius) * 0.6);
+	background-color: var(--darkify-collection-accent);
+	color: var(--darkify-collection-accent-text);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	transition: opacity 150ms ease, transform 150ms ease;
+
+	&:hover {
+		opacity: 0.88;
+		color: var(--darkify-collection-accent-text);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-collection-focus);
+		outline-offset: 2px;
+	}
+}
+
+.darkify-collection__button-arrow {
+	transition: transform 150ms ease;
+}
+
+.darkify-collection__button:hover .darkify-collection__button-arrow {
+	transform: translateX(3px);
+}
+
+/* Stretched link ---------------------------------------------------------
+
+   Templates whose whole card is clickable put the anchor on the title — so a
+   screen reader and the keyboard get one properly-named link — and spread its
+   hit area over the card with this. Text inside the card stays selectable,
+   which an overlay <a> wrapping everything would prevent. */
+
+.darkify-collection__stretch::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+}
+
+/* ========================================================================
+   Template 2 — Framed
+   ======================================================================== */
+
+.darkify-collection__frame {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid var(--darkify-collection-border);
+	border-radius: var(--darkify-collection-radius);
+	background-color: var(--darkify-collection-surface);
+	transition: border-color 180ms ease, box-shadow 180ms ease;
+
+	/* The screenshot's highlighted card: the frame picks up the accent on hover
+	   and on keyboard focus, so pointer and keyboard get the same signal. */
+	&:hover,
+	&:focus-within {
+		border-color: var(--darkify-collection-accent);
+		box-shadow: var(--darkify-collection-shadow-hover);
+	}
+}
+
+.darkify-collection__frame-panel {
+	position: relative;
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+	margin: 10px 10px 0;
+	/* The dashed panel is the design's signature. `min-height` covers the
+	   "Original" image setting, where there is no ratio to hold the box open. */
+	min-height: 170px;
+	aspect-ratio: var(--darkify-collection-ratio);
+	border: 1px dashed var(--darkify-collection-border);
+	border-radius: calc(var(--darkify-collection-radius) * 0.7);
+	background-color: var(--darkify-collection-raised);
+
+	.darkify-collection__image {
+		width: 100%;
+		height: 100%;
+		object-fit: var(--darkify-collection-fit);
+	}
+}
+
+.darkify-collection__frame-placeholder {
+	display: block;
+	color: var(--darkify-collection-muted);
+	opacity: 0.55;
+
+	svg {
+		width: 34px;
+		height: 34px;
+		display: block;
+	}
+}
+
+.darkify-collection__frame-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 14px;
+	margin-top: 10px;
+	padding: 14px 16px;
+	border-top: 1px solid var(--darkify-collection-border);
+}
+
+.darkify-collection__frame-text {
+	min-width: 0;
+
+	.darkify-collection__title {
+		font-size: var(--darkify-collection-title-size, 1rem);
+		line-height: 1.35;
+	}
+}
+
+.darkify-collection__frame-subtitle {
+	/* One line, clipped. The bar is a shallow strip by design, and a subtitle
+	   someone writes a sentence into is the one thing left that could grow it. */
+	margin: 3px 0 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 12.5px;
+	color: var(--darkify-collection-muted);
+}
+
+.darkify-collection__frame-go {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	border: 1px solid var(--darkify-collection-border);
+	border-radius: 50%;
+	color: var(--darkify-collection-heading);
+	transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+
+	svg {
+		width: 15px;
+		height: 15px;
+	}
+}
+
+.darkify-collection__frame:hover .darkify-collection__frame-go,
+.darkify-collection__frame:focus-within .darkify-collection__frame-go {
+	border-color: var(--darkify-collection-accent);
+	background-color: var(--darkify-collection-accent);
+	color: var(--darkify-collection-accent-text);
+}
+
+/* ========================================================================
+   Template 4 — Showcase
+   ======================================================================== */
+
+.darkify-collection__tile {
+	overflow: hidden;
+	border: 1px solid var(--darkify-collection-border);
+	border-radius: var(--darkify-collection-radius);
+	background-color: var(--darkify-collection-surface);
+}
+
+.darkify-collection__tile-visual {
+	position: relative;
+	overflow: hidden;
+	min-height: 220px;
+	aspect-ratio: var(--darkify-collection-ratio);
+	background-color: var(--darkify-collection-raised);
+
+	.darkify-collection__image {
+		width: 100%;
+		height: 100%;
+		object-fit: var(--darkify-collection-fit);
+		transition: transform 420ms ease;
+	}
+}
+
+/* An item with no picture still gets a tile rather than a gap. The plate is
+   dark in both themes on purpose: the caption below is white either way. */
+.darkify-collection__tile.is-plain .darkify-collection__tile-visual {
+	background-image: linear-gradient(135deg, #232936, #10131b);
+}
+
+.darkify-collection__tile-veil {
+	position: absolute;
+	inset: 0;
+	/* A ramp rather than a solid bar, so the top of a screenshot is still
+	   visible while the caption stays readable.
+
+	   The weights are set against the hardest case, which is what a showcase
+	   usually holds: a screenshot of a *light* interface. A gentler ramp read
+	   fine over photographs and left white titles sitting on near-white UI
+	   chrome, so the bottom third is now carried much harder and the fade is
+	   pushed further up to keep the transition from banding. */
+	background-image: linear-gradient(
+		to top,
+		rgba(8, 10, 16, 0.94) 0%,
+		rgba(8, 10, 16, 0.82) 26%,
+		rgba(8, 10, 16, 0.4) 52%,
+		rgba(8, 10, 16, 0) 82%
+	);
+	transition: opacity 320ms ease;
+}
+
+.darkify-collection__tile-caption {
+	position: absolute;
+	right: 18px;
+	bottom: 16px;
+	left: 18px;
+	z-index: 2;
+	/* Belt and braces over the veil: a screenshot with a white panel exactly
+	   where the title lands still reads. */
+	text-shadow: 0 1px 3px rgba(8, 10, 16, 0.55);
+}
+
+.darkify-collection__tile-terms {
+	margin: 0 0 4px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.darkify-collection__tile-title {
+	margin: 0;
+	font-size: var(--darkify-collection-title-size, 1.25rem);
+	line-height: 1.25;
+	/* Fixed white, not the heading token: this text sits on the veil in both
+	   light and dark mode, and following the palette would make it vanish. */
+	color: #ffffff;
+
+	.darkify-collection__title-link {
+		color: #ffffff;
+	}
+}
+
+.darkify-collection__tile-badge {
+	top: 14px;
+	right: auto;
+	left: 14px;
+	z-index: 2;
+}
+
+.darkify-collection__tile-go {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 0.18);
+	color: #ffffff;
+	opacity: 0;
+	transform: translateY(-4px);
+	transition: opacity 220ms ease, transform 220ms ease, background-color 220ms ease;
+
+	svg {
+		width: 16px;
+		height: 16px;
+	}
+}
+
+.darkify-collection__tile:hover .darkify-collection__tile-go,
+.darkify-collection__tile:focus-within .darkify-collection__tile-go {
+	opacity: 1;
+	transform: none;
+	background-color: rgba(255, 255, 255, 0.32);
+}
+
+.darkify-collection__grid:not(.is-hover-none) {
+	.darkify-collection__tile:hover .darkify-collection__image,
+	.darkify-collection__tile:focus-within .darkify-collection__image {
+		transform: scale(1.06);
+	}
+}
+
+.darkify-collection__tile-strip {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 14px 18px 16px;
+	border-top: 1px solid var(--darkify-collection-border);
+}
+
+.darkify-collection__tile-subtitle {
+	margin: 0;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--darkify-collection-muted);
+}
+
+.darkify-collection__tile-excerpt {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--darkify-collection-text);
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.darkify-collection__tile-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 12.5px;
+	color: var(--darkify-collection-muted);
+}
+
+.darkify-collection__tile-meta-label {
+	font-weight: 700;
+
+	&::after {
+		content: ':';
+		margin-right: 3px;
+	}
+}
+
+.darkify-collection__tile-meta-value {
+	color: var(--darkify-collection-text);
+}
+
+/* Empty, loading, pagination --------------------------------------------- */
+
+.darkify-collection__empty {
+	margin: 0;
+	padding: 40px 22px;
+	border: 1px dashed var(--darkify-collection-border);
+	border-radius: var(--darkify-collection-radius);
+	color: var(--darkify-collection-muted);
+	text-align: center;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+/* The grid fades rather than emptying while a request is in flight: replacing
+   it with a spinner collapses the page height and throws the scroll position
+   away, which is the one thing a filter must not do. */
+.darkify-collection.is-loading .darkify-collection__grid {
+	opacity: 0.45;
+	transition: opacity 150ms ease;
+	pointer-events: none;
+}
+
+.darkify-collection__spinner {
+	position: absolute;
+	top: 16px;
+	left: 50%;
+	width: 26px;
+	height: 26px;
+	margin-left: -13px;
+	border: 2px solid var(--darkify-collection-border);
+	border-top-color: var(--darkify-collection-accent);
+	border-radius: 50%;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 150ms ease;
+}
+
+.darkify-collection.is-loading .darkify-collection__spinner {
+	opacity: 1;
+	animation: darkify-collection-spin 700ms linear infinite;
+}
+
+@keyframes darkify-collection-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.darkify-collection__more {
+	margin-top: 28px;
+	text-align: center;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.darkify-collection__more-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 28px;
+	border: 1px solid var(--darkify-collection-border);
+	border-radius: 999px;
+	background-color: var(--darkify-collection-raised);
+	color: var(--darkify-collection-heading);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+	transition: border-color 150ms ease, background-color 150ms ease;
+
+	&:hover {
+		border-color: var(--darkify-collection-accent);
+		color: var(--darkify-collection-heading);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-collection-focus);
+		outline-offset: 2px;
+	}
+}
+
+.darkify-collection__pagination {
+	margin-top: 28px;
+}
+
+.darkify-collection__pagination-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 6px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.darkify-collection__page {
+	display: inline-block;
+	min-width: 40px;
+	padding: 9px 13px;
+	border: 1px solid var(--darkify-collection-border);
+	border-radius: 8px;
+	background-color: var(--darkify-collection-surface);
+	color: var(--darkify-collection-text);
+	font-size: 13px;
+	font-weight: 600;
+	text-align: center;
+	text-decoration: none;
+	transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+
+	&:hover {
+		border-color: var(--darkify-collection-accent);
+		color: var(--darkify-collection-heading);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-collection-focus);
+		outline-offset: 2px;
+	}
+
+	&.is-current {
+		background-color: var(--darkify-collection-accent);
+		border-color: var(--darkify-collection-accent);
+		color: var(--darkify-collection-accent-text);
+	}
+
+	&--gap {
+		border-color: transparent;
+		background: none;
+		min-width: 0;
+		padding: 9px 4px;
+		color: var(--darkify-collection-muted);
+	}
+}
+
+/* Responsive ------------------------------------------------------------- */
+
+@media (max-width: 960px) {
+	.darkify-collection__grid {
+		grid-template-columns: repeat(var(--darkify-collection-columns-tablet), minmax(0, 1fr));
+	}
+
+	.darkify-collection__grid--list.is-template-default {
+		grid-template-columns: minmax(0, 1fr);
+
+		.darkify-collection__item {
+			grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
+		}
+	}
+}
+
+@media (max-width: 600px) {
+	.darkify-collection__grid {
+		grid-template-columns: repeat(var(--darkify-collection-columns-mobile), minmax(0, 1fr));
+	}
+
+	/* A 200px image column beside text on a phone leaves neither enough room;
+	   the list layout becomes the card layout. */
+	.darkify-collection__grid--list.is-template-default .darkify-collection__item {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.darkify-collection__bar {
+		flex-direction: column;
+		align-items: stretch;
+
+		/* Load-bearing. The bar wraps on a desktop, and a *column* flex container
+		   that wraps puts each child on its own line whose cross size comes from
+		   that child's content — so `stretch` stretched the chip row to the width
+		   of all the chips laid end to end, and a phone got a page it could scroll
+		   sideways. Stacked, there is nothing left to wrap. */
+		flex-wrap: nowrap;
+	}
+
+	.darkify-collection__filters {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		padding-bottom: 4px;
+		scrollbar-width: thin;
+	}
+
+	.darkify-collection__filter {
+		flex: none;
+		padding: 8px 13px;
+		font-size: 12.5px;
+	}
+
+	.darkify-collection__search {
+		max-width: none;
+		margin-left: 0;
+	}
+
+	.darkify-collection__body {
+		padding: 16px 18px 18px;
+	}
+
+	.darkify-collection__frame-panel {
+		min-height: 150px;
+	}
+
+	.darkify-collection__tile-visual {
+		min-height: 200px;
+	}
+
+	.darkify-collection__tile-caption {
+		right: 14px;
+		bottom: 13px;
+		left: 14px;
+	}
+}
+
+/* Motion ----------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+	.darkify-collection__item,
+	.darkify-collection__item.is-revealing,
+	.darkify-collection__item.is-revealed {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	.darkify-collection__image,
+	.darkify-collection__filter,
+	.darkify-collection__page,
+	.darkify-collection__more-button,
+	.darkify-collection__button,
+	.darkify-collection__button-arrow,
+	.darkify-collection__frame,
+	.darkify-collection__frame-go,
+	.darkify-collection__tile-go,
+	.darkify-collection__tile-veil {
+		transition: none;
+	}
+
+	/* The showcase's zoom is decoration; the arrow still appears, it just does
+	   not slide in to do it. */
+	.darkify-collection__grid:not(.is-hover-none) {
+		.darkify-collection__tile:hover .darkify-collection__image,
+		.darkify-collection__tile:focus-within .darkify-collection__image {
+			transform: none;
+		}
+	}
+
+	.darkify-collection__tile-go {
+		transform: none;
+	}
+
+	.darkify-collection.is-loading .darkify-collection__spinner {
+		animation: none;
+	}
+}

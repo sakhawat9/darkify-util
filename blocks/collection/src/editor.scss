@@ -1,0 +1,255 @@
+/**
+ * Editor-only styling for darkify-util/collection.
+ *
+ * The rendered component's own styles come from style.scss, which loads in the
+ * editor too; this file dresses the editing surface around it.
+ */
+
+.darkify-collection-editor {
+	&__placeholder {
+		.components-placeholder__fieldset {
+			width: 100%;
+		}
+	}
+
+	&__list {
+		margin: 0 0 14px;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	&__item {
+		border: 1px solid #e0e0e0;
+		border-radius: 8px;
+		background: #fff;
+
+		&.is-open {
+			border-color: #b8b8b8;
+		}
+	}
+
+	&__item-head {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px 10px;
+	}
+
+	&__item-toggle {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex: 1 1 auto;
+		min-width: 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		text-align: left;
+		cursor: pointer;
+
+		&:focus-visible {
+			outline: 2px solid #2563eb;
+			outline-offset: 2px;
+			border-radius: 4px;
+		}
+	}
+
+	&__item-thumb {
+		flex: none;
+		width: 48px;
+		height: 36px;
+		border-radius: 4px;
+		overflow: hidden;
+		background: #f0f0f0;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+	}
+
+	&__item-thumb-empty {
+		display: block;
+		width: 100%;
+		height: 100%;
+		background: repeating-linear-gradient(
+			45deg,
+			#f0f0f0,
+			#f0f0f0 6px,
+			#e6e6e6 6px,
+			#e6e6e6 12px
+		);
+	}
+
+	&__item-summary {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+
+	&__item-title {
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__item-terms {
+		font-size: 11px;
+		color: #757575;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__item-tools {
+		display: flex;
+		gap: 2px;
+		flex: none;
+	}
+
+	&__item-body {
+		display: grid;
+		grid-template-columns: 220px minmax(0, 1fr);
+		gap: 16px;
+		padding: 4px 12px 14px;
+		border-top: 1px solid #f0f0f0;
+	}
+
+	&__media {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+		padding-top: 12px;
+	}
+
+	&__media-button {
+		justify-content: center;
+		width: 100%;
+	}
+
+	&__fields {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding-top: 12px;
+	}
+
+	&__pair {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 10px;
+	}
+
+	&__meta {
+		padding: 10px 12px;
+		border: 1px solid #f0f0f0;
+		border-radius: 6px;
+		background: #fbfbfb;
+	}
+
+	&__meta-title {
+		margin: 0;
+		font-weight: 600;
+	}
+
+	&__meta-help {
+		margin: 2px 0 10px;
+		font-size: 12px;
+		color: #757575;
+	}
+
+	&__meta-row {
+		display: grid;
+		grid-template-columns: 1fr 1.4fr auto;
+		align-items: center;
+		gap: 8px;
+		margin-bottom: 8px;
+	}
+
+	&__add,
+	&__category-add {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	&__count {
+		font-size: 12px;
+		color: #757575;
+	}
+
+	&__category-list {
+		margin: 0 0 12px;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	&__category {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto auto;
+		align-items: center;
+		gap: 10px;
+		padding: 6px 8px;
+		border: 1px solid #f0f0f0;
+		border-radius: 6px;
+		background: #fbfbfb;
+	}
+
+	&__category-count {
+		font-size: 12px;
+		color: #757575;
+		white-space: nowrap;
+	}
+
+	&__orphans {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-top: 8px;
+	}
+
+	&__hint {
+		margin: 0 0 12px;
+		font-size: 12px;
+		color: #757575;
+	}
+}
+
+@media (max-width: 960px) {
+	.darkify-collection-editor__item-body,
+	.darkify-collection-editor__pair {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/**
+ * The preview.
+ *
+ * Deliberately unstyled beyond a little breathing room: what is inside it is the
+ * server's own markup wearing style.scss, which the editor loads too, so the
+ * less this file says about it the closer the preview stays to the page.
+ */
+.darkify-collection-editor__preview {
+	> .components-placeholder {
+		margin: 0;
+	}
+}
+
+.darkify-collection-editor__loading {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 24px;
+	color: #757575;
+}

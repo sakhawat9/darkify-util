@@ -1,0 +1,87 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "darkify-util/collection",
+	"version": "1.0.0",
+	"title": "Darkify Collection",
+	"category": "darkify",
+	"icon": "grid-view",
+	"description": "A filterable, searchable grid of custom items you write here — roundups, showcases, directories — with no post type behind it.",
+	"keywords": [
+		"collection",
+		"grid",
+		"roundup",
+		"showcase",
+		"directory",
+		"filter",
+		"portfolio",
+		"deals"
+	],
+	"textdomain": "darkify-util",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": ["wide", "full"],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"attributes": {
+		"schemaVersion": { "type": "number", "default": 1 },
+		"blockId": { "type": "string", "default": "" },
+		"items": { "type": "array", "default": [] },
+		"categories": { "type": "array", "default": [] },
+
+		"template": { "type": "string", "default": "default" },
+		"layout": { "type": "string", "default": "grid" },
+		"columns": { "type": "number", "default": 3 },
+		"columnsTablet": { "type": "number", "default": 2 },
+		"columnsMobile": { "type": "number", "default": 1 },
+		"gap": { "type": "number", "default": 24 },
+		"contentAlign": { "type": "string", "default": "left" },
+
+		"showFilters": { "type": "boolean", "default": true },
+		"showFilterCounts": { "type": "boolean", "default": true },
+		"filterAlign": { "type": "string", "default": "center" },
+		"allLabel": { "type": "string", "default": "All" },
+		"showSearch": { "type": "boolean", "default": true },
+		"searchPlaceholder": { "type": "string", "default": "Search…" },
+
+		"perPage": { "type": "number", "default": 9 },
+		"paginationType": { "type": "string", "default": "load-more" },
+		"loadMoreText": { "type": "string", "default": "Load More" },
+
+		"showImage": { "type": "boolean", "default": true },
+		"imageRatio": { "type": "string", "default": "16:9" },
+		"imageFit": { "type": "string", "default": "cover" },
+		"showBadge": { "type": "boolean", "default": true },
+		"showCategory": { "type": "boolean", "default": true },
+		"showSubtitle": { "type": "boolean", "default": true },
+		"showMeta": { "type": "boolean", "default": true },
+		"showDescription": { "type": "boolean", "default": true },
+		"showButton": { "type": "boolean", "default": true },
+		"buttonText": { "type": "string", "default": "Learn More" },
+		"openInNewTab": { "type": "boolean", "default": false },
+
+		"cardStyle": { "type": "string", "default": "boxed" },
+		"radius": { "type": "number", "default": 12 },
+		"hoverEffect": { "type": "string", "default": "lift" },
+		"titleSize": { "type": "number", "default": 0 },
+		"cardBackground": { "type": "string", "default": "" },
+		"cardBorderColor": { "type": "string", "default": "" },
+		"titleColor": { "type": "string", "default": "" },
+		"accentColor": { "type": "string", "default": "" },
+
+		"emptyText": { "type": "string", "default": "" }
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js",
+	"render": "file:./render.php"
+}

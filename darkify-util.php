@@ -51,3 +51,16 @@ require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-changelog-migrator
 
 add_action('plugins_loaded', array('Darkify_Util_Changelog', 'instance'));
 add_action('plugins_loaded', array('Darkify_Util_Changelog_Migrator', 'instance'));
+
+/**
+ * The collection block and its [darkify_collection] shortcode: a filterable,
+ * searchable grid of items written into the block itself — roundups, showcases,
+ * directories — rather than queried out of a post type.
+ *
+ * Filtering, search and paging are all answered in PHP, over AJAX, from the
+ * items stored in the block comment; every control degrades to the plain link or
+ * form it is rendered as.
+ */
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-collection.php';
+
+add_action('plugins_loaded', array('Darkify_Util_Collection', 'instance'));
