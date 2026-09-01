@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-01T06:42:57+00:00\n"
+"POT-Creation-Date: 2026-09-01T06:59:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: darkify-util\n"
@@ -114,35 +114,35 @@ msgstr ""
 msgid "Your Brand"
 msgstr ""
 
-#: includes/class-darkify-util-demo.php:117
+#: includes/class-darkify-util-demo.php:119
 msgid "Home"
 msgstr ""
 
-#: includes/class-darkify-util-demo.php:118
+#: includes/class-darkify-util-demo.php:120
 msgid "Shop"
 msgstr ""
 
-#: includes/class-darkify-util-demo.php:119
+#: includes/class-darkify-util-demo.php:121
 msgid "Blog"
 msgstr ""
 
-#: includes/class-darkify-util-demo.php:120
+#: includes/class-darkify-util-demo.php:122
 msgid "Contact"
 msgstr ""
 
-#: includes/class-darkify-util-demo.php:190
+#: includes/class-darkify-util-demo.php:192
 msgid "Bottom Right"
 msgstr ""
 
-#: includes/class-darkify-util-demo.php:191
+#: includes/class-darkify-util-demo.php:193
 msgid "Bottom Left"
 msgstr ""
 
-#: includes/class-darkify-util-demo.php:192
+#: includes/class-darkify-util-demo.php:194
 msgid "Top Right"
 msgstr ""
 
-#: includes/class-darkify-util-demo.php:193
+#: includes/class-darkify-util-demo.php:195
 msgid "Top Left"
 msgstr ""
 
@@ -291,7 +291,7 @@ msgstr ""
 msgid "Switch size"
 msgstr ""
 
-#: templates/demo.php:96
+#: templates/demo.php:106
 msgid "Position"
 msgstr ""
 

@@ -49,13 +49,37 @@
 	font-size: 13px;
 }
 
+/*
+ * The rounded corners, and why nothing here paints a background.
+ *
+ * A pale quarter-arc used to show at all four corners over a dark preview. The
+ * cause was this element's white background, not the clip: along a rounded edge
+ * the chrome bar and the iframe cover their pixels only fractionally — that is
+ * what antialiasing is — so whatever was painted underneath showed through at
+ * partial strength for the width of the curve, and white against a dark preview
+ * reads as a light arc. `overflow: hidden` could never remove it, because the
+ * white was inside the clip by design. Painting nothing blends the same edge
+ * against the page instead, which is what a rounded corner should look like.
+ *
+ * The white placeholder that kept the window from flashing empty now lives on
+ * the viewport, and only until the frame has booted (see .dkfd--ready below).
+ *
+ * The children round the corners they own as well (.dkfd__chrome the top two,
+ * .dkfd__viewport and the iframe the bottom two). An iframe is its own document
+ * and is not clipped by an ancestor's radius on every engine, so it has to be
+ * rounded in its own right; the chrome follows for symmetry.
+ */
 .dkfd__window {
 	position: relative;
 	overflow: hidden;
 	border-radius: var(--dkfd-radius);
-	background: var(--dkfd-window-bg);
 	box-shadow: 0 30px 60px -24px rgba(4, 8, 32, 0.65), 0 2px 8px rgba(4, 8, 32, 0.25);
+	/* Its own stacking context, so the corner clip is composited with the
+	   children rather than against the page behind them — without this the
+	   iframe's layer is rounded a pixel out of step and leaves a soft fringe. */
+	isolation: isolate;
 }
+
 
 /* Browser chrome — the frame around the preview, not part of the sample site,
    so it keeps the same look whichever mode the preview is in. */
@@ -65,6 +89,7 @@
 	align-items: center;
 	min-height: 38px;
 	padding: 10px 16px;
+	border-radius: var(--dkfd-radius) var(--dkfd-radius) 0 0;
 	background: var(--dkfd-chrome-bg);
 }
 
@@ -103,9 +128,12 @@
 	color: var(--dkfd-chrome-text);
 }
 
+/* Background-free for the same reason as the window above: it sits under the
+   iframe's bottom corners, and anything it painted would blend into them. */
 .dkfd__viewport {
 	position: relative;
-	background: var(--dkfd-window-bg);
+	overflow: hidden;
+	border-radius: 0 0 var(--dkfd-radius) var(--dkfd-radius);
 }
 
 .dkfd__frame {
@@ -113,6 +141,7 @@
 	width: 100%;
 	height: var(--dkfd-height);
 	border: 0;
+	border-radius: inherit;
 	background: transparent;
 	/* The preview grows and shrinks with its own content (cards stack on narrow
 	   screens); easing that keeps the window from snapping. */
@@ -129,6 +158,7 @@
    window from collapsing to a bare chrome bar. */
 .dkfd:not(.dkfd--ready) .dkfd__viewport {
 	min-height: 260px;
+	background: var(--dkfd-window-bg);
 }
 
 @media (max-width: 600px) {
@@ -374,8 +404,17 @@
 	--dkfd-height: 420px;
 }
 
-.dkfd--hero.dkfd--bare .dkfd__window {
-	border-radius: 12px;
+/* Set through the token rather than on .dkfd__window directly: the chrome and
+   the viewport round their own corners from --dkfd-radius, so overriding the
+   window alone would leave them 2px out of step and re-open the corner seam. */
+.dkfd--hero.dkfd--bare {
+	--dkfd-radius: 12px;
+}
+
+/* Bare drops the chrome bar, so the viewport is the window's only child and
+   owns all four corners rather than just the bottom two. */
+.dkfd--bare .dkfd__viewport {
+	border-radius: var(--dkfd-radius);
 }
 
 /*
