@@ -38,7 +38,6 @@
 		"categories": { "type": "array", "default": [] },
 
 		"template": { "type": "string", "default": "default" },
-		"layout": { "type": "string", "default": "grid" },
 		"columns": { "type": "number", "default": 3 },
 		"columnsTablet": { "type": "number", "default": 2 },
 		"columnsMobile": { "type": "number", "default": 1 },

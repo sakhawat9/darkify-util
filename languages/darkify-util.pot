@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-01T06:59:43+00:00\n"
+"POT-Creation-Date: 2026-09-01T11:36:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: darkify-util\n"
@@ -102,11 +102,55 @@ msgid "You are not allowed to edit that post."
 msgstr ""
 
 #: includes/class-darkify-util-changelog.php:119
+#: includes/class-darkify-util-collection.php:141
 msgid "Darkify"
 msgstr ""
 
 #: includes/class-darkify-util-changelog.php:263
+#: includes/class-darkify-util-collection.php:857
 msgid "Load More"
+msgstr ""
+
+#: includes/class-darkify-util-collection.php:183
+msgid "Default"
+msgstr ""
+
+#: includes/class-darkify-util-collection.php:187
+msgid "Framed"
+msgstr ""
+
+#: includes/class-darkify-util-collection.php:191
+msgid "Showcase"
+msgstr ""
+
+#: includes/class-darkify-util-collection.php:435
+#: blocks/collection/src/edit.js:322
+msgid "No items match your filters."
+msgstr ""
+
+#: includes/class-darkify-util-collection.php:719
+msgid "That collection could not be found."
+msgstr ""
+
+#. translators: 1: number of items shown, 2: total number of matching items.
+#: includes/class-darkify-util-collection.php:759
+#, php-format
+msgid "Showing %1$s of %2$s item."
+msgid_plural "Showing %1$s of %2$s items."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-darkify-util-collection.php:851
+#: templates/changelog.php:53
+msgid "All"
+msgstr ""
+
+#: includes/class-darkify-util-collection.php:853
+msgid "Search…"
+msgstr ""
+
+#: includes/class-darkify-util-collection.php:868
+msgid "Learn More"
 msgstr ""
 
 #: includes/class-darkify-util-demo.php:50
@@ -191,10 +235,6 @@ msgstr ""
 msgid "Filter changes by category"
 msgstr ""
 
-#: templates/changelog.php:53
-msgid "All"
-msgstr ""
-
 #: templates/changelog.php:74
 #: blocks/changelog/src/components/VersionEditor.js:49
 msgid "Version"
@@ -224,6 +264,8 @@ msgstr ""
 
 #: templates/changelog.php:195
 #: blocks/changelog/src/components/EntryRow.js:94
+#: blocks/collection/src/components/ItemRow.js:291
+#: blocks/collection/src/edit.js:426
 msgid "Details"
 msgstr ""
 
@@ -232,11 +274,43 @@ msgid "Changelog pages"
 msgstr ""
 
 #: templates/changelog.php:234
+#: templates/collection-pagination.php:48
 msgid "Previous"
 msgstr ""
 
 #: templates/changelog.php:235
+#: templates/collection-pagination.php:88
 msgid "Next"
+msgstr ""
+
+#. translators: %s: item title.
+#: templates/collection-cards/default.php:111
+#, php-format
+msgid "about %s"
+msgstr ""
+
+#: templates/collection-pagination.php:39
+msgid "Collection pages"
+msgstr ""
+
+#: templates/collection-pagination.php:71
+msgid "Page"
+msgstr ""
+
+#: templates/collection.php:86
+msgid "No items yet."
+msgstr ""
+
+#: templates/collection.php:96
+msgid "Filter items by category"
+msgstr ""
+
+#: templates/collection.php:141
+msgid "Search this collection"
+msgstr ""
+
+#: templates/collection.php:158
+msgid "Search"
 msgstr ""
 
 #: templates/demo-frame.php:39
@@ -431,10 +505,12 @@ msgid "Remove entry"
 msgstr ""
 
 #: blocks/changelog/src/components/EntryRow.js:79
+#: blocks/collection/src/components/ItemRow.js:273
 msgid "Link URL"
 msgstr ""
 
 #: blocks/changelog/src/components/EntryRow.js:89
+#: blocks/collection/src/components/ItemRow.js:282
 msgid "Link text"
 msgstr ""
 
@@ -463,6 +539,7 @@ msgid "Cancel"
 msgstr ""
 
 #: blocks/changelog/src/components/Preview.js:65
+#: blocks/collection/src/components/Preview.js:79
 msgid "Rendering preview…"
 msgstr ""
 
@@ -475,10 +552,13 @@ msgid "Not recognised as a date — it will still display as written."
 msgstr ""
 
 #: blocks/changelog/src/components/VersionEditor.js:80
+#: blocks/collection/src/components/ItemRow.js:304
+#: blocks/collection/src/components/ItemRow.js:308
 msgid "Label"
 msgstr ""
 
 #: blocks/changelog/src/components/VersionEditor.js:85
+#: blocks/collection/src/components/ItemRow.js:237
 msgid "Optional"
 msgstr ""
 
@@ -509,6 +589,7 @@ msgid "%d versions"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:92
+#: blocks/collection/src/edit.js:169
 msgid "Preview"
 msgstr ""
 
@@ -521,6 +602,7 @@ msgid "Edit source"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:120
+#: blocks/collection/src/edit.js:211
 msgid "Layout"
 msgstr ""
 
@@ -529,10 +611,13 @@ msgid "Version list"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:126
+#: blocks/collection/src/edit.js:293
 msgid "Right"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:127
+#: blocks/collection/src/edit.js:254
+#: blocks/collection/src/edit.js:291
 msgid "Left"
 msgstr ""
 
@@ -573,22 +658,27 @@ msgid "Versions open by default; visitors can fold them away."
 msgstr ""
 
 #: blocks/changelog/src/edit.js:172
+#: blocks/collection/src/edit.js:326
 msgid "Pagination"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:175
+#: blocks/collection/src/edit.js:329
 msgid "Type"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:178
+#: blocks/collection/src/edit.js:332
 msgid "Load more"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:179
+#: blocks/collection/src/edit.js:333
 msgid "Numbered"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:180
+#: blocks/collection/src/edit.js:334
 msgid "Show all"
 msgstr ""
 
@@ -597,6 +687,7 @@ msgid "Versions per page"
 msgstr ""
 
 #: blocks/changelog/src/edit.js:199
+#: blocks/collection/src/edit.js:353
 msgid "Button text"
 msgstr ""
 
@@ -614,6 +705,416 @@ msgstr ""
 
 #: blocks/changelog/src/edit.js:239
 msgid "Some lines could not be read and were left out:"
+msgstr ""
+
+#: blocks/collection/src/components/CategoryManager.js:50
+msgid "Some items are filed under categories that are no longer listed. They still show on the cards, but there is no chip to filter by:"
+msgstr ""
+
+#. translators: %s: category slug.
+#: blocks/collection/src/components/CategoryManager.js:64
+#, js-format
+msgid "Restore “%s”"
+msgstr ""
+
+#: blocks/collection/src/components/CategoryManager.js:78
+msgid "Category name"
+msgstr ""
+
+#. translators: %d: number of items in the category.
+#: blocks/collection/src/components/CategoryManager.js:95
+#, js-format
+msgid "%d items"
+msgstr ""
+
+#: blocks/collection/src/components/CategoryManager.js:108
+msgid "Remove category"
+msgstr ""
+
+#: blocks/collection/src/components/CategoryManager.js:117
+msgid "No categories yet. Add one here, or just type a name into an item’s Categories field."
+msgstr ""
+
+#: blocks/collection/src/components/CategoryManager.js:127
+#: blocks/collection/src/components/CategoryManager.js:137
+msgid "New category"
+msgstr ""
+
+#: blocks/collection/src/components/CategoryManager.js:140
+msgid "Add"
+msgstr ""
+
+#. translators: %d: item number.
+#: blocks/collection/src/components/ItemRow.js:119
+#, js-format
+msgid "Item %d"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:126
+msgid "Uncategorised"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:138
+msgid "Move item up"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:147
+msgid "Move item down"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:155
+msgid "Duplicate item"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:164
+msgid "Remove item"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:196
+msgid "Replace image"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:197
+msgid "Set image"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:210
+msgid "Remove image"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:215
+msgid "Alt text"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:218
+msgid "Leave empty if the image is decorative."
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:227
+#: blocks/collection/src/edit.js:525
+msgid "Title"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:234
+#: blocks/collection/src/edit.js:419
+msgid "Subtitle"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:242
+#: blocks/collection/src/edit.js:403
+msgid "Badge"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:245
+msgid "A short flag over the image — “80% off”, “New”."
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:251
+#: blocks/collection/src/edit.js:182
+msgid "Categories"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:256
+msgid "An item can sit in several categories. A new name here becomes a new filter."
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:264
+#: blocks/collection/src/edit.js:433
+msgid "Description"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:285
+msgid "Uses the block’s button text"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:294
+msgid "Label and value pairs, listed under the title. This is where anything the other fields do not cover belongs — dates, prices, coupons, stack."
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:312
+#: blocks/collection/src/components/ItemRow.js:316
+msgid "Value"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:328
+msgid "Remove detail"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:339
+msgid "Add detail"
+msgstr ""
+
+#: blocks/collection/src/components/ItemsEditor.js:74
+msgid "Add item"
+msgstr ""
+
+#. translators: %d: number of items.
+#: blocks/collection/src/components/ItemsEditor.js:80
+#, js-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: blocks/collection/src/components/Preview.js:73
+msgid "Nothing to show yet."
+msgstr ""
+
+#: blocks/collection/src/edit.js:61
+msgid "Default — universal cards"
+msgstr ""
+
+#: blocks/collection/src/edit.js:62
+msgid "Image, title, details and a button. The all-rounder: roundups, resources, products."
+msgstr ""
+
+#: blocks/collection/src/edit.js:69
+msgid "Framed — panel and bar"
+msgstr ""
+
+#: blocks/collection/src/edit.js:70
+msgid "A dashed image panel over a bar with the title, subtitle and link — nothing else. The picture carries the card."
+msgstr ""
+
+#: blocks/collection/src/edit.js:77
+msgid "Showcase — image tiles"
+msgstr ""
+
+#: blocks/collection/src/edit.js:78
+msgid "Full-bleed imagery with the title over it. For sites, plugins and portfolios."
+msgstr ""
+
+#: blocks/collection/src/edit.js:176
+msgid "Edit items"
+msgstr ""
+
+#: blocks/collection/src/edit.js:190
+msgid "Template"
+msgstr ""
+
+#: blocks/collection/src/edit.js:193
+msgid "Design"
+msgstr ""
+
+#: blocks/collection/src/edit.js:204
+msgid "Changes the presentation only. Items, categories, search and pagination stay exactly as they are."
+msgstr ""
+
+#: blocks/collection/src/edit.js:215
+msgid "Columns"
+msgstr ""
+
+#: blocks/collection/src/edit.js:224
+msgid "Columns on tablet"
+msgstr ""
+
+#: blocks/collection/src/edit.js:233
+msgid "Columns on mobile"
+msgstr ""
+
+#: blocks/collection/src/edit.js:242
+msgid "Gap"
+msgstr ""
+
+#: blocks/collection/src/edit.js:251
+msgid "Text alignment"
+msgstr ""
+
+#: blocks/collection/src/edit.js:255
+#: blocks/collection/src/edit.js:292
+msgid "Centre"
+msgstr ""
+
+#: blocks/collection/src/edit.js:261
+msgid "Filter and search"
+msgstr ""
+
+#: blocks/collection/src/edit.js:264
+msgid "Category filter"
+msgstr ""
+
+#: blocks/collection/src/edit.js:265
+msgid "A chip per category that has items in it, plus All."
+msgstr ""
+
+#: blocks/collection/src/edit.js:274
+msgid "Show counts"
+msgstr ""
+
+#: blocks/collection/src/edit.js:281
+msgid "“All” label"
+msgstr ""
+
+#: blocks/collection/src/edit.js:288
+msgid "Bar alignment"
+msgstr ""
+
+#: blocks/collection/src/edit.js:302
+msgid "Search box"
+msgstr ""
+
+#: blocks/collection/src/edit.js:303
+msgid "Searches titles, details, descriptions and category names."
+msgstr ""
+
+#: blocks/collection/src/edit.js:311
+msgid "Search placeholder"
+msgstr ""
+
+#: blocks/collection/src/edit.js:319
+msgid "No results message"
+msgstr ""
+
+#: blocks/collection/src/edit.js:342
+msgid "Items per page"
+msgstr ""
+
+#: blocks/collection/src/edit.js:360
+msgid "Card"
+msgstr ""
+
+#: blocks/collection/src/edit.js:363
+msgid "Image"
+msgstr ""
+
+#: blocks/collection/src/edit.js:372
+msgid "Image shape"
+msgstr ""
+
+#: blocks/collection/src/edit.js:375
+msgid "Landscape 16:9"
+msgstr ""
+
+#: blocks/collection/src/edit.js:376
+msgid "Landscape 4:3"
+msgstr ""
+
+#: blocks/collection/src/edit.js:377
+msgid "Landscape 3:2"
+msgstr ""
+
+#: blocks/collection/src/edit.js:378
+msgid "Square"
+msgstr ""
+
+#: blocks/collection/src/edit.js:379
+msgid "Portrait 3:4"
+msgstr ""
+
+#: blocks/collection/src/edit.js:380
+msgid "Original"
+msgstr ""
+
+#: blocks/collection/src/edit.js:387
+msgid "Image fit"
+msgstr ""
+
+#: blocks/collection/src/edit.js:390
+msgid "Fill the frame"
+msgstr ""
+
+#: blocks/collection/src/edit.js:391
+msgid "Fit inside it"
+msgstr ""
+
+#: blocks/collection/src/edit.js:395
+msgid "Better for logos, which crop badly."
+msgstr ""
+
+#: blocks/collection/src/edit.js:412
+msgid "Category labels"
+msgstr ""
+
+#: blocks/collection/src/edit.js:440
+msgid "Button"
+msgstr ""
+
+#: blocks/collection/src/edit.js:448
+msgid "Default button text"
+msgstr ""
+
+#: blocks/collection/src/edit.js:451
+msgid "An item with its own link text uses that instead."
+msgstr ""
+
+#: blocks/collection/src/edit.js:457
+msgid "Open links in a new tab"
+msgstr ""
+
+#: blocks/collection/src/edit.js:463
+msgid "Style"
+msgstr ""
+
+#: blocks/collection/src/edit.js:466
+msgid "Card style"
+msgstr ""
+
+#: blocks/collection/src/edit.js:469
+msgid "Boxed"
+msgstr ""
+
+#: blocks/collection/src/edit.js:470
+msgid "Flat"
+msgstr ""
+
+#: blocks/collection/src/edit.js:477
+msgid "Corner radius"
+msgstr ""
+
+#: blocks/collection/src/edit.js:486
+msgid "Hover effect"
+msgstr ""
+
+#: blocks/collection/src/edit.js:489
+msgid "Lift"
+msgstr ""
+
+#: blocks/collection/src/edit.js:490
+msgid "Zoom the image"
+msgstr ""
+
+#: blocks/collection/src/edit.js:491
+msgid "None"
+msgstr ""
+
+#: blocks/collection/src/edit.js:498
+msgid "Title size"
+msgstr ""
+
+#: blocks/collection/src/edit.js:503
+msgid "0 keeps the theme’s own heading size."
+msgstr ""
+
+#: blocks/collection/src/edit.js:509
+msgid "Colours"
+msgstr ""
+
+#: blocks/collection/src/edit.js:515
+msgid "Card background"
+msgstr ""
+
+#: blocks/collection/src/edit.js:520
+msgid "Card border"
+msgstr ""
+
+#: blocks/collection/src/edit.js:530
+msgid "Accent"
+msgstr ""
+
+#: blocks/collection/src/edit.js:535
+msgid "Left unset, the card follows the page — including the palette Darkify switches to in dark mode."
+msgstr ""
+
+#: blocks/collection/src/edit.js:546
+msgid "Darkify Collection"
+msgstr ""
+
+#: blocks/collection/src/edit.js:547
+msgid "A filterable grid of items you write here — a roundup, a showcase, a directory. Nothing is queried from posts."
+msgstr ""
+
+#: blocks/collection/src/edit.js:557
+msgid "Add the first item"
 msgstr ""
 
 #: blocks/changelog/src/block.json
@@ -649,4 +1150,54 @@ msgstr ""
 #: blocks/changelog/src/block.json
 msgctxt "block keyword"
 msgid "releases"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block title"
+msgid "Darkify Collection"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block description"
+msgid "A filterable, searchable grid of custom items you write here — roundups, showcases, directories — with no post type behind it."
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block keyword"
+msgid "collection"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block keyword"
+msgid "grid"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block keyword"
+msgid "roundup"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block keyword"
+msgid "showcase"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block keyword"
+msgid "directory"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block keyword"
+msgid "filter"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block keyword"
+msgid "portfolio"
+msgstr ""
+
+#: blocks/collection/src/block.json
+msgctxt "block keyword"
+msgid "deals"
 msgstr ""

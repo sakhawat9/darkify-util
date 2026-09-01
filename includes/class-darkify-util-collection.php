@@ -839,7 +839,6 @@ if (!class_exists('Darkify_Util_Collection')) {
                 'categories'        => array(),
 
                 'template'          => 'default',
-                'layout'            => 'grid',
                 'columns'           => 3,
                 'columnsTablet'     => 2,
                 'columnsMobile'     => 1,
@@ -906,12 +905,6 @@ if (!class_exists('Darkify_Util_Collection')) {
             // template added by a filter is a valid saved value straight away.
             $template = isset($attributes['template']) ? sanitize_key($attributes['template']) : '';
             $clean['template'] = isset(self::templates()[$template]) ? $template : $defaults['template'];
-
-            $clean['layout'] = $this->one_of(
-                isset($attributes['layout']) ? $attributes['layout'] : '',
-                array('grid', 'list'),
-                $defaults['layout']
-            );
 
             $clean['contentAlign'] = $this->one_of(
                 isset($attributes['contentAlign']) ? $attributes['contentAlign'] : '',
@@ -1199,7 +1192,6 @@ if (!class_exists('Darkify_Util_Collection')) {
                 'columns'     => '',
                 'per_page'    => '',
                 'pagination'  => '',
-                'layout'      => '',
                 'show_search' => '',
                 'show_filters' => '',
                 'category'    => '',
@@ -1218,7 +1210,6 @@ if (!class_exists('Darkify_Util_Collection')) {
                 'columns'    => 'columns',
                 'per_page'   => 'perPage',
                 'pagination' => 'paginationType',
-                'layout'     => 'layout',
             );
 
             foreach ($map as $att => $key) {

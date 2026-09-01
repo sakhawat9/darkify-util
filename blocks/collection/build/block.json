@@ -55,10 +55,6 @@
       "type": "string",
       "default": "default"
     },
-    "layout": {
-      "type": "string",
-      "default": "grid"
-    },
     "columns": {
       "type": "number",
       "default": 3

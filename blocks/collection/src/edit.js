@@ -95,7 +95,6 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		items,
 		categories,
 		template,
-		layout,
 		columns,
 		columnsTablet,
 		columnsMobile,
@@ -210,56 +209,33 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				</PanelBody>
 
 				<PanelBody title={ __( 'Layout', 'darkify-util' ) }>
-					{ /* Grid-or-list is the default card's own arrangement; the
-					     other three templates lay themselves out. */ }
-					{ 'default' === template && (
-						<SelectControl
-							__nextHasNoMarginBottom
-							label={ __( 'Layout', 'darkify-util' ) }
-							value={ layout }
-							options={ [
-								{ label: __( 'Grid', 'darkify-util' ), value: 'grid' },
-								{ label: __( 'List', 'darkify-util' ), value: 'list' },
-							] }
-							help={
-								'list' === layout
-									? __( 'Image beside the text, one item per row.', 'darkify-util' )
-									: undefined
-							}
-							onChange={ ( value ) => setAttributes( { layout: value } ) }
-						/>
-					) }
+					{ /* Every template is a grid; the columns are what shape it. */ }
+					<RangeControl
+						__nextHasNoMarginBottom
+						label={ __( 'Columns', 'darkify-util' ) }
+						value={ columns }
+						onChange={ ( value ) => setAttributes( { columns: value || 1 } ) }
+						min={ 1 }
+						max={ 6 }
+					/>
 
-					{ ( 'grid' === layout || 'default' !== template ) && (
-						<>
-							<RangeControl
-								__nextHasNoMarginBottom
-								label={ __( 'Columns', 'darkify-util' ) }
-								value={ columns }
-								onChange={ ( value ) => setAttributes( { columns: value || 1 } ) }
-								min={ 1 }
-								max={ 6 }
-							/>
+					<RangeControl
+						__nextHasNoMarginBottom
+						label={ __( 'Columns on tablet', 'darkify-util' ) }
+						value={ columnsTablet }
+						onChange={ ( value ) => setAttributes( { columnsTablet: value || 1 } ) }
+						min={ 1 }
+						max={ 4 }
+					/>
 
-							<RangeControl
-								__nextHasNoMarginBottom
-								label={ __( 'Columns on tablet', 'darkify-util' ) }
-								value={ columnsTablet }
-								onChange={ ( value ) => setAttributes( { columnsTablet: value || 1 } ) }
-								min={ 1 }
-								max={ 4 }
-							/>
-
-							<RangeControl
-								__nextHasNoMarginBottom
-								label={ __( 'Columns on mobile', 'darkify-util' ) }
-								value={ columnsMobile }
-								onChange={ ( value ) => setAttributes( { columnsMobile: value || 1 } ) }
-								min={ 1 }
-								max={ 2 }
-							/>
-						</>
-					) }
+					<RangeControl
+						__nextHasNoMarginBottom
+						label={ __( 'Columns on mobile', 'darkify-util' ) }
+						value={ columnsMobile }
+						onChange={ ( value ) => setAttributes( { columnsMobile: value || 1 } ) }
+						min={ 1 }
+						max={ 2 }
+					/>
 
 					<RangeControl
 						__nextHasNoMarginBottom

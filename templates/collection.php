@@ -174,8 +174,7 @@ foreach (array(
 			 * change without being re-sent with every batch of cards.
 			 */
 			$dkc_grid_class = sprintf(
-				'darkify-collection__grid darkify-collection__grid--%1$s is-template-%2$s is-align-%3$s is-%4$s is-hover-%5$s',
-				$data['layout'],
+				'darkify-collection__grid is-template-%1$s is-align-%2$s is-%3$s is-hover-%4$s',
 				$data['template'],
 				$data['contentAlign'],
 				$data['cardStyle'],

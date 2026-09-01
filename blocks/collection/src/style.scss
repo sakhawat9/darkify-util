@@ -265,23 +265,6 @@
 	align-items: stretch;
 }
 
-/* The list arrangement belongs to the default card, which is the only template
-   that draws a media box and a body it can put side by side. The other three
-   arrange themselves — rows, panels, tiles — and this rule would fight them. */
-.darkify-collection__grid--list.is-template-default {
-	grid-template-columns: minmax(0, 1fr);
-
-	.darkify-collection__item {
-		display: grid;
-		grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
-		align-items: stretch;
-	}
-
-	.darkify-collection__media {
-		height: 100%;
-	}
-}
-
 .darkify-collection__item {
 	position: relative;
 	display: flex;
@@ -537,7 +520,17 @@
 	border: 1px solid var(--darkify-collection-border);
 	border-radius: var(--darkify-collection-radius);
 	background-color: var(--darkify-collection-surface);
-	transition: border-color 180ms ease, box-shadow 180ms ease;
+
+	/* No `transition` here, deliberately.
+	 *
+	 * .darkify-collection__item already declares one covering transform,
+	 * box-shadow and border-color. This selector has the same specificity and
+	 * comes later in the file, so any shorthand written here replaces that one
+	 * outright rather than adding to it — which is exactly what went wrong:
+	 * `transition: border-color, box-shadow` dropped `transform`, and the hover
+	 * lift snapped to its end position instead of easing into it. If this card
+	 * ever needs its own timing, extend the base declaration or use
+	 * `transition-duration`; do not re-write the shorthand. */
 
 	/* The screenshot's highlighted card: the frame picks up the accent on hover
 	   and on keyboard focus, so pointer and keyboard get the same signal. */
@@ -961,24 +954,11 @@
 		grid-template-columns: repeat(var(--darkify-collection-columns-tablet), minmax(0, 1fr));
 	}
 
-	.darkify-collection__grid--list.is-template-default {
-		grid-template-columns: minmax(0, 1fr);
-
-		.darkify-collection__item {
-			grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
-		}
-	}
 }
 
 @media (max-width: 600px) {
 	.darkify-collection__grid {
 		grid-template-columns: repeat(var(--darkify-collection-columns-mobile), minmax(0, 1fr));
-	}
-
-	/* A 200px image column beside text on a phone leaves neither enough room;
-	   the list layout becomes the card layout. */
-	.darkify-collection__grid--list.is-template-default .darkify-collection__item {
-		grid-template-columns: minmax(0, 1fr);
 	}
 
 	.darkify-collection__bar {

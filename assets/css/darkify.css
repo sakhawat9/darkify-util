@@ -57,6 +57,11 @@
 }
 .darkify_sub_menu ul {
   filter: drop-shadow(1px 3px 25px rgba(0, 0, 0, 0.2));
+  transform: translateY(30px) !important;
+}
+.darkify_sub_menu:hover ul {
+  transform: translateY(0px) !important;
+  transition: transform 0.3s ease-in-out;
 }
 .darkify_sub_menu .kb-nav-link-content::after {
   content: "";
