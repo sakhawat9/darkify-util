@@ -55,7 +55,6 @@
   background-color: #fdf0e8 !important;
   color: #2d3332 !important;
 }
-
 .darkify_sub_menu ul {
   filter: drop-shadow(1px 3px 25px rgba(0, 0, 0, 0.2));
 }
@@ -83,6 +82,26 @@
   border-radius: 12px !important;
   padding: 10px !important;
 }
+header:has(.darkify_header) {
+    position: sticky;
+    z-index: 5;
+    background: transparent;
+    transition: top 0.35s ease, background-color 0.35s ease;
+}
+header:has(.darkify_header).is-sticky {
+    background-color: white;
+    box-shadow: 0 13px 22px -5px rgb(0 0 0 / 10%);
+}
+header:has(.darkify_header).scroll-down {
+    top: -100px;
+}
+header:has(.darkify_header).scroll-up {
+    top: 0px;
+}
+@media (max-width: 768px) {
+header:has(.darkify_header).scroll-up {
+    top: 0px;
+}}
 .df-accordions .kt-blocks-accordion-header {
   cursor: pointer;
 }

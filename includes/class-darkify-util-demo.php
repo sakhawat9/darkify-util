@@ -66,12 +66,14 @@ if (!class_exists('Darkify_Util_Demo')) {
                 // (empty = the presets the installed edition ships for free),
                 // `sizes` takes `Label:percent` items (the percent is Darkify's
                 // own switch_size), and `positions` names the placements
-                // offered. Set `controls="no"` for the preview on its own.
+                // offered — all four of Darkify's corners by default, listed in
+                // the order its own Switcher Style setting lists them. Set
+                // `controls="no"` for the preview on its own.
                 'controls'    => 'yes',
                 'presets'     => '',
                 'preset'      => '',
                 'sizes'       => 'XS:50,S:60,M:75,L:85,XL:100,XXL:125',
-                'positions'   => 'bottom-left,bottom-right',
+                'positions'   => 'bottom-right,bottom-left,top-right,top-left',
                 'position'    => 'bottom-right',
                 // Optional override for the switcher's corner radius (e.g.
                 // "50%" for a circle). Empty keeps whatever Darkify's own

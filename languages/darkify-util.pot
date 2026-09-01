@@ -1,0 +1,652 @@
+# Copyright (C) 2026 
+# This file is distributed under the same license as the Darkify Util plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Darkify Util 1.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/darkify-util\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-01T06:42:57+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: darkify-util\n"
+
+#. Plugin Name of the plugin
+#: darkify-util.php
+msgid "Darkify Util"
+msgstr ""
+
+#. Description of the plugin
+#: darkify-util.php
+msgid "A utility plugin to add dark mode functionality to your WordPress site."
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:98
+msgid "That post does not exist."
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:113
+msgid "No third-party changelog blocks found."
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:120
+msgid "Dry run — nothing was written."
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:155
+msgid "Migrated."
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:373
+#: includes/class-darkify-util-changelog-migrator.php:374
+#: includes/class-darkify-util-changelog-migrator.php:391
+msgid "Darkify Changelog Import"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:384
+msgid "You are not allowed to do that."
+msgstr ""
+
+#. translators: %d: post ID.
+#: includes/class-darkify-util-changelog-migrator.php:397
+#, php-format
+msgid "Post %d migrated. A revision of the previous content was saved."
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:403
+msgid "Converts third-party changelog blocks into the first-party Darkify Changelog block. The previous content is kept as a post revision."
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:407
+msgid "Nothing to migrate."
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:412
+msgid "Post"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:413
+#: templates/changelog.php:73
+msgid "Versions"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:414
+msgid "Entries"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:415
+msgid "Cross-check"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:416
+msgid "Action"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:446
+msgid "Counts match"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:447
+msgid "Counts differ — review after migrating"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:455
+msgid "Migrate"
+msgstr ""
+
+#: includes/class-darkify-util-changelog-migrator.php:475
+msgid "You are not allowed to edit that post."
+msgstr ""
+
+#: includes/class-darkify-util-changelog.php:119
+msgid "Darkify"
+msgstr ""
+
+#: includes/class-darkify-util-changelog.php:263
+msgid "Load More"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:50
+#: includes/class-darkify-util-hero.php:53
+msgid "Your Brand"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:117
+msgid "Home"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:118
+msgid "Shop"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:119
+msgid "Blog"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:120
+msgid "Contact"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:190
+msgid "Bottom Right"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:191
+msgid "Bottom Left"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:192
+msgid "Top Right"
+msgstr ""
+
+#: includes/class-darkify-util-demo.php:193
+msgid "Top Left"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:55
+msgid "Beautiful dark mode, automatically."
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:56
+msgid "Darkify recolors every background, text, border, image and scrollbar on your site — with contrast that stays readable."
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:57
+msgid "Get Started"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:58
+msgid "See Features"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:152
+msgid "Features"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:153
+msgid "Pricing"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:154
+msgid "Docs"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:167
+msgid "Light"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:168
+msgid "Dark"
+msgstr ""
+
+#: templates/changelog.php:34
+#: blocks/changelog/src/components/Preview.js:59
+msgid "No changelog entries yet."
+msgstr ""
+
+#: templates/changelog.php:48
+msgid "Filter changes by category"
+msgstr ""
+
+#: templates/changelog.php:53
+msgid "All"
+msgstr ""
+
+#: templates/changelog.php:74
+#: blocks/changelog/src/components/VersionEditor.js:49
+msgid "Version"
+msgstr ""
+
+#. translators: %s: version number.
+#: templates/changelog.php:84
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: templates/changelog.php:106
+msgid "Search the changelog"
+msgstr ""
+
+#: templates/changelog.php:112
+msgid "Search versions and changes…"
+msgstr ""
+
+#: templates/changelog.php:118
+msgid "No changes match your search."
+msgstr ""
+
+#: templates/changelog.php:161
+msgid "Latest"
+msgstr ""
+
+#: templates/changelog.php:195
+#: blocks/changelog/src/components/EntryRow.js:94
+msgid "Details"
+msgstr ""
+
+#: templates/changelog.php:226
+msgid "Changelog pages"
+msgstr ""
+
+#: templates/changelog.php:234
+msgid "Previous"
+msgstr ""
+
+#: templates/changelog.php:235
+msgid "Next"
+msgstr ""
+
+#: templates/demo-frame.php:39
+msgid "Sample site navigation"
+msgstr ""
+
+#: templates/demo-frame.php:58
+msgid "Your headline looks great in both modes."
+msgstr ""
+
+#: templates/demo-frame.php:59
+msgid "Darkify recolors backgrounds, text, borders, images, and even scrollbars — automatically, with contrast that stays readable."
+msgstr ""
+
+#: templates/demo-frame.php:65
+msgid "Fast"
+msgstr ""
+
+#: templates/demo-frame.php:65
+msgid "No layout shift."
+msgstr ""
+
+#: templates/demo-frame.php:66
+msgid "Accessible"
+msgstr ""
+
+#: templates/demo-frame.php:66
+msgid "WCAG contrast."
+msgstr ""
+
+#: templates/demo-frame.php:67
+msgid "Yours"
+msgstr ""
+
+#: templates/demo-frame.php:67
+msgid "Fully themed."
+msgstr ""
+
+#: templates/demo.php:36
+msgid "Interactive Darkify preview"
+msgstr ""
+
+#: templates/demo.php:53
+msgid "Demo switcher settings"
+msgstr ""
+
+#: templates/demo.php:57
+msgid "Color preset"
+msgstr ""
+
+#: templates/demo.php:79
+msgid "Switch size"
+msgstr ""
+
+#: templates/demo.php:96
+msgid "Position"
+msgstr ""
+
+#: templates/hero-frame.php:74
+msgid "Dark mode"
+msgstr ""
+
+#: templates/hero-frame.php:127
+#: templates/hero-frame.php:262
+msgid "Controls"
+msgstr ""
+
+#: templates/hero-frame.php:132
+msgid "Switches"
+msgstr ""
+
+#: templates/hero-frame.php:136
+msgid "Colors"
+msgstr ""
+
+#: templates/hero-frame.php:140
+msgid "Media"
+msgstr ""
+
+#: templates/hero-frame.php:144
+msgid "Advanced"
+msgstr ""
+
+#: templates/hero-frame.php:148
+msgid "Tools"
+msgstr ""
+
+#: templates/hero-frame.php:152
+msgid "License"
+msgstr ""
+
+#: templates/hero-frame.php:159
+msgid "Admin Panel Dark Mode"
+msgstr ""
+
+#: templates/hero-frame.php:160
+msgid "Enable dark mode in the WordPress admin dashboard."
+msgstr ""
+
+#: templates/hero-frame.php:164
+msgid "Admin Panel Palette"
+msgstr ""
+
+#: templates/hero-frame.php:165
+msgid "Color preset for the WordPress admin. Auto lets Darkify derive each color from the original."
+msgstr ""
+
+#: templates/hero-frame.php:171
+msgid "Block Editor Dark Mode"
+msgstr ""
+
+#: templates/hero-frame.php:172
+msgid "Enable the dark mode switch in the block editor to toggle between dark and light mode."
+msgstr ""
+
+#: templates/hero-frame.php:176
+msgid "Block Editor Palette"
+msgstr ""
+
+#: templates/hero-frame.php:177
+msgid "Color preset for the block editor, independent of the rest of the admin."
+msgstr ""
+
+#: templates/hero-frame.php:181
+msgid "Classic Editor Dark Mode"
+msgstr ""
+
+#: templates/hero-frame.php:182
+msgid "Enable the dark mode switch in the classic editor to toggle between dark and light modes."
+msgstr ""
+
+#: templates/hero-frame.php:187
+msgid "Auto (recommended)"
+msgstr ""
+
+#: templates/hero-frame.php:208
+msgid "New"
+msgstr ""
+
+#. translators: %s: sample user name.
+#: templates/hero-frame.php:214
+#, php-format
+msgid "Howdy, %s"
+msgstr ""
+
+#: templates/hero-frame.php:263
+msgid "Admin"
+msgstr ""
+
+#: templates/hero-frame.php:267
+msgid "Save"
+msgstr ""
+
+#: templates/hero-frame.php:273
+msgid "Bring dark mode to the WordPress admin dashboard and editors."
+msgstr ""
+
+#: templates/hero-frame.php:273
+msgid "View documentation"
+msgstr ""
+
+#: templates/hero-frame.php:275
+msgid "Admin appearance"
+msgstr ""
+
+#: templates/hero-frame.php:339
+msgid "On"
+msgstr ""
+
+#: templates/hero.php:121
+msgid "Darkify preview, switching between light and dark mode"
+msgstr ""
+
+#: blocks/changelog/src/components/CategoryColors.js:58
+msgid "Categories appear here once a changelog is converted."
+msgstr ""
+
+#: blocks/changelog/src/components/EntryRow.js:32
+msgid "Category"
+msgstr ""
+
+#: blocks/changelog/src/components/EntryRow.js:45
+msgid "Change"
+msgstr ""
+
+#: blocks/changelog/src/components/EntryRow.js:59
+msgid "Attach a link"
+msgstr ""
+
+#: blocks/changelog/src/components/EntryRow.js:68
+msgid "Remove entry"
+msgstr ""
+
+#: blocks/changelog/src/components/EntryRow.js:79
+msgid "Link URL"
+msgstr ""
+
+#: blocks/changelog/src/components/EntryRow.js:89
+msgid "Link text"
+msgstr ""
+
+#: blocks/changelog/src/components/PastePanel.js:40
+msgid "Paste your changelog here"
+msgstr ""
+
+#: blocks/changelog/src/components/PastePanel.js:41
+msgid "Version headings such as \"= 2.1.0 – 25 August 2026 =\" and entries such as \"* Fixed: …\". Bullets and category prefixes are both optional."
+msgstr ""
+
+#: blocks/changelog/src/components/PastePanel.js:57
+msgid "Converting again replaces the versions below, including any edits made by hand. Convert anyway?"
+msgstr ""
+
+#: blocks/changelog/src/components/PastePanel.js:67
+msgid "Yes, replace the changelog"
+msgstr ""
+
+#: blocks/changelog/src/components/PastePanel.js:68
+msgid "Convert to changelog"
+msgstr ""
+
+#: blocks/changelog/src/components/PastePanel.js:78
+msgid "Cancel"
+msgstr ""
+
+#: blocks/changelog/src/components/Preview.js:65
+msgid "Rendering preview…"
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:59
+msgid "Date"
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:73
+msgid "Not recognised as a date — it will still display as written."
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:80
+msgid "Label"
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:85
+msgid "Optional"
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:95
+msgid "Move version up"
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:104
+msgid "Move version down"
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:113
+msgid "Remove version"
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:155
+msgid "Add entry"
+msgstr ""
+
+#: blocks/changelog/src/components/VersionEditor.js:165
+msgid "Add version"
+msgstr ""
+
+#. translators: %d: number of versions.
+#: blocks/changelog/src/components/VersionEditor.js:171
+#, js-format
+msgid "%d versions"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:92
+msgid "Preview"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:102
+msgid "Edit versions"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:112
+msgid "Edit source"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:120
+msgid "Layout"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:123
+msgid "Version list"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:126
+msgid "Right"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:127
+msgid "Left"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:128
+msgid "Hidden"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:135
+msgid "Show dates"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:142
+msgid "Show category badges"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:149
+msgid "Show category filter"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:150
+msgid "A row of category chips with counts, above the versions."
+msgstr ""
+
+#: blocks/changelog/src/edit.js:157
+msgid "Show search"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:158
+msgid "Filters versions and entries in the browser."
+msgstr ""
+
+#: blocks/changelog/src/edit.js:165
+msgid "Collapsible versions"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:166
+msgid "Versions open by default; visitors can fold them away."
+msgstr ""
+
+#: blocks/changelog/src/edit.js:172
+msgid "Pagination"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:175
+msgid "Type"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:178
+msgid "Load more"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:179
+msgid "Numbered"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:180
+msgid "Show all"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:188
+msgid "Versions per page"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:199
+msgid "Button text"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:206
+msgid "Category colours"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:217
+msgid "Darkify Changelog"
+msgstr ""
+
+#: blocks/changelog/src/edit.js:218
+msgid "Paste a changelog and it becomes a versioned release history you can edit."
+msgstr ""
+
+#: blocks/changelog/src/edit.js:239
+msgid "Some lines could not be read and were left out:"
+msgstr ""
+
+#: blocks/changelog/src/block.json
+msgctxt "block title"
+msgid "Darkify Changelog"
+msgstr ""
+
+#: blocks/changelog/src/block.json
+msgctxt "block description"
+msgid "Turn a pasted changelog into a versioned, navigable release history."
+msgstr ""
+
+#: blocks/changelog/src/block.json
+msgctxt "block keyword"
+msgid "changelog"
+msgstr ""
+
+#: blocks/changelog/src/block.json
+msgctxt "block keyword"
+msgid "release notes"
+msgstr ""
+
+#: blocks/changelog/src/block.json
+msgctxt "block keyword"
+msgid "versions"
+msgstr ""
+
+#: blocks/changelog/src/block.json
+msgctxt "block keyword"
+msgid "updates"
+msgstr ""
+
+#: blocks/changelog/src/block.json
+msgctxt "block keyword"
+msgid "releases"
+msgstr ""

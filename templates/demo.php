@@ -92,18 +92,29 @@ if (!defined('ABSPATH')) {
 			<?php endif; ?>
 
 			<?php if ($data['positions']) : ?>
+				<?php
+				/*
+				 * A select rather than the pill row the other two groups use:
+				 * Darkify itself offers four corners, and four pills either
+				 * wrap the panel onto a second line or crowd the size group.
+				 * The control also mirrors the plugin's own Switcher Style
+				 * setting, so the demo and the settings screen offer the same
+				 * choice in the same order.
+				 */
+				?>
 				<div class="dkfd-ctrl">
-					<span class="dkfd-ctrl__label" id="<?php echo esc_attr($data['instance']); ?>_position"><?php esc_html_e('Position', 'darkify-util'); ?></span>
-					<div class="dkfd-ctrl__options" role="group" aria-labelledby="<?php echo esc_attr($data['instance']); ?>_position">
-						<?php foreach ($data['positions'] as $position) :
-							$selected = $position['value'] === $data['position']; ?>
-							<button
-								type="button"
-								class="dkfd-pill dkfd-pill--solid<?php echo $selected ? ' is-selected' : ''; ?>"
-								data-dkfd-control="position"
-								data-dkfd-value="<?php echo esc_attr($position['value']); ?>"
-								aria-pressed="<?php echo $selected ? 'true' : 'false'; ?>"><?php echo esc_html($position['label']); ?></button>
-						<?php endforeach; ?>
+					<label class="dkfd-ctrl__label" for="<?php echo esc_attr($data['instance']); ?>_position"><?php esc_html_e('Position', 'darkify-util'); ?></label>
+					<div class="dkfd-ctrl__options">
+						<select
+							class="dkfd-select"
+							id="<?php echo esc_attr($data['instance']); ?>_position"
+							data-dkfd-control="position">
+							<?php foreach ($data['positions'] as $position) : ?>
+								<option
+									value="<?php echo esc_attr($position['value']); ?>"
+									<?php selected($position['value'], $data['position']); ?>><?php echo esc_html($position['label']); ?></option>
+							<?php endforeach; ?>
+						</select>
 					</div>
 				</div>
 			<?php endif; ?>

@@ -435,13 +435,30 @@
 	};
 
 	/**
-	 * A control button as the state understands it: its value, plus the
-	 * variables the server resolved for it (colour presets carry Darkify's own
-	 * palette values).
+	 * A control as the state understands it: its value, plus the variables the
+	 * server resolved for it (colour presets carry Darkify's own palette
+	 * values).
+	 *
+	 * Two shapes of control reach here. Preset and size are rows of buttons,
+	 * each carrying its own value; position is a <select>, where the value
+	 * lives on the chosen <option>. Reading through to that option keeps the
+	 * rest of the pipeline — state, CONTROLS, applyState — unaware of the
+	 * difference.
 	 */
-	function readOption(button) {
-		var option = { value: button.getAttribute("data-dkfd-value"), vars: null };
-		var vars = button.getAttribute("data-dkfd-vars");
+	function readOption(control) {
+		var source = control.tagName === "SELECT"
+			? control.options[control.selectedIndex]
+			: control;
+
+		if (!source) {
+			return { value: "", vars: null };
+		}
+
+		var value = control.tagName === "SELECT"
+			? source.value
+			: source.getAttribute("data-dkfd-value");
+		var option = { value: value, vars: null };
+		var vars = source.getAttribute("data-dkfd-vars");
 
 		if (vars) {
 			try {
@@ -534,18 +551,35 @@
 		// Seed from what the server rendered as selected: the switcher is
 		// already drawn with these values, so a frame that boots later (or a
 		// visitor who clicks before it does) comes up matching the panel.
-		toArray(panel.querySelectorAll("[data-dkfd-control].is-selected")).forEach(function (button) {
-			instance.state[button.getAttribute("data-dkfd-control")] = readOption(button);
+		// A <select> is always seeded — its current option is the selection,
+		// with no class to mark it — while button rows seed from `.is-selected`.
+		toArray(panel.querySelectorAll("[data-dkfd-control]")).forEach(function (control) {
+			if (control.tagName !== "SELECT" && !control.classList.contains("is-selected")) {
+				return;
+			}
+			instance.state[control.getAttribute("data-dkfd-control")] = readOption(control);
 		});
 
 		panel.addEventListener("click", function (event) {
 			var button = event.target.closest ? event.target.closest("[data-dkfd-control]") : null;
-			if (!button || !panel.contains(button)) {
+			if (!button || button.tagName === "SELECT" || !panel.contains(button)) {
 				return;
 			}
 
 			selectOption(button);
 			instance.state[button.getAttribute("data-dkfd-control")] = readOption(button);
+			applyState(instance);
+		});
+
+		// Selects report through `change`, which also covers the keyboard and
+		// the mobile native picker — neither of which fires a usable click.
+		panel.addEventListener("change", function (event) {
+			var select = event.target;
+			if (!select || select.tagName !== "SELECT" || !select.getAttribute("data-dkfd-control")) {
+				return;
+			}
+
+			instance.state[select.getAttribute("data-dkfd-control")] = readOption(select);
 			applyState(instance);
 		});
 	}

@@ -18,7 +18,8 @@ define('DARKIFY_UTIL_VERSION', '1.1');
 // enqueue the plugin's CSS and JavaScript files
 function darkify_enqueue_scripts()
 {
-    wp_enqueue_style('darkify-util-style', plugin_dir_url(__FILE__) . 'css/darkify.css');
+    wp_enqueue_style('darkify-util-style', plugin_dir_url(__FILE__) . 'assets/css/darkify.css');
+    wp_enqueue_script('darkify-util-script', plugin_dir_url(__FILE__) . 'assets/js/custom-script.js', array(), DARKIFY_UTIL_VERSION, true);
 }
 
 add_action('wp_enqueue_scripts', 'darkify_enqueue_scripts');

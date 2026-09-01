@@ -260,13 +260,49 @@
 	color: var(--dkfd-panel-strong);
 }
 
-/* The position group reads as a segmented control: its selected option is
-   filled rather than outlined. */
-.dkfd-pill--solid.is-selected {
-	border-color: var(--dkfd-panel-strong);
-	background: var(--dkfd-panel-strong);
-	color: var(--dkfd-panel-strong-text);
-	font-weight: 700;
+/* Position select
+
+   Styled to sit level with the pills beside it — same height, radius, border
+   and type — so the row still reads as one panel. The arrow is an inline SVG
+   data URI rather than a pseudo-element: `appearance: none` removes the native
+   one, and a <select> cannot carry ::after. It is drawn with `currentColor`
+   through the stroke, so it follows the light-surface flip for free. */
+.dkfd-select {
+	appearance: none;
+	-webkit-appearance: none;
+	cursor: pointer;
+	min-width: 150px;
+	padding: 7px 30px 7px 12px;
+	border: 1px solid var(--dkfd-panel-border);
+	border-radius: 8px;
+	background-color: transparent;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 11px center;
+	font-family: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1;
+	color: var(--dkfd-panel-text);
+	transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dkfd-select:hover {
+	border-color: rgba(255, 255, 255, 0.3);
+	color: var(--dkfd-panel-strong);
+}
+
+.dkfd-select:focus-visible {
+	outline: 2px solid var(--dkfd-panel-strong);
+	outline-offset: 2px;
+}
+
+/* The dropdown list itself is painted by the OS, not the panel: on a dark
+   surface the inherited light text would land on the browser's white list.
+   These two are the only properties that reach it. */
+.dkfd-select option {
+	background: #0f172a;
+	color: #e2e8f0;
 }
 
 .dkfd__controls .screen-reader-text {
@@ -315,8 +351,18 @@
 }
 
 .dkfd--on-light .dkfd-pill:hover,
-.dkfd--on-light .dkfd-pill.is-selected {
+.dkfd--on-light .dkfd-pill.is-selected,
+.dkfd--on-light .dkfd-select:hover {
 	border-color: rgba(15, 23, 42, 0.45);
+}
+
+.dkfd--on-light .dkfd-select {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23475569' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.dkfd--on-light .dkfd-select option {
+	background: #ffffff;
+	color: #0f172a;
 }
 
 /* Hero preview ------------------------------------------------------------

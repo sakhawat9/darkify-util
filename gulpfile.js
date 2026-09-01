@@ -21,13 +21,9 @@ const pluginVersion = (function () {
 // Paths
 const paths = {
   css: {
-    // The front-end stylesheet loaded on every page.
-    src: ["css/*.css", "!css/*.min.css"],
-    dest: "css/",
-  },
-  assets_css: {
-    // Preview / demo / hero frame styles, loaded only where a shortcode runs.
-    src: ["assets/css/*.css", "!assets/css/*.min.css"],
+    // Every stylesheet the plugin ships: the site-wide darkify.css plus the
+    // preview / demo / hero frame styles loaded only where a shortcode runs.
+    src: ["assets/css/**/*.css", "!assets/css/**/*.min.css"],
     dest: "assets/css/",
   },
   js: {
@@ -153,10 +149,7 @@ gulp.task("make-zip", function () {
 // Clean only minified CSS files
 gulp.task("cleanMinifiedCSS", function () {
   return gulp
-    .src([`${paths.css.dest}/*.min.css`, `${paths.assets_css.dest}/*.min.css`], {
-      read: false,
-      allowEmpty: true,
-    })
+    .src(`${paths.css.dest}/**/*.min.css`, { read: false, allowEmpty: true })
     .pipe(clean());
 });
 
@@ -176,14 +169,6 @@ gulp.task("minify-css", function () {
     .pipe(gulp.dest(paths.css.dest));
 });
 
-gulp.task("minify-assets-css", function () {
-  return gulp
-    .src(paths.assets_css.src)
-    .pipe(cleanCSS({ level: { 1: { all: false }, 2: { all: false } } }))
-    .pipe(rename({ suffix: ".min" }))
-    .pipe(gulp.dest(paths.assets_css.dest));
-});
-
 // Minify JS
 gulp.task("minify-js", function () {
   return gulp
@@ -196,10 +181,6 @@ gulp.task("minify-js", function () {
 // Watch for changes
 gulp.task("watch", function () {
   gulp.watch(paths.css.src, gulp.series("cleanMinifiedCSS", "minify-css"));
-  gulp.watch(
-    paths.assets_css.src,
-    gulp.series("cleanMinifiedCSS", "minify-assets-css"),
-  );
   gulp.watch(paths.js.src, gulp.series("cleanMinifiedJs", "minify-js"));
 });
 
@@ -209,13 +190,12 @@ exports.default = gulp.series(
   "clean-build",
   "cleanMinifiedCSS",
   "minify-css",
-  "minify-assets-css",
   "cleanMinifiedJs",
   "minify-js",
   "makepot",
   "copy",
   "make-zip",
 );
-exports.minifyCss = gulp.series("cleanMinifiedCSS", "minify-css", "minify-assets-css");
+exports.minifyCss = gulp.series("cleanMinifiedCSS", "minify-css");
 exports.minifyJs = gulp.series("cleanMinifiedJs", "minify-js");
 exports.watch = gulp.series("watch");
