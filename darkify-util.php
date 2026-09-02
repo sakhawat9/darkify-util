@@ -64,3 +64,16 @@ add_action('plugins_loaded', array('Darkify_Util_Changelog_Migrator', 'instance'
 require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-collection.php';
 
 add_action('plugins_loaded', array('Darkify_Util_Collection', 'instance'));
+
+/**
+ * SVG uploads.
+ *
+ * WordPress refuses the format because an SVG is a document that can carry
+ * scripts. The format is enabled here and every uploaded file is rewritten from
+ * an allowlist before it is stored — the two always travel together, and the
+ * sanitiser is required first so the mime type can never be allowed without it.
+ */
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-svg-sanitizer.php';
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-svg.php';
+
+add_action('plugins_loaded', array('Darkify_Util_SVG', 'instance'));
