@@ -1,9 +1,9 @@
 /**
  * The editor for darkify-util/changelog.
  *
- * Two states: the paste panel, and the editable version list you get after
- * converting. The raw text is kept in the `source` attribute either way, so
- * "Edit source" in the toolbar can always take you back to it.
+ * Two states: the paste panel, and the preview you get after converting. The
+ * raw text is kept in the `source` attribute either way, so "Edit source" in
+ * the toolbar can always take you back to it.
  */
 
 import { __ } from '@wordpress/i18n';
@@ -28,7 +28,6 @@ import { useState } from '@wordpress/element';
 import CategoryColors from './components/CategoryColors';
 import PastePanel from './components/PastePanel';
 import Preview from './components/Preview';
-import VersionEditor from './components/VersionEditor';
 import { parseChangelog } from './parser';
 
 /**
@@ -55,7 +54,6 @@ export default function Edit( { attributes, setAttributes } ) {
 
 	const hasContent = versions.length > 0;
 	const [ pasting, setPasting ] = useState( ! hasContent );
-	const [ editing, setEditing ] = useState( false );
 	const [ warnings, setWarnings ] = useState( [] );
 
 	const blockProps = useBlockProps( {
@@ -78,9 +76,6 @@ export default function Edit( { attributes, setAttributes } ) {
 
 		setWarnings( parsed.warnings );
 		setPasting( false );
-		// Converting lands on the preview, not on a form: the point of the
-		// button is to see the changelog.
-		setEditing( false );
 	};
 
 	return (
@@ -90,21 +85,8 @@ export default function Edit( { attributes, setAttributes } ) {
 					<ToolbarButton
 						icon="visibility"
 						label={ __( 'Preview', 'darkify-util' ) }
-						onClick={ () => {
-							setPasting( false );
-							setEditing( false );
-						} }
-						isPressed={ ! pasting && ! editing }
-						disabled={ ! hasContent }
-					/>
-					<ToolbarButton
-						icon="list-view"
-						label={ __( 'Edit versions', 'darkify-util' ) }
-						onClick={ () => {
-							setPasting( false );
-							setEditing( true );
-						} }
-						isPressed={ editing }
+						onClick={ () => setPasting( false ) }
+						isPressed={ ! pasting }
 						disabled={ ! hasContent }
 					/>
 					<ToolbarButton
@@ -247,15 +229,7 @@ export default function Edit( { attributes, setAttributes } ) {
 						</Notice>
 					) }
 
-					{ editing ? (
-						<VersionEditor
-							versions={ versions }
-							categories={ categories }
-							onChange={ ( value ) => setAttributes( { versions: value } ) }
-						/>
-					) : (
-						<Preview attributes={ attributes } />
-					) }
+					<Preview attributes={ attributes } />
 				</>
 			) }
 		</div>

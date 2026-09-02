@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-02T13:51:57+00:00\n"
+"POT-Creation-Date: 2026-09-02T13:59:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: darkify-util\n"
@@ -268,7 +268,6 @@ msgid "Filter changes by category"
 msgstr ""
 
 #: templates/changelog.php:74
-#: blocks/changelog/src/components/VersionEditor.js:49
 msgid "Version"
 msgstr ""
 
@@ -295,7 +294,6 @@ msgid "Latest"
 msgstr ""
 
 #: templates/changelog.php:195
-#: blocks/changelog/src/components/EntryRow.js:94
 #: blocks/collection/src/components/ItemRow.js:291
 #: blocks/collection/src/edit.js:426
 msgid "Details"
@@ -520,32 +518,6 @@ msgstr ""
 msgid "Categories appear here once a changelog is converted."
 msgstr ""
 
-#: blocks/changelog/src/components/EntryRow.js:32
-msgid "Category"
-msgstr ""
-
-#: blocks/changelog/src/components/EntryRow.js:45
-msgid "Change"
-msgstr ""
-
-#: blocks/changelog/src/components/EntryRow.js:59
-msgid "Attach a link"
-msgstr ""
-
-#: blocks/changelog/src/components/EntryRow.js:68
-msgid "Remove entry"
-msgstr ""
-
-#: blocks/changelog/src/components/EntryRow.js:79
-#: blocks/collection/src/components/ItemRow.js:273
-msgid "Link URL"
-msgstr ""
-
-#: blocks/changelog/src/components/EntryRow.js:89
-#: blocks/collection/src/components/ItemRow.js:282
-msgid "Link text"
-msgstr ""
-
 #: blocks/changelog/src/components/PastePanel.js:40
 msgid "Paste your changelog here"
 msgstr ""
@@ -575,167 +547,118 @@ msgstr ""
 msgid "Rendering preview…"
 msgstr ""
 
-#: blocks/changelog/src/components/VersionEditor.js:59
-msgid "Date"
-msgstr ""
-
-#: blocks/changelog/src/components/VersionEditor.js:73
-msgid "Not recognised as a date — it will still display as written."
-msgstr ""
-
-#: blocks/changelog/src/components/VersionEditor.js:80
-#: blocks/collection/src/components/ItemRow.js:304
-#: blocks/collection/src/components/ItemRow.js:308
-msgid "Label"
-msgstr ""
-
-#: blocks/changelog/src/components/VersionEditor.js:85
-#: blocks/collection/src/components/ItemRow.js:237
-msgid "Optional"
-msgstr ""
-
-#: blocks/changelog/src/components/VersionEditor.js:95
-msgid "Move version up"
-msgstr ""
-
-#: blocks/changelog/src/components/VersionEditor.js:104
-msgid "Move version down"
-msgstr ""
-
-#: blocks/changelog/src/components/VersionEditor.js:113
-msgid "Remove version"
-msgstr ""
-
-#: blocks/changelog/src/components/VersionEditor.js:155
-msgid "Add entry"
-msgstr ""
-
-#: blocks/changelog/src/components/VersionEditor.js:165
-msgid "Add version"
-msgstr ""
-
-#. translators: %d: number of versions.
-#: blocks/changelog/src/components/VersionEditor.js:171
-#, js-format
-msgid "%d versions"
-msgstr ""
-
-#: blocks/changelog/src/edit.js:92
+#: blocks/changelog/src/edit.js:87
 #: blocks/collection/src/edit.js:169
 msgid "Preview"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:102
-msgid "Edit versions"
-msgstr ""
-
-#: blocks/changelog/src/edit.js:112
+#: blocks/changelog/src/edit.js:94
 msgid "Edit source"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:120
+#: blocks/changelog/src/edit.js:102
 #: blocks/collection/src/edit.js:211
 msgid "Layout"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:123
+#: blocks/changelog/src/edit.js:105
 msgid "Version list"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:126
+#: blocks/changelog/src/edit.js:108
 #: blocks/collection/src/edit.js:293
 msgid "Right"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:127
+#: blocks/changelog/src/edit.js:109
 #: blocks/collection/src/edit.js:254
 #: blocks/collection/src/edit.js:291
 msgid "Left"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:128
+#: blocks/changelog/src/edit.js:110
 msgid "Hidden"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:135
+#: blocks/changelog/src/edit.js:117
 msgid "Show dates"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:142
+#: blocks/changelog/src/edit.js:124
 msgid "Show category badges"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:149
+#: blocks/changelog/src/edit.js:131
 msgid "Show category filter"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:150
+#: blocks/changelog/src/edit.js:132
 msgid "A row of category chips with counts, above the versions."
 msgstr ""
 
-#: blocks/changelog/src/edit.js:157
+#: blocks/changelog/src/edit.js:139
 msgid "Show search"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:158
+#: blocks/changelog/src/edit.js:140
 msgid "Filters versions and entries in the browser."
 msgstr ""
 
-#: blocks/changelog/src/edit.js:165
+#: blocks/changelog/src/edit.js:147
 msgid "Collapsible versions"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:166
+#: blocks/changelog/src/edit.js:148
 msgid "Versions open by default; visitors can fold them away."
 msgstr ""
 
-#: blocks/changelog/src/edit.js:172
+#: blocks/changelog/src/edit.js:154
 #: blocks/collection/src/edit.js:326
 msgid "Pagination"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:175
+#: blocks/changelog/src/edit.js:157
 #: blocks/collection/src/edit.js:329
 msgid "Type"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:178
+#: blocks/changelog/src/edit.js:160
 #: blocks/collection/src/edit.js:332
 msgid "Load more"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:179
+#: blocks/changelog/src/edit.js:161
 #: blocks/collection/src/edit.js:333
 msgid "Numbered"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:180
+#: blocks/changelog/src/edit.js:162
 #: blocks/collection/src/edit.js:334
 msgid "Show all"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:188
+#: blocks/changelog/src/edit.js:170
 msgid "Versions per page"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:199
+#: blocks/changelog/src/edit.js:181
 #: blocks/collection/src/edit.js:353
 msgid "Button text"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:206
+#: blocks/changelog/src/edit.js:188
 msgid "Category colours"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:217
+#: blocks/changelog/src/edit.js:199
 msgid "Darkify Changelog"
 msgstr ""
 
-#: blocks/changelog/src/edit.js:218
+#: blocks/changelog/src/edit.js:200
 msgid "Paste a changelog and it becomes a versioned release history you can edit."
 msgstr ""
 
-#: blocks/changelog/src/edit.js:239
+#: blocks/changelog/src/edit.js:221
 msgid "Some lines could not be read and were left out:"
 msgstr ""
 
@@ -832,6 +755,10 @@ msgstr ""
 msgid "Subtitle"
 msgstr ""
 
+#: blocks/collection/src/components/ItemRow.js:237
+msgid "Optional"
+msgstr ""
+
 #: blocks/collection/src/components/ItemRow.js:242
 #: blocks/collection/src/edit.js:403
 msgid "Badge"
@@ -855,12 +782,25 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+#: blocks/collection/src/components/ItemRow.js:273
+msgid "Link URL"
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:282
+msgid "Link text"
+msgstr ""
+
 #: blocks/collection/src/components/ItemRow.js:285
 msgid "Uses the block’s button text"
 msgstr ""
 
 #: blocks/collection/src/components/ItemRow.js:294
 msgid "Label and value pairs, listed under the title. This is where anything the other fields do not cover belongs — dates, prices, coupons, stack."
+msgstr ""
+
+#: blocks/collection/src/components/ItemRow.js:304
+#: blocks/collection/src/components/ItemRow.js:308
+msgid "Label"
 msgstr ""
 
 #: blocks/collection/src/components/ItemRow.js:312
