@@ -1,0 +1,223 @@
+/**
+ * darkify-util/ai-summarize — shared editor and front-end styling.
+ *
+ * Every colour is a custom property on the block root, with the dark values
+ * declared under Darkify's own dark-mode class — the site's state, not the
+ * operating system's. Nothing here uses !important.
+ *
+ * Each button also carries two properties of its own, set inline by the
+ * template: `--darkify-ai-brand` and `--darkify-ai-brand-dark`. That is the
+ * only per-service styling; everything below is written once and reads the
+ * brand from whichever button it happens to be inside.
+ */
+
+.darkify-ai-summarize {
+	--darkify-ai-text: #1f2433;
+	--darkify-ai-heading: #0f1222;
+	--darkify-ai-muted: #5b6479;
+	--darkify-ai-surface: #ffffff;
+	--darkify-ai-border: #e5e9f2;
+	--darkify-ai-focus: #2563eb;
+	--darkify-ai-shadow: rgba(16, 20, 40, 0.05);
+	/* Which of the two brand colours is live. Dark mode swaps it, and every
+	   rule below reads this rather than either colour directly. */
+	--darkify-ai-mark: var(--darkify-ai-brand, currentColor);
+	--darkify-ai-radius: 8px;
+	--darkify-ai-gap: 10px;
+
+	box-sizing: border-box;
+	color: var(--darkify-ai-text);
+
+	/*
+	 * The block's own base typography, declared here rather than on the button.
+	 *
+	 * It has to live on the root because that is the element WordPress's
+	 * Typography panel writes to — as an inline font-size, or as a preset class
+	 * carrying !important. Either beats this single-class rule, so an author's
+	 * choice wins and the buttons inherit it. Set on the button instead (which
+	 * is where it started), nothing in that panel could ever move it.
+	 */
+	font-size: 0.875rem;
+	line-height: 1.2;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+}
+
+/* Dark mode ---------------------------------------------------------------
+
+   Keyed to Darkify's own class and nothing else, for the same reason the
+   changelog block gives: `prefers-color-scheme` reports the visitor's operating
+   system, which has nothing to do with whether this site is currently showing
+   its light or dark theme.
+
+   The wrapper carries `darkify_ignore`, so the engine will not repaint this
+   subtree — that opt-out and this block have to travel together, or the block
+   keeps its light palette on a dark page. */
+
+.darkify_dark_mode_enabled .darkify-ai-summarize {
+	/*
+	 * Borrowed from Darkify rather than invented here: the engine publishes the
+	 * active preset's palette as custom properties on :root, so the buttons sit
+	 * on the page's own colours instead of a near-black of their own. The
+	 * literals are fallbacks for a page where those are missing.
+	 */
+	--darkify-ai-text: var(--darkify_dark_mode_text_color, #c3c9d6);
+	--darkify-ai-heading: var(--darkify_dark_mode_link_color, #f2f4f9);
+	--darkify-ai-muted: #8b93a7;
+	--darkify-ai-surface: var(--darkify_dark_mode_secondary_bg, #161a21);
+	--darkify-ai-border: var(--darkify_dark_mode_border_color, #262c38);
+	--darkify-ai-focus: #7aa2ff;
+	--darkify-ai-shadow: rgba(0, 0, 0, 0.45);
+
+	/*
+	 * Two of these marks are black — ChatGPT's and Grok's — and on a dark card
+	 * a black logo is an empty square. Each button ships a second colour for
+	 * exactly this, and swapping the pointer here means no rule below has to
+	 * know which palette is on.
+	 */
+	--darkify-ai-mark: var(--darkify-ai-brand-dark, var(--darkify-ai-brand, currentColor));
+}
+
+/* Heading --------------------------------------------------------------- */
+
+/*
+ * Every value here is a var() with the design's own value as the fallback, so
+ * the heading looks like this until an author changes that one thing in the
+ * Heading panel. PHP writes a property only for the settings that were touched.
+ *
+ * The heading deliberately does not inherit the root's font-size: it is a label
+ * above the buttons, not one of them, and changing the button size should not
+ * drag it along. That is exactly why it gets its own controls.
+ */
+.darkify-ai-summarize__title {
+	margin: 0 0 10px;
+	color: var(--darkify-ai-heading);
+	font-size: var(--darkify-ai-title-size, 0.8125rem);
+	font-weight: var(--darkify-ai-title-weight, 600);
+	letter-spacing: var(--darkify-ai-title-spacing, 0.01em);
+	line-height: var(--darkify-ai-title-height, 1.4);
+	text-transform: var(--darkify-ai-title-case, none);
+}
+
+/* Buttons --------------------------------------------------------------- */
+
+.darkify-ai-summarize__buttons {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	&--center {
+		justify-content: center;
+	}
+	&--right {
+		justify-content: end;
+	}
+}
+
+.darkify-ai-summarize__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-width: 0;
+	padding: 8px 15px;
+	border: 1px solid var(--darkify-ai-border);
+	border-radius: var(--darkify-ai-radius);
+	background: var(--darkify-ai-surface);
+	color: var(--darkify-ai-text);
+	/* Inherited from the root, which is what the Typography panel writes to. */
+	font-size: inherit;
+	font-weight: 500;
+	line-height: inherit;
+	text-decoration: none;
+	transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease,
+		box-shadow 0.15s ease, transform 0.15s ease;
+
+	&:hover,
+	&:focus-visible {
+		border-color: var(--darkify-ai-mark);
+		box-shadow: 0 1px 2px var(--darkify-ai-shadow);
+		color: var(--darkify-ai-text);
+		text-decoration: none;
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-ai-focus);
+		outline-offset: 2px;
+	}
+
+	/* The block is often dropped into a theme that styles every `a` in the
+	   content column; these say what the button is regardless. */
+	&:visited {
+		color: var(--darkify-ai-text);
+	}
+}
+
+.darkify-ai-summarize__icon {
+	flex: none;
+	width: 18px;
+	height: 18px;
+	color: var(--darkify-ai-mark);
+}
+
+.darkify-ai-summarize__label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Style variants --------------------------------------------------------
+
+   Each one changes the resting state only; hover keeps its meaning across all
+   four (the button reaches for its brand colour). */
+
+.darkify-ai-summarize__buttons--soft .darkify-ai-summarize__button {
+	border-color: transparent;
+	background: color-mix(in srgb, var(--darkify-ai-mark) 10%, var(--darkify-ai-surface));
+}
+
+.darkify-ai-summarize__buttons--solid .darkify-ai-summarize__button {
+	border-color: var(--darkify-ai-mark);
+	background: var(--darkify-ai-mark);
+	/*
+	 * Solid picks its own text colour from the brand it is filled with, so a
+	 * pale mark (Claude's terracotta in dark mode) does not end up as white on
+	 * near-white. The fallback is for browsers without contrast-color(): white
+	 * text, which is right for every brand that ships here.
+	 */
+	color: #ffffff;
+	color: contrast-color(var(--darkify-ai-mark));
+
+	.darkify-ai-summarize__icon,
+	&:hover,
+	&:focus-visible,
+	&:visited {
+		color: inherit;
+	}
+
+	&:hover,
+	&:focus-visible {
+		opacity: 0.88;
+	}
+}
+
+.darkify-ai-summarize__buttons--plain .darkify-ai-summarize__button {
+	border-color: transparent;
+	background: transparent;
+	padding-inline: 4px;
+
+	&:hover,
+	&:focus-visible {
+		border-color: transparent;
+		box-shadow: none;
+		color: var(--darkify-ai-mark);
+	}
+}
+
+/* Narrow screens --------------------------------------------------------
+
+   Nothing to do: the row wraps on its own, and each button is as wide as its
+   own label, so a narrow screen gets however many fit per line. */

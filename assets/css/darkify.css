@@ -150,6 +150,7 @@ footer.wp-block-template-part {
   box-shadow: 0 1px 2px 0 #1014280d;
   border-radius: 14px;
   overflow: hidden;
+  background-color: #ffffff;
 }
 .darkify_blog li:hover {
   border-color: #b8390a;
@@ -379,10 +380,10 @@ footer.wp-block-template-part {
   color: #14162a !important;
 }
 .single_blog table * {
-  border: 1px solid #e6e8ef !important;
+  border: 1px solid #e6e8ef;
 }
 .single_blog table {
-  border-radius: 12px !important;
+  border-radius: 12px;
   overflow: hidden;
 }
 .single_blog table thead {
@@ -407,7 +408,9 @@ footer.wp-block-template-part {
   border-radius: 8px !important;
   padding: 10px 12px !important;
 }
-.subscribe_form .ff_submit_btn_wrapper {margin-bottom: 0px !important;}
+.subscribe_form .ff_submit_btn_wrapper {
+  margin-bottom: 0px !important;
+}
 .subscribe_form button {
   font-size: 13px !important;
   font-weight: 700 !important;
@@ -420,4 +423,22 @@ footer.wp-block-template-part {
   padding: 10px 12px !important;
   border-radius: 8px !important;
   width: 100%;
+}
+.darkify_table_of_content ul {
+  max-height: 300px;
+  overflow-y: auto;
+}
+.darkify_table_of_content ul::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.darkify_table_of_content ul::-webkit-scrollbar-track {
+  background-color: #f5f6f8;
+  margin-block: 4px;
+}
+.darkify_table_of_content ul::-webkit-scrollbar-thumb {
+  background: #e6e8ef;
+}
+.darkify_table_of_content ul::-webkit-scrollbar-thumb:hover {
+  opacity: 0.2;
 }

@@ -4,10 +4,11 @@
   "description": "Build tooling for the Darkify Util plugin: minification, .pot generation and release zip.",
   "private": true,
   "scripts": {
-    "block:install": "npm --prefix blocks/changelog install && npm --prefix blocks/collection install",
-    "block:build": "npm --prefix blocks/changelog run build && npm --prefix blocks/collection run build",
+    "block:install": "npm --prefix blocks/changelog install && npm --prefix blocks/collection install && npm --prefix blocks/ai-summarize install",
+    "block:build": "npm --prefix blocks/changelog run build && npm --prefix blocks/collection run build && npm --prefix blocks/ai-summarize run build",
     "block:start": "npm --prefix blocks/changelog run start",
     "collection:start": "npm --prefix blocks/collection run start",
+    "ai-summarize:start": "npm --prefix blocks/ai-summarize run start",
     "build": "npm run block:build && gulp",
     "watch": "gulp watch"
   },

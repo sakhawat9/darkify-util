@@ -1,0 +1,74 @@
+/**
+ * Editor-only styling for darkify-util/ai-summarize.
+ *
+ * The rendered component's own styles come from style.scss, which loads in the
+ * editor too; this file dresses the inspector list and the preview around it.
+ */
+
+.darkify-ai-editor {
+	&__notice {
+		margin: 0 0 12px;
+	}
+
+	/*
+	 * Deliberately unstyled beyond a little breathing room: what is inside it
+	 * is the server's own markup wearing style.scss, so the less this file says
+	 * about it the closer the preview stays to the published page.
+	 */
+	&__preview {
+		> .components-placeholder {
+			margin: 0;
+		}
+	}
+
+	&__loading {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 16px 0;
+		color: #757575;
+	}
+
+	&__hint {
+		margin: 0;
+		padding: 12px 0;
+		font-size: 12px;
+		color: #757575;
+	}
+
+	&__services {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	&__service {
+		padding-bottom: 10px;
+		border-bottom: 1px solid #f0f0f0;
+
+		&:last-child {
+			padding-bottom: 0;
+			border-bottom: 0;
+		}
+	}
+
+	&__service-row {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	&__service-tools {
+		display: flex;
+		flex: none;
+		gap: 2px;
+	}
+
+	&__service-label {
+		margin-top: 6px;
+	}
+}

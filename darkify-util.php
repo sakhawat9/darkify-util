@@ -66,6 +66,19 @@ require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-collection.php';
 add_action('plugins_loaded', array('Darkify_Util_Collection', 'instance'));
 
 /**
+ * The AI summarize block and its [darkify_ai_summarize] shortcode: buttons that
+ * open the current article in ChatGPT, Claude, Grok or Perplexity with a
+ * summarise prompt already written.
+ *
+ * Every button is an ordinary link to the assistant's own web app — no API key,
+ * no request leaves this server, and nothing to maintain when a provider
+ * changes its models.
+ */
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-ai-summarize.php';
+
+add_action('plugins_loaded', array('Darkify_Util_AI_Summarize', 'instance'));
+
+/**
  * SVG uploads.
  *
  * WordPress refuses the format because an SVG is a document that can carry
