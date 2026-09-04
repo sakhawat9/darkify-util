@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-04T12:43:55+00:00\n"
+"POT-Creation-Date: 2026-09-04T14:39:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: darkify-util\n"
@@ -27,6 +27,7 @@ msgstr ""
 #: includes/class-darkify-util-ai-summarize.php:219
 #: includes/class-darkify-util-changelog.php:119
 #: includes/class-darkify-util-collection.php:141
+#: includes/class-darkify-util-social-share.php:225
 msgid "Darkify"
 msgstr ""
 
@@ -242,6 +243,12 @@ msgstr ""
 
 #: includes/class-darkify-util-hero.php:168
 msgid "Dark"
+msgstr ""
+
+#. translators: %s: name of the social network, e.g. Facebook.
+#: includes/class-darkify-util-social-share.php:490
+#, php-format
+msgid "Share on %s"
 msgstr ""
 
 #: includes/class-darkify-util-svg-sanitizer.php:95
@@ -532,14 +539,22 @@ msgstr ""
 msgid "Darkify preview, switching between light and dark mode"
 msgstr ""
 
+#: templates/social-share.php:41
+msgid "Link copied"
+msgstr ""
+
 #. translators: %s: name of the AI assistant.
+#. translators: %s: name of the social network.
 #: blocks/ai-summarize/src/components/ServiceList.js:65
+#: blocks/social-share/src/components/NetworkList.js:66
 #, js-format
 msgid "Move %s up"
 msgstr ""
 
 #. translators: %s: name of the AI assistant.
+#. translators: %s: name of the social network.
 #: blocks/ai-summarize/src/components/ServiceList.js:76
+#: blocks/social-share/src/components/NetworkList.js:77
 #, js-format
 msgid "Move %s down"
 msgstr ""
@@ -547,10 +562,12 @@ msgstr ""
 #: blocks/ai-summarize/src/components/ServiceList.js:89
 #: blocks/changelog/src/edit.js:181
 #: blocks/collection/src/edit.js:353
+#: blocks/social-share/src/components/NetworkList.js:96
 msgid "Button text"
 msgstr ""
 
 #: blocks/ai-summarize/src/components/ServiceList.js:102
+#: blocks/social-share/src/components/NetworkList.js:109
 msgid "Nothing is switched on, so the block renders nothing."
 msgstr ""
 
@@ -662,18 +679,22 @@ msgstr ""
 #: blocks/ai-summarize/src/edit.js:240
 #: blocks/changelog/src/edit.js:102
 #: blocks/collection/src/edit.js:211
+#: blocks/social-share/src/edit.js:89
 msgid "Layout"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:243
+#: blocks/social-share/src/edit.js:92
 msgid "Button style"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:246
+#: blocks/social-share/src/edit.js:97
 msgid "Outline"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:247
+#: blocks/social-share/src/edit.js:96
 msgid "Soft"
 msgstr ""
 
@@ -682,10 +703,12 @@ msgid "Solid"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:249
+#: blocks/social-share/src/edit.js:98
 msgid "Plain"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:256
+#: blocks/social-share/src/edit.js:129
 msgid "Alignment"
 msgstr ""
 
@@ -693,21 +716,25 @@ msgstr ""
 #: blocks/changelog/src/edit.js:109
 #: blocks/collection/src/edit.js:254
 #: blocks/collection/src/edit.js:291
+#: blocks/social-share/src/edit.js:132
 msgid "Left"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:260
+#: blocks/social-share/src/edit.js:133
 msgid "Center"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:261
 #: blocks/changelog/src/edit.js:108
 #: blocks/collection/src/edit.js:293
+#: blocks/social-share/src/edit.js:134
 msgid "Right"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:268
 #: blocks/collection/src/edit.js:477
+#: blocks/social-share/src/edit.js:119
 msgid "Corner radius"
 msgstr ""
 
@@ -726,6 +753,7 @@ msgstr ""
 #: blocks/ai-summarize/src/edit.js:308
 #: blocks/changelog/src/components/Preview.js:65
 #: blocks/collection/src/components/Preview.js:79
+#: blocks/social-share/src/edit.js:334
 msgid "Rendering preview…"
 msgstr ""
 
@@ -1243,6 +1271,7 @@ msgid "0 keeps the theme’s own heading size."
 msgstr ""
 
 #: blocks/collection/src/edit.js:509
+#: blocks/social-share/src/edit.js:181
 msgid "Colours"
 msgstr ""
 
@@ -1272,6 +1301,127 @@ msgstr ""
 
 #: blocks/collection/src/edit.js:557
 msgid "Add the first item"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:81
+msgid "Networks"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:95
+msgid "Brand colour"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:105
+msgid "Shape"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:108
+msgid "Rounded"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:109
+msgid "Circle / pill"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:141
+msgid "Gap between buttons"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:150
+msgid "Show icons"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:158
+msgid "Icon size"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:168
+msgid "Show network names"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:169
+msgid "Off, the buttons are icon only and the name is announced to screen readers."
+msgstr ""
+
+#: blocks/social-share/src/edit.js:178
+msgid "Icon Colours"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:184
+msgid "Each button uses its own network’s colour — Facebook blue, WhatsApp green, and so on."
+msgstr ""
+
+#: blocks/social-share/src/edit.js:188
+msgid "Every button uses the colours set below. Switch back to brand colours at any time; these are kept."
+msgstr ""
+
+#: blocks/social-share/src/edit.js:196
+msgid "Default social media colours"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:199
+#: blocks/social-share/src/edit.js:234
+msgid "Custom colours"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:208
+msgid "Border width"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:240
+msgid "Background"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:246
+msgid "Background on hover"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:252
+msgid "Icon and text"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:257
+msgid "Icon and text on hover"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:263
+msgid "Border"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:269
+msgid "Border on hover"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:277
+msgid "Icon Spacing"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:285
+msgid "Padding"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:295
+msgid "Margin"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:304
+msgid "Share target"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:308
+msgid "Share a different URL"
+msgstr ""
+
+#: blocks/social-share/src/edit.js:309
+msgid "Leave empty to share the page the block is on."
+msgstr ""
+
+#: blocks/social-share/src/edit.js:325
+msgid "No networks switched on — pick at least one in the sidebar."
+msgstr ""
+
+#: blocks/social-share/src/networks.js:22
+msgid "Instagram has no share link. This button copies the post URL and opens Instagram to paste it into."
 msgstr ""
 
 #: blocks/ai-summarize/src/block.json
@@ -1412,4 +1562,59 @@ msgstr ""
 #: blocks/collection/src/block.json
 msgctxt "block keyword"
 msgid "deals"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block title"
+msgid "Darkify Social Share"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block description"
+msgid "Share buttons for the current post — Facebook, Twitter, Instagram, LinkedIn, WhatsApp and Email — with no third-party scripts."
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "share"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "social"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "sharing"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "facebook"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "twitter"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "instagram"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "linkedin"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "whatsapp"
+msgstr ""
+
+#: blocks/social-share/src/block.json
+msgctxt "block keyword"
+msgid "email"
 msgstr ""

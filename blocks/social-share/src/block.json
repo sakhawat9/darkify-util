@@ -1,0 +1,84 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "darkify-util/social-share",
+	"version": "1.0.0",
+	"title": "Darkify Social Share",
+	"category": "darkify",
+	"icon": "share",
+	"description": "Share buttons for the current post — Facebook, Twitter, Instagram, LinkedIn, WhatsApp and Email — with no third-party scripts.",
+	"keywords": [
+		"share",
+		"social",
+		"sharing",
+		"facebook",
+		"twitter",
+		"instagram",
+		"linkedin",
+		"whatsapp",
+		"email"
+	],
+	"textdomain": "darkify-util",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": ["wide", "full"],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"attributes": {
+		"schemaVersion": { "type": "number", "default": 1 },
+
+		"networks": {
+			"type": "array",
+			"default": [
+				{ "slug": "facebook", "label": "Facebook", "enabled": true },
+				{ "slug": "twitter", "label": "Twitter", "enabled": true },
+				{ "slug": "instagram", "label": "Instagram", "enabled": true },
+				{ "slug": "linkedin", "label": "LinkedIn", "enabled": true },
+				{ "slug": "whatsapp", "label": "WhatsApp", "enabled": true },
+				{ "slug": "email", "label": "Email", "enabled": true }
+			]
+		},
+		"targetUrl": { "type": "string", "default": "" },
+
+		"itemStyle": { "type": "string", "default": "brand" },
+		"itemShape": { "type": "string", "default": "rounded" },
+		"colorMode": { "type": "string", "default": "brand" },
+		"showLabels": { "type": "boolean", "default": false },
+		"showIcons": { "type": "boolean", "default": true },
+		"contentAlign": { "type": "string", "default": "left" },
+
+		"gap": { "type": "number", "default": 8 },
+		"iconSize": { "type": "number", "default": 18 },
+		"itemRadius": { "type": "number", "default": 8 },
+
+		"itemBackground": { "type": "string", "default": "" },
+		"itemBackgroundHover": { "type": "string", "default": "" },
+		"itemColor": { "type": "string", "default": "" },
+		"itemColorHover": { "type": "string", "default": "" },
+		"itemBorderColor": { "type": "string", "default": "" },
+		"itemBorderColorHover": { "type": "string", "default": "" },
+		"itemBorderWidth": { "type": "string", "default": "" },
+
+		"itemPadding": {
+			"type": "object",
+			"default": { "top": "", "right": "", "bottom": "", "left": "" }
+		},
+		"itemMargin": {
+			"type": "object",
+			"default": { "top": "", "right": "", "bottom": "", "left": "" }
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

@@ -79,6 +79,19 @@ require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-ai-summarize.php';
 add_action('plugins_loaded', array('Darkify_Util_AI_Summarize', 'instance'));
 
 /**
+ * The social share block and its [darkify_social_share] shortcode: share
+ * buttons for the current post.
+ *
+ * Every button is an ordinary link to the network's own share endpoint, so no
+ * third-party SDK is loaded and nothing about a reader reaches Facebook or X
+ * unless that reader clicks. Instagram is the one exception and publishes no
+ * share endpoint at all; its button copies the URL instead.
+ */
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-social-share.php';
+
+add_action('plugins_loaded', array('Darkify_Util_Social_Share', 'instance'));
+
+/**
  * SVG uploads.
  *
  * WordPress refuses the format because an SVG is a document that can carry

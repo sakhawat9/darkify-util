@@ -1,0 +1,286 @@
+/**
+ * darkify-util/social-share — shared editor and front-end styling.
+ *
+ * Two layers of custom property, and the order matters:
+ *
+ *   --darkify-share-brand   the network's own colour, set inline per link
+ *   --darkify-share-*       the author's settings, set inline on the wrapper
+ *
+ * Every rule reads the author's value with the brand (or the design's own) as
+ * the var() fallback, so "unset" genuinely means unset — PHP writes no property
+ * at all and what is written here stands. That is what makes the inspector's
+ * reset buttons work without a second set of defaults in PHP to disagree with.
+ *
+ * Every colour has a dark-mode value declared under Darkify's own class — the
+ * site's state, not the operating system's. Nothing here uses !important.
+ */
+
+.darkify-share {
+	--darkify-share-text: #1f2433;
+	--darkify-share-surface: #ffffff;
+	--darkify-share-border-default: #e5e9f2;
+	--darkify-share-focus: #2563eb;
+	--darkify-share-shadow: rgba(16, 20, 40, 0.05);
+	--darkify-share-gap: 8px;
+	--darkify-share-radius: 8px;
+	--darkify-share-icon-size: 18px;
+
+	box-sizing: border-box;
+	color: var(--darkify-share-text);
+
+	/*
+	 * Base typography on the root, because that is the element WordPress's
+	 * Typography panel writes to. The links inherit it, so an author's choice
+	 * there actually moves them.
+	 */
+	font-size: 0.875rem;
+	line-height: 1.2;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+}
+
+/* Dark mode ---------------------------------------------------------------
+
+   Keyed to Darkify's own class and nothing else: `prefers-color-scheme` reports
+   the visitor's operating system, which has nothing to do with whether this site
+   is showing its light or dark theme. The wrapper carries `darkify_ignore` so
+   the engine leaves this subtree alone — that opt-out and these rules have to
+   travel together, or the block keeps its light palette on a dark page. */
+
+.darkify_dark_mode_enabled .darkify-share {
+	--darkify-share-text: var(--darkify_dark_mode_text_color, #c3c9d6);
+	--darkify-share-surface: var(--darkify_dark_mode_secondary_bg, #161a21);
+	--darkify-share-border-default: var(--darkify_dark_mode_border_color, #262c38);
+	--darkify-share-focus: #7aa2ff;
+	--darkify-share-shadow: rgba(0, 0, 0, 0.45);
+}
+
+/*
+ * X's mark is near-black, and on a dark card that is a hole in the row. Every
+ * link ships a second colour for exactly this; swapping the pointer here means
+ * no rule below has to know which palette is on.
+ */
+.darkify_dark_mode_enabled .darkify-share__link {
+	--darkify-share-mark: var(
+		--darkify-share-brand-dark,
+		var(--darkify-share-brand, currentColor)
+	);
+}
+
+/* The row --------------------------------------------------------------- */
+
+.darkify-share__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--darkify-share-gap);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	&--center {
+		justify-content: center;
+	}
+
+	&--right {
+		justify-content: flex-end;
+	}
+}
+
+.darkify-share__item {
+	margin: 0;
+	padding: 0;
+
+	/* A theme that styles list items in post content would otherwise put a
+	   bullet or a bottom margin between the buttons. */
+	&::marker,
+	&::before {
+		content: none;
+	}
+}
+
+/* A button --------------------------------------------------------------- */
+
+.darkify-share__link {
+	/*
+	 * The live brand colour, resolved here and nowhere else.
+	 *
+	 * It has to be declared on this element, because this is the element the
+	 * template writes `--darkify-share-brand` onto. A custom property's var()
+	 * is substituted where the property is *declared*, not where it is later
+	 * used — so the same line on the wrapper resolved against a brand colour
+	 * that did not exist there yet, fell through to `currentColor`, and every
+	 * button came out painted in its own white text colour: invisible.
+	 */
+	--darkify-share-mark: var(--darkify-share-brand, currentColor);
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	border-style: solid;
+	border-width: var(--darkify-share-border-width, 1px);
+	border-color: var(--darkify-share-border, transparent);
+	border-radius: var(--darkify-share-radius);
+	color: var(--darkify-share-color, #ffffff);
+	background: var(--darkify-share-bg, var(--darkify-share-mark));
+	font-size: inherit;
+	font-weight: 500;
+	line-height: inherit;
+	text-decoration: none;
+
+	/*
+	 * Padding and margin are per-side so that setting one side in the inspector
+	 * does not silently reset the other three to zero.
+	 */
+	padding: var(--darkify-share-padding-top, 10px) var(--darkify-share-padding-right, 12px)
+		var(--darkify-share-padding-bottom, 10px) var(--darkify-share-padding-left, 12px);
+	margin: var(--darkify-share-margin-top, 0) var(--darkify-share-margin-right, 0)
+		var(--darkify-share-margin-bottom, 0) var(--darkify-share-margin-left, 0);
+
+	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease,
+		box-shadow 0.15s ease, transform 0.15s ease;
+
+	&:hover,
+	&:focus-visible {
+		/*
+		 * Hover falls back to the resting value, not to a guess: an author who
+		 * sets a background and no hover background gets a button that stays
+		 * put rather than one that jumps back to the brand colour.
+		 */
+		background: var(--darkify-share-bg-hover, var(--darkify-share-bg, var(--darkify-share-mark)));
+		border-color: var(--darkify-share-border-hover, var(--darkify-share-border, transparent));
+		color: var(--darkify-share-color-hover, var(--darkify-share-color, #ffffff));
+		text-decoration: none;
+		box-shadow: 0 2px 8px var(--darkify-share-shadow);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--darkify-share-focus);
+		outline-offset: 2px;
+	}
+
+	/* Themes that style every `a` in the content column would otherwise
+	   recolour a visited share button. */
+	&:visited {
+		color: var(--darkify-share-color, #ffffff);
+	}
+}
+
+.darkify-share__icon {
+	flex: none;
+	width: var(--darkify-share-icon-size);
+	height: var(--darkify-share-icon-size);
+}
+
+.darkify-share__label {
+	white-space: nowrap;
+}
+
+/*
+ * Icon-only buttons are square: equal padding on all four sides, so a circle is
+ * a circle rather than an oval. The author's own padding still wins if they set
+ * one, which is why this is a fallback change and not an override.
+ */
+.darkify-share__list--icon-only .darkify-share__link {
+	padding: var(--darkify-share-padding-top, 10px) var(--darkify-share-padding-right, 10px)
+		var(--darkify-share-padding-bottom, 10px) var(--darkify-share-padding-left, 10px);
+}
+
+/* Style variants --------------------------------------------------------
+
+   Each changes only the resting colours, and each does it by moving the same
+   three fallbacks — so an author's explicit colour keeps winning over all of
+   them, in every variant. */
+
+.darkify-share__list--soft .darkify-share__link {
+	background: var(--darkify-share-bg, color-mix(in srgb, var(--darkify-share-mark) 12%, transparent));
+	color: var(--darkify-share-color, var(--darkify-share-mark));
+
+	&:hover,
+	&:focus-visible {
+		background: var(--darkify-share-bg-hover, var(--darkify-share-mark));
+		color: var(--darkify-share-color-hover, #ffffff);
+	}
+
+	&:visited {
+		color: var(--darkify-share-color, var(--darkify-share-mark));
+	}
+}
+
+.darkify-share__list--outline .darkify-share__link {
+	background: var(--darkify-share-bg, transparent);
+	border-color: var(--darkify-share-border, var(--darkify-share-border-default));
+	color: var(--darkify-share-color, var(--darkify-share-mark));
+
+	&:hover,
+	&:focus-visible {
+		background: var(--darkify-share-bg-hover, transparent);
+		border-color: var(--darkify-share-border-hover, var(--darkify-share-mark));
+		color: var(--darkify-share-color-hover, var(--darkify-share-mark));
+	}
+
+	&:visited {
+		color: var(--darkify-share-color, var(--darkify-share-mark));
+	}
+}
+
+.darkify-share__list--plain .darkify-share__link {
+	padding-inline: var(--darkify-share-padding-right, 4px);
+	background: var(--darkify-share-bg, transparent);
+	border-color: var(--darkify-share-border, transparent);
+	color: var(--darkify-share-color, var(--darkify-share-mark));
+
+	&:hover,
+	&:focus-visible {
+		background: var(--darkify-share-bg-hover, transparent);
+		border-color: var(--darkify-share-border-hover, transparent);
+		color: var(--darkify-share-color-hover, var(--darkify-share-mark));
+		box-shadow: none;
+	}
+
+	&:visited {
+		color: var(--darkify-share-color, var(--darkify-share-mark));
+	}
+}
+
+/* Copied ----------------------------------------------------------------
+
+   Instagram's button after a successful copy. Deliberately quiet: the button
+   keeps its size so the row does not reflow, and the live region below carries
+   the actual message. */
+
+.darkify-share__link.is-copied {
+	position: relative;
+
+	.darkify-share__icon {
+		opacity: 0.35;
+	}
+
+	&::after {
+		content: "✓";
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1rem;
+		font-weight: 700;
+	}
+}
+
+/* The live region is for screen readers; it is not part of the design. */
+.darkify-share__status {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}

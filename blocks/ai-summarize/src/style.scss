@@ -19,9 +19,6 @@
 	--darkify-ai-border: #e5e9f2;
 	--darkify-ai-focus: #2563eb;
 	--darkify-ai-shadow: rgba(16, 20, 40, 0.05);
-	/* Which of the two brand colours is live. Dark mode swaps it, and every
-	   rule below reads this rather than either colour directly. */
-	--darkify-ai-mark: var(--darkify-ai-brand, currentColor);
 	--darkify-ai-radius: 8px;
 	--darkify-ai-gap: 10px;
 
@@ -73,12 +70,15 @@
 	--darkify-ai-focus: #7aa2ff;
 	--darkify-ai-shadow: rgba(0, 0, 0, 0.45);
 
-	/*
-	 * Two of these marks are black — ChatGPT's and Grok's — and on a dark card
-	 * a black logo is an empty square. Each button ships a second colour for
-	 * exactly this, and swapping the pointer here means no rule below has to
-	 * know which palette is on.
-	 */
+}
+
+/*
+ * Two of these marks are black — ChatGPT's and Grok's — and on a dark card a
+ * black logo is an empty square. Each button ships a second colour for exactly
+ * this, and swapping the pointer here means no rule below has to know which
+ * palette is on.
+ */
+.darkify_dark_mode_enabled .darkify-ai-summarize__button {
 	--darkify-ai-mark: var(--darkify-ai-brand-dark, var(--darkify-ai-brand, currentColor));
 }
 
@@ -118,6 +118,16 @@
 }
 
 .darkify-ai-summarize__button {
+	/*
+	 * The live brand colour, resolved here because this is the element the
+	 * template writes `--darkify-ai-brand` onto. A custom property's var() is
+	 * substituted where the property is declared, not where it is used, so the
+	 * same line on the block root resolved against a brand colour that did not
+	 * exist there yet and fell through to `currentColor` — leaving every logo
+	 * drawn in body-text grey instead of its own colour.
+	 */
+	--darkify-ai-mark: var(--darkify-ai-brand, currentColor);
+
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
