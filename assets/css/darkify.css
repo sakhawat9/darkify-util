@@ -114,6 +114,9 @@ header:has(.darkify_header).scroll-down {
 header:has(.darkify_header).scroll-up {
   top: 0px;
 }
+html[data-darkify-scrolling] header:has(.darkify_header) {
+  transition: background-color 0.35s ease;
+}
 @media (max-width: 768px) {
   header:has(.darkify_header).scroll-up {
     top: 0px;
@@ -441,4 +444,10 @@ footer.wp-block-template-part {
 }
 .darkify_table_of_content ul::-webkit-scrollbar-thumb:hover {
   opacity: 0.2;
+}
+.kb-table-of-content-list li.active > .kb-table-of-contents__entry {
+  color: #c2410c !important;
+}
+.kb-table-of-contents__entry {
+  transition: color 150ms ease;
 }

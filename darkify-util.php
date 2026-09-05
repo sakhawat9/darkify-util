@@ -20,6 +20,21 @@ function darkify_enqueue_scripts()
 {
     wp_enqueue_style('darkify-util-style', plugin_dir_url(__FILE__) . 'assets/css/darkify.css');
     wp_enqueue_script('darkify-util-script', plugin_dir_url(__FILE__) . 'assets/js/custom-script.js', array(), DARKIFY_UTIL_VERSION, true);
+
+    /*
+     * Site-wide smooth scrolling for in-page anchors, and the scroll engine the
+     * rest of the plugin builds on. Loaded everywhere: the delegated handler
+     * inside it covers any link pointing at a section of the current page, so
+     * markup added later is included without being wired up.
+     */
+    wp_enqueue_script('darkify-util-scroll', plugin_dir_url(__FILE__) . 'assets/js/darkify-scroll.js', array(), DARKIFY_UTIL_VERSION, true);
+
+    /*
+     * The active state for Kadence's table of contents. Kadence's own scroll
+     * spy is opt-in per block and off on this site's blocks, so nothing ever
+     * went active; the scrolling itself is the engine above.
+     */
+    wp_enqueue_script('darkify-util-toc', plugin_dir_url(__FILE__) . 'assets/js/darkify-toc.js', array('darkify-util-scroll'), DARKIFY_UTIL_VERSION, true);
 }
 
 add_action('wp_enqueue_scripts', 'darkify_enqueue_scripts');
