@@ -1,3 +1,6 @@
+* {
+  transition: all 0.3s ease;
+}
 .optn-conv-wrapper {
   z-index: 5 !important;
 }
@@ -12,7 +15,7 @@
 }
 .darkify_header .darkify_menu .kb-nav-link-content {
   padding: 0;
-  font-size: 14px !important;
+  font-size: 14px;
 }
 .darkify_header .darkify_menu .kb-nav-dropdown-toggle-btn {
   left: -15px;
@@ -32,7 +35,7 @@
 }
 .darkify_header ul li:hover button svg,
 .darkify_header ul li:hover a:not(.sub-menu a) {
-  color: #b8390a !important;
+  color: #b8390a;
 }
 .darkify_header .sub-menu li a {
   padding: 10px 15px !important;
@@ -61,7 +64,7 @@
 }
 .darkify_sub_menu_mobile > ul li a:hover,
 .darkify_sub_menu > ul li a:hover {
-  background-color: #fdf0e8 !important;
+  background-color: #fdf0e8;
   color: #2d3332 !important;
 }
 .darkify_sub_menu ul {
@@ -162,8 +165,8 @@ footer.wp-block-template-part {
   padding: 15px !important;
 }
 .darkify_blog li h2 a:hover {
-  text-decoration: none !important;
-  color: #b8390a !important;
+  text-decoration: none;
+  color: #b8390a;
 }
 .single_blog .taxonomy-category a,
 .darkify_blog .taxonomy-category a {
@@ -368,19 +371,20 @@ footer.wp-block-template-part {
 }
 
 .single_blog blockquote {
-  border-left: 2px solid #b8390a !important;
-  padding-left: 15px !important;
+  border-left: 2px solid #b8390a;
+  padding-left: 15px;
   margin-left: 0px !important;
-  background-color: #fdf0e8 !important;
+  background-color: #fdf0e8;
   border-radius: 14px !important;
 }
 .single_blog blockquote strong {
-  font-weight: 700 !important;
-  font-size: 18px !important;
-  color: #14162a !important;
+  font-weight: 700;
+  font-size: 18px;
+  color: #14162a;
 }
 .single_blog blockquote ul li {
-  color: #14162a !important;
+  color: #14162a;
+  font-size: 16px;
 }
 .single_blog table * {
   border: 1px solid #e6e8ef;
@@ -390,18 +394,21 @@ footer.wp-block-template-part {
   overflow: hidden;
 }
 .single_blog table thead {
-  background-color: #f5f6f8 !important;
+  background-color: #f5f6f8;
 }
 .single_blog .wp-block-table td,
 .single_blog .wp-block-table th {
-  padding: 14px 16px !important;
+  padding: 14px 16px;
 }
 .single_blog .wp-block-table tr td:first-child {
-  color: #14162a !important;
+  color: #14162a;
+}
+.single_blog .wp-block-table tr {
+  vertical-align: top;
 }
 .single_blog .kt-button a {
   color: #14162a !important;
-  text-decoration: none !important;
+  text-decoration: none;
 }
 .subscribe_form input {
   background-color: #ffffff14 !important;
@@ -448,6 +455,17 @@ footer.wp-block-template-part {
 .kb-table-of-content-list li.active > .kb-table-of-contents__entry {
   color: #c2410c !important;
 }
+.kb-table-of-content-list li {margin-bottom: 5px;}
 .kb-table-of-contents__entry {
   transition: color 150ms ease;
+}
+.wp-block-buttons a {
+  transition: all 0.3s ease;
+}
+.wp-block-buttons a:hover {
+  background-color: #c2410ceb;
+}
+.wp-block-buttons .is-style-outline a:hover {
+  background-color: inherit;
+  border-color: #c2410ceb;
 }
