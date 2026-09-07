@@ -41,7 +41,13 @@ if (!defined('ABSPATH')) {
 		</div>
 	</div>
 
-	<?php if ($data['controls'] && ($data['presets'] || $data['sizes'] || $data['positions'])) : ?>
+	<?php
+	// More than one switcher is what makes the Switcher control worth showing:
+	// with a single one there is nothing to choose between.
+	$dkfd_switchers = count($data['switchers']) > 1 ? $data['switchers'] : array();
+	?>
+
+	<?php if ($data['controls'] && ($data['presets'] || $data['sizes'] || $dkfd_switchers || $data['positions'])) : ?>
 		<?php
 		/*
 		 * `darkify_ignore` is Darkify's own opt-out: the engine and its
@@ -87,6 +93,34 @@ if (!defined('ABSPATH')) {
 								data-dkfd-value="<?php echo esc_attr($size['value']); ?>"
 								aria-pressed="<?php echo $selected ? 'true' : 'false'; ?>"><?php echo esc_html($size['label']); ?></button>
 						<?php endforeach; ?>
+					</div>
+				</div>
+			<?php endif; ?>
+
+			<?php if ($dkfd_switchers) : ?>
+				<?php
+				/*
+				 * A select, for the same reason Position uses one: Darkify
+				 * ships sixteen switcher styles and a row of sixteen pills is a
+				 * panel, not a control. The options are the plugin's own — read
+				 * from the schema behind its Switch Toggler setting — and each
+				 * one is already rendered inside the frame, so choosing here
+				 * reveals the switcher rather than building it.
+				 */
+				?>
+				<div class="dkfd-ctrl">
+					<label class="dkfd-ctrl__label" for="<?php echo esc_attr($data['instance']); ?>_switch"><?php esc_html_e('Switcher', 'darkify-util'); ?></label>
+					<div class="dkfd-ctrl__options">
+						<select
+							class="dkfd-select"
+							id="<?php echo esc_attr($data['instance']); ?>_switch"
+							data-dkfd-control="switch">
+							<?php foreach ($dkfd_switchers as $dkfd_switcher) : ?>
+								<option
+									value="<?php echo esc_attr($dkfd_switcher['value']); ?>"
+									<?php selected($dkfd_switcher['value'], $data['variant']); ?>><?php echo esc_html($dkfd_switcher['label']); ?></option>
+							<?php endforeach; ?>
+						</select>
 					</div>
 				</div>
 			<?php endif; ?>

@@ -72,6 +72,12 @@ if (!class_exists('Darkify_Util_Demo')) {
                 'controls'    => 'yes',
                 'presets'     => '',
                 'preset'      => '',
+                // `switches` takes Darkify switcher style keys — empty offers
+                // every style the installed edition can render, and naming one
+                // style (or `switches="none"`) leaves the demo on a single
+                // switcher with no Switcher control. `switch` still says which
+                // of them the demo opens on.
+                'switches'    => '',
                 'sizes'       => 'XS:50,S:60,M:75,L:85,XL:100,XXL:125',
                 'positions'   => 'bottom-right,bottom-left,top-right,top-left',
                 'position'    => 'bottom-right',
@@ -132,6 +138,17 @@ if (!class_exists('Darkify_Util_Demo')) {
                 'presets'     => $presets,
                 'sizes'       => $sizes,
                 'positions'   => $positions,
+            );
+
+            // Every switcher the demo can show, each already rendered by
+            // Darkify at the demo's own size and border — so the Switcher
+            // control swaps between finished switchers instead of asking the
+            // browser to build one. With the panel off nothing can reach them,
+            // so the preview carries only the switcher it opens on, exactly as
+            // it did before the control existed.
+            $data['switchers'] = $this->switcher_options(
+                $data['controls'] ? $atts['switches'] : 'none',
+                $data
             );
 
             ob_start();
@@ -253,6 +270,94 @@ if (!class_exists('Darkify_Util_Demo')) {
             }
 
             return $positions ? $positions[0]['value'] : 'bottom-right';
+        }
+
+        /* --------------------------------------------------------------- */
+        /* Switcher options                                                */
+        /* --------------------------------------------------------------- */
+
+        /**
+         * The switchers the demo offers, in Darkify's own order, each with the
+         * markup Darkify renders for it.
+         *
+         * They all go into the frame together and the control simply reveals
+         * one: the switcher is Darkify's, not a copy, so the honest way to show
+         * another style is to let the plugin render it — and rendering all of
+         * them up front means the swap is instant and never has to re-run the
+         * shortcode over an AJAX round trip.
+         *
+         * @param string $requested The `switches` attribute.
+         * @param array  $data      The prepared render data.
+         * @return array<int,array{value:string,label:string,markup:string}>
+         */
+        private function switcher_options($requested, $data)
+        {
+            $styles = $this->switch_styles($requested);
+
+            // The style the shortcode names is always among them, even when the
+            // list does not mention it: `switch` is what every existing demo on
+            // a site already relies on.
+            $offered = wp_list_pluck($styles, 'value');
+            if (!in_array($data['variant'], $offered, true)) {
+                array_unshift($styles, array(
+                    'value' => $data['variant'],
+                    'label' => $this->switch_style_label($data['variant']),
+                ));
+            }
+
+            $switchers = array();
+            foreach ($styles as $style) {
+                $markup = $this->switcher_markup(array_merge($data, array('variant' => $style['value'])));
+
+                // Darkify draws an empty toggle for a style the edition running
+                // its [darkify] shortcode has no artwork for. Offering that
+                // would swap the switcher for nothing at all, so it is dropped
+                // — unless it is the one the shortcode asked for, which stays
+                // exactly as it rendered before this control existed.
+                if ($style['value'] !== $data['variant'] && !$this->switcher_rendered($markup)) {
+                    continue;
+                }
+
+                // The frame copies Darkify's stylesheets from the host page, so
+                // a style is only switchable if its stylesheet is enqueued here.
+                $this->enqueue_switcher_style($style['value']);
+
+                $switchers[] = array(
+                    'value'  => $style['value'],
+                    'label'  => $style['label'],
+                    'markup' => $markup,
+                );
+            }
+
+            return $switchers;
+        }
+
+        /**
+         * Whether Darkify actually drew a switcher, or handed back the empty
+         * wrapper it returns for a style it cannot render.
+         */
+        private function switcher_rendered($markup)
+        {
+            return false === strpos($markup, '<div class="theme-toggle"></div>');
+        }
+
+        /**
+         * The Switcher control can reach every style the demo offers, so all of
+         * their stylesheets are pre-loaded — in the <head>, with the rest — and
+         * not just the one it opens on.
+         */
+        protected function preload_switcher_styles($atts)
+        {
+            parent::preload_switcher_styles($atts);
+
+            if (isset($atts['controls']) && !$this->is_truthy($atts['controls'])) {
+                return;
+            }
+
+            $requested = isset($atts['switches']) ? $atts['switches'] : '';
+            foreach ($this->switch_styles($requested) as $style) {
+                $this->enqueue_switcher_style($style['value']);
+            }
         }
 
         /**

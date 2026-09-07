@@ -8,7 +8,7 @@ site's own settings.
 
 | Shortcode | What it is |
 | --- | --- |
-| `[darkify_demo]` | The interactive "Try it yourself" demo — the visitor throws the switch, and controls change the preset, size and position live. |
+| `[darkify_demo]` | The interactive "Try it yourself" demo — the visitor throws the switch, and controls change the preset, size, switcher style and position live. |
 | `[darkify_hero_demo]` | The hero preview — no interaction, it flips itself on a loop, front end then wp-admin. |
 
 `includes/class-darkify-util-preview.php` holds what they share: the frame
@@ -27,9 +27,9 @@ already put on the page — its stylesheets, its inline configuration and its
 engine — inside an isolated preview frame, which is what lets one part of the
 page go dark while the rest of the site does not.
 
-Below the window sit three live controls — **Color preset**, **Switch size** and
-**Position**. They drive the preview in real time, with no reload, by writing the
-same things Darkify itself writes:
+Below the window sit four live controls — **Color preset**, **Switch size**,
+**Switcher** and **Position**. They drive the preview in real time, with no
+reload, by writing the same things Darkify itself writes:
 
 * **Color preset** offers Darkify's own dark-mode presets — Carbon Mist,
   Midnight Reverie, Verdant Depths, Celestial Tide, Emberwood — read from the
@@ -61,6 +61,17 @@ same things Darkify itself writes:
   `medium` (3px) regardless of the setting. That is invisible at full size and
   swallows the switcher at the small end: at 50% an Orbit pill is 35×15, with
   3px on every side. See `Darkify_Util_Demo::switch_border_width()`.
+* **Switcher** offers Darkify's own switcher styles — Orbit, Classic, Expand,
+  Inner Moon, Within and, in Pro, the rest — read from the same schema field its
+  Switch Toggler setting is built from (`enable_dark_switcher`), so the keys, the
+  names and which of them belong to Pro are the plugin's own. Every style offered
+  is rendered by Darkify's own `[darkify]` shortcode into the frame up front,
+  with only the chosen one shown, so picking another reveals a switcher the
+  plugin drew rather than one assembled in the browser: no round trip, and the
+  switch is the real thing at every step. Their stylesheets are pre-loaded with
+  the rest, since the frame boots from what the host page carries. A style the
+  running edition has no artwork for (a Pro style on a free install) is dropped
+  from the list rather than offered as an empty toggle.
 * **Position** moves the switcher in the preview the way Darkify's placement
   setting does — the frame is a viewport, so the switcher floats in it as it
   would on a real site.
@@ -116,6 +127,7 @@ there is nothing to demonstrate, and it will not stand in with a lookalike.
 | `presets`   | the first five Darkify lists | Which Darkify colour presets to offer, as a comma-separated list of preset keys (`set1,set3,set9,set6,set10`; Pro adds `set2`, `set4`, `set5`, `set7`, `set8`, `set11`). Order is respected. Empty means the first five Darkify lists — Carbon Mist, Midnight Reverie, Verdant Depths, Celestial Tide, Emberwood — the same five in either edition. |
 | `preset`    | the site's own preset | Which preset starts selected. |
 | `sizes`     | `XS:50,S:60,M:75,L:85,XL:100,XXL:125` | Size options as `Label:percent`, where the percent is Darkify's own `switch_size`. Empty hides the group. |
+| `switches`  | every style the edition can render | Which switcher styles to offer, as a comma-separated list of style keys (`orbit,classic,shift`). Order is respected, and `switch` is always among them. Empty offers every style the installed edition ships — Pro's too, where Pro is installed. A single style (or `switches="none"`) leaves the demo on one switcher and hides the control. |
 | `positions` | `bottom-left,bottom-right` | Placements offered. Also accepts `top-left` and `top-right`. |
 | `position`  | `bottom-right` | Which placement starts selected. |
 
@@ -138,6 +150,12 @@ position control:
 
 ```
 [darkify_demo radius="50%" preset="set9" switch_size="55" positions=""]
+```
+
+Three switcher styles to choose between, opening on Orbit:
+
+```
+[darkify_demo switch="orbit" switches="orbit,shift,dual"]
 ```
 
 Placing it inside a section that already has its own heading? Leave `heading`,

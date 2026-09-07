@@ -173,6 +173,20 @@ body {
 	display: flex;
 }
 
+/*
+ * One switcher per style the Switcher control offers, all rendered by Darkify
+ * and only one shown. `flex` rather than `block` on the visible one for the
+ * same reason .dkfd-fab uses it: it is what keeps the switcher's own box out of
+ * the line-box the Orbit stylesheet's `inline-block` would otherwise put it in.
+ */
+.dkfd-fab__switch {
+	display: none;
+}
+
+.dkfd-fab__switch.is-active {
+	display: flex;
+}
+
 /* Responsive -------------------------------------------------------------- */
 
 @media (max-width: 720px) {

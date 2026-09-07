@@ -76,11 +76,22 @@ if (!defined('ABSPATH')) {
 	</div>
 </div>
 
-<div class="dkfd-fab" data-dkfd-position="<?php echo esc_attr($data['position']); ?>"><?php
-	// Darkify's own switcher, rendered by Darkify — see
-	// Darkify_Util_Preview::switcher_markup(). The size the controls start on
-	// goes through the shortcode's own attribute, so the first paint already
-	// matches the panel; the Switch Size control then updates the very CSS
-	// variable that attribute writes.
-	echo $this->switcher_markup($data); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-?></div>
+<div class="dkfd-fab" data-dkfd-position="<?php echo esc_attr($data['position']); ?>">
+	<?php
+	/*
+	 * Darkify's own switchers, rendered by Darkify — see
+	 * Darkify_Util_Preview::switcher_markup(). Every style the Switcher control
+	 * offers is here, with the one it starts on carrying `is-active`; the
+	 * control moves that class, so a swap shows a switcher Darkify has already
+	 * drawn rather than one built in the browser.
+	 *
+	 * The size the controls start on goes through the shortcode's own
+	 * attribute, so the first paint already matches the panel; the Switch Size
+	 * control then updates the very CSS variable that attribute writes.
+	 */
+	foreach ($data['switchers'] as $dkfd_switcher) : ?>
+		<div class="dkfd-fab__switch<?php echo $dkfd_switcher['value'] === $data['variant'] ? ' is-active' : ''; ?>" data-dkfd-switch="<?php echo esc_attr($dkfd_switcher['value']); ?>"><?php
+			echo $dkfd_switcher['markup']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		?></div>
+	<?php endforeach; ?>
+</div>

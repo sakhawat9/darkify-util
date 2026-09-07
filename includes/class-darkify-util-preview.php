@@ -139,9 +139,23 @@ if (!class_exists('Darkify_Util_Preview')) {
             preg_match_all('/\[' . static::SHORTCODE . '\b[^\]]*\]/i', $post->post_content, $matches);
             foreach ($matches[0] as $tag) {
                 $atts = shortcode_parse_atts(trim(substr($tag, 1, -1)));
-                $switch = is_array($atts) && isset($atts['switch']) ? $atts['switch'] : 'classic';
-                $this->enqueue_switcher_style($this->switch_variant($switch));
+                $this->preload_switcher_styles(is_array($atts) ? $atts : array());
             }
+        }
+
+        /**
+         * The switcher stylesheets one instance of the shortcode needs, read
+         * from its attributes.
+         *
+         * The style the preview starts on is all most instances ever show, so
+         * that is what the base class loads. [darkify_demo] overrides this: its
+         * Switcher control can reach every style it offers, and each of those
+         * needs its stylesheet on the host page for the frame to copy across.
+         */
+        protected function preload_switcher_styles($atts)
+        {
+            $switch = isset($atts['switch']) ? $atts['switch'] : 'classic';
+            $this->enqueue_switcher_style($this->switch_variant($switch));
         }
 
         /**
@@ -378,18 +392,31 @@ if (!class_exists('Darkify_Util_Preview')) {
          */
         protected function preset_schema()
         {
+            return $this->schema_field('color_pallets');
+        }
+
+        /**
+         * One field from Darkify's registered settings schema, by id.
+         *
+         * The schema is the plugin's own description of what it offers — the
+         * colour presets, the switcher styles, their names — so reading it is
+         * how a preview stays in step with the installed edition instead of
+         * carrying a copy that drifts.
+         */
+        protected function schema_field($id)
+        {
             $registry = $this->darkify_class('Admin\\Schema\\SchemaRegistry');
             if (!$registry || empty($registry::$sections['darkify'])) {
                 return null;
             }
 
             $found = null;
-            $walk = function ($fields) use (&$walk, &$found) {
+            $walk = function ($fields) use (&$walk, &$found, $id) {
                 foreach ($fields as $field) {
                     if (!is_array($field) || $found) {
                         continue;
                     }
-                    if (isset($field['id']) && 'color_pallets' === $field['id']) {
+                    if (isset($field['id']) && $id === $field['id']) {
                         $found = $field;
                         return;
                     }
@@ -466,6 +493,82 @@ if (!class_exists('Darkify_Util_Preview')) {
             return array_filter($vars, function ($value) {
                 return is_string($value) && '' !== $value;
             });
+        }
+
+        /* --------------------------------------------------------------- */
+        /* Darkify's switcher styles                                       */
+        /* --------------------------------------------------------------- */
+
+        /**
+         * Darkify's own switcher styles, read from the very field its Switch
+         * Toggler setting is built from (`enable_dark_switcher`) rather than
+         * listed here a second time: the keys, the names shown next to them
+         * and — in the free edition — which of them belong to Pro are the
+         * plugin's, so the list follows whichever edition is installed.
+         *
+         * @param string $requested Comma-separated style keys, or '' for every
+         *                          style the installed edition can render.
+         * @return array<int,array{value:string,label:string}>
+         */
+        protected function switch_styles($requested)
+        {
+            $wanted  = array_filter(array_map('trim', explode(',', strtolower((string) $requested))));
+            $field   = $this->schema_field('enable_dark_switcher');
+            $offered = array();
+
+            if ($field && !empty($field['options'])) {
+                foreach ($field['options'] as $key => $option) {
+                    if (!$wanted && !empty($option['pro_only'])) {
+                        // Default: the styles this site can actually render.
+                        continue;
+                    }
+                    $offered[$key] = isset($option['text']) ? $option['text'] : $this->switch_style_label($key);
+                }
+            } else {
+                // Darkify registers its schema on every request, but a preview
+                // that runs before it has (or against a build that no longer
+                // does) still has a list to work from: the same style map the
+                // `switch` attribute is normalised against, narrowed below to
+                // the stylesheets the installed edition actually ships.
+                foreach ($this->switch_map as $key) {
+                    $offered[$key] = $this->switch_style_label($key);
+                }
+            }
+
+            $styles = array();
+            foreach ($offered as $key => $label) {
+                $variant = strtolower(trim((string) $key));
+                if ($wanted && !in_array($variant, $wanted, true)) {
+                    continue;
+                }
+                if (isset($styles[$variant]) || !$this->switcher_style_exists($variant)) {
+                    continue;
+                }
+                $styles[$variant] = array(
+                    'value' => $variant,
+                    'label' => $label,
+                );
+            }
+
+            $styles = array_values($styles);
+
+            if ($wanted) {
+                // Keep the order the shortcode asked for.
+                usort($styles, function ($a, $b) use ($wanted) {
+                    return array_search($a['value'], $wanted, true) - array_search($b['value'], $wanted, true);
+                });
+            }
+
+            return $styles;
+        }
+
+        /**
+         * A readable name for a style key the schema does not name itself
+         * ("inner-moon" -> "Inner Moon").
+         */
+        protected function switch_style_label($key)
+        {
+            return ucwords(str_replace('-', ' ', (string) $key));
         }
 
         /* --------------------------------------------------------------- */

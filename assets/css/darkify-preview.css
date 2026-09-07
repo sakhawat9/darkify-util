@@ -206,7 +206,7 @@
 /* The divider between groups, drawn on the group itself so it disappears
    automatically when the groups wrap onto their own rows. */
 .dkfd-ctrl + .dkfd-ctrl {
-	padding-left: 34px;
+	padding-left: 20px;
 	border-left: 1px solid var(--dkfd-panel-border);
 	margin-left: -20px;
 }

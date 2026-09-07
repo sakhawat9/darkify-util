@@ -420,10 +420,25 @@
 		},
 
 		size: function (frame, option) {
-			var el = frame.doc.querySelector(".darkify_switch");
-			if (el) {
-				el.style.setProperty("--darkify-switch-scale", (parseInt(option.value, 10) || 100) / 100);
-			}
+			// Every switcher the demo carries, not just the one on show: the
+			// hidden ones are already rendered, and a size chosen now has to
+			// hold when the Switcher control reveals one of them.
+			var scale = (parseInt(option.value, 10) || 100) / 100;
+			toArray(frame.doc.querySelectorAll(".darkify_switch")).forEach(function (el) {
+				el.style.setProperty("--darkify-switch-scale", scale);
+			});
+		},
+
+		/**
+		 * The switcher style. Each one the demo offers is already in the frame,
+		 * rendered by Darkify itself, so the control reveals one rather than
+		 * building it — no round trip, no second copy of the plugin's markup,
+		 * and the switch it hands over is the real thing at every step.
+		 */
+		switch: function (frame, option) {
+			toArray(frame.doc.querySelectorAll(".dkfd-fab__switch")).forEach(function (el) {
+				el.classList.toggle("is-active", el.getAttribute("data-dkfd-switch") === option.value);
+			});
 		},
 
 		position: function (frame, option) {
@@ -445,6 +460,17 @@
 	 * rest of the pipeline — state, CONTROLS, applyState — unaware of the
 	 * difference.
 	 */
+	/**
+	 * The switcher on show. A demo carries one per offered style with only the
+	 * chosen one visible, so anything aiming at the switch — the autoplay
+	 * cursor, the toggle it throws — has to ask for that one; everything else
+	 * (a hero, a demo with a single switcher) still answers with its only one.
+	 */
+	function activeSwitch(doc) {
+		return doc.querySelector(".dkfd-fab__switch.is-active .darkify_switch") ||
+			doc.querySelector(".darkify_switch");
+	}
+
 	function readOption(control) {
 		var source = control.tagName === "SELECT"
 			? control.options[control.selectedIndex]
@@ -671,7 +697,7 @@
 				return doc.querySelector(".dkfa-toggle");
 			}
 
-			return doc.querySelector(".darkify_switch");
+			return activeSwitch(doc);
 		};
 
 		/** Where that control is, in the host window's coordinates. */
@@ -986,7 +1012,7 @@
 		 * actually happens.
 		 */
 		var throwSwitch = function () {
-			var element = frame.doc.querySelector(".darkify_switch");
+			var element = activeSwitch(frame.doc);
 			if (element && typeof element.click === "function") {
 				element.click();
 			} else if (typeof frame.win.darkify_switch_trigger === "function") {
