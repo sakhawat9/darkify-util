@@ -41,7 +41,13 @@ reload, by writing the same things Darkify itself writes:
   `darkify-<set>` class alongside them, which is what invalidates the engine's
   surface-token cache. If the preview is already dark, the engine's own sweep is
   asked to repaint, so the change lands instantly rather than on the next
-  toggle. The preset starts on whichever one the site itself is set to.
+  toggle; if it is light, the preview throws Darkify's own switch — a preset is
+  a dark-mode palette, so choosing one shows it, rather than leaving the visitor
+  to work out that nothing will happen until they flip the switch themselves.
+  Either way the colours on screen are the engine's, derived from the preset
+  just picked. The preset starts on whichever one the site itself is set to, and
+  a preview still opens in light mode until a preset is chosen or the switch is
+  thrown.
 * **Switch size** sets `--darkify-switch-scale`, the variable Darkify's
   `switch_size` attribute produces. It survives a dark-mode toggle because the
   engine leaves `.darkify_switch` alone.

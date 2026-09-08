@@ -566,6 +566,42 @@
 		});
 	}
 
+	/**
+	 * Show the preview in dark mode.
+	 *
+	 * A colour preset *is* a dark-mode palette — every variable it carries is a
+	 * `--darkify_dark_mode_*` one — so a preset picked while the preview is
+	 * light would otherwise land on a page that cannot show it. Choosing one
+	 * therefore throws Darkify's own switch: the same `darkify_switch_trigger()`
+	 * the switcher's onclick calls, through the guard that keeps the demo's
+	 * state its own, so the engine repaints the sample site in the colours
+	 * CONTROLS.preset has just written.
+	 *
+	 * Already-dark previews are left alone (CONTROLS.preset's sweep has
+	 * repainted them), and nothing here touches the light mode every preview
+	 * still opens in.
+	 */
+	function showDarkMode(instance) {
+		if (!instance.frame) {
+			// Picked before the frame finished booting — boot() throws the
+			// switch itself once the engine is in place.
+			instance.wantsDark = true;
+			return;
+		}
+
+		var root = instance.frame.doc.documentElement;
+		if (root.classList.contains("darkify_dark_mode_enabled") ||
+			typeof instance.frame.win.darkify_switch_trigger !== "function") {
+			return;
+		}
+
+		try {
+			instance.frame.win.darkify_switch_trigger();
+		} catch (e) {
+			/* the preset's variables are already on the document regardless */
+		}
+	}
+
 	function wireControls(instance) {
 		var panel = instance.root.querySelector(".dkfd__controls");
 		if (!panel) {
@@ -592,9 +628,16 @@
 				return;
 			}
 
+			var control = button.getAttribute("data-dkfd-control");
+
 			selectOption(button);
-			instance.state[button.getAttribute("data-dkfd-control")] = readOption(button);
+			instance.state[control] = readOption(button);
 			applyState(instance);
+
+			// A preset only exists in dark mode, so picking one shows it there.
+			if ("preset" === control) {
+				showDarkMode(instance);
+			}
 		});
 
 		// Selects report through `change`, which also covers the keyboard and
@@ -605,8 +648,14 @@
 				return;
 			}
 
-			instance.state[select.getAttribute("data-dkfd-control")] = readOption(select);
+			var control = select.getAttribute("data-dkfd-control");
+
+			instance.state[control] = readOption(select);
 			applyState(instance);
+
+			if ("preset" === control) {
+				showDarkMode(instance);
+			}
 		});
 	}
 
@@ -1571,7 +1620,9 @@
 
 				// A hero told to open in dark mode throws the switch once
 				// before anyone sees it, through the guard so the state sticks.
-				if ("dark" === root.getAttribute("data-dkfd-start") &&
+				// So does a demo whose colour preset was picked while the frame
+				// was still booting — the choice waited, it is not dropped.
+				if ((instance.wantsDark || "dark" === root.getAttribute("data-dkfd-start")) &&
 					typeof frameWin.darkify_switch_trigger === "function") {
 					frameWin.darkify_switch_trigger();
 				}
