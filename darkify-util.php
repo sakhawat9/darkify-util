@@ -35,6 +35,27 @@ function darkify_enqueue_scripts()
      * went active; the scrolling itself is the engine above.
      */
     wp_enqueue_script('darkify-util-toc', plugin_dir_url(__FILE__) . 'assets/js/darkify-toc.js', array('darkify-util-scroll'), DARKIFY_UTIL_VERSION, true);
+
+    /*
+     * The "Submit your site" reveal on the showcase page.
+     *
+     * Loaded only where the button actually is: its anchor is saved into the
+     * post content by Kadence, so a substring test finds the page without
+     * hard-coding an ID or a slug, and picks up the pattern automatically if
+     * it is reused elsewhere.
+     *
+     * In the HEAD, not the footer, unlike everything above it. The paired CSS
+     * hides the form only under a class this script sets on <html>, so it has
+     * to run before first paint or the form is visible for a moment and then
+     * collapses. See assets/js/darkify-submit-toggle.js.
+     */
+    if (is_singular()) {
+        $darkify_post = get_post();
+
+        if ($darkify_post && false !== strpos($darkify_post->post_content, 'submit_your_site')) {
+            wp_enqueue_script('darkify-util-submit-toggle', plugin_dir_url(__FILE__) . 'assets/js/darkify-submit-toggle.js', array(), DARKIFY_UTIL_VERSION, false);
+        }
+    }
 }
 
 add_action('wp_enqueue_scripts', 'darkify_enqueue_scripts');

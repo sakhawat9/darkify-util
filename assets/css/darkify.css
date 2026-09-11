@@ -34,7 +34,9 @@
   padding: 10px 0px !important;
 }
 .darkify_header ul li:hover button svg,
-.darkify_header ul li:hover a:not(.sub-menu a) {
+.darkify_header ul li:hover a:not(.sub-menu a),
+.darkify_header ul li.current-menu-item,
+.darkify_header ul li.current-menu-ancestor > .kb-link-wrap {
   color: #b8390a;
 }
 .darkify_header .sub-menu li a {
@@ -93,6 +95,7 @@
 .darkify_sub_menu .menu-item:hover .kb-nav-link-content::after {
   opacity: 1;
   transform: translateX(0);
+  background: url(https://darkifywp.com/wp-content/uploads/2026/09/arrow-right-1.svg) no-repeat center !important;
 }
 .darkify_header .darkify_menu .sub-menu.kb-nav-sub-menu {
   box-shadow: 0px 6px 15px 0px rgba(0, 0, 0, 0.05) !important;
@@ -116,6 +119,11 @@ header:has(.darkify_header).scroll-down {
 }
 header:has(.darkify_header).scroll-up {
   top: 0px;
+}
+#darkify_resources ul.sub-menu {
+    width: 400px !important;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 html[data-darkify-scrolling] header:has(.darkify_header) {
   transition: background-color 0.35s ease;
@@ -468,4 +476,41 @@ footer.wp-block-template-part {
 .wp-block-buttons .is-style-outline a:hover {
   background-color: inherit;
   border-color: #c2410ceb;
+}
+/* ==========================================================================
+   Showcase "Submit your site" toggle
+   --------------------------------------------------------------------------
+   Paired with assets/js/darkify-submit-toggle.js.
+
+   Everything here is scoped to `html.darkify-submit-toggle-ready`, a class the
+   script stamps on the root before first paint. That is deliberate: if the
+   script fails to load, or JS is off entirely, the class is never added, none
+   of these rules match, and the form renders exactly as it does today. A form
+   people are meant to submit must not be hidden by a stylesheet that outlives
+   the script meant to reveal it.
+   ========================================================================== */
+html.darkify-submit-toggle-ready .darkify-submit-panel {
+  display: none;
+}
+
+html.darkify-submit-toggle-ready .darkify-submit-panel.is-open {
+  display: block;
+}
+
+/*
+ * Only while opening or closing. `overflow: hidden` is what makes the slide
+ * read as a reveal rather than a squash, but leaving it on afterwards would
+ * clip anything the form pops outside its own box — a date picker, a select
+ * menu, a validation tooltip. The height transition is likewise pointless once
+ * the panel is back to `auto`.
+ */
+html.darkify-submit-toggle-ready .darkify-submit-panel.is-animating {
+  overflow: hidden;
+  transition: height 0.32s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.darkify-submit-toggle-ready .darkify-submit-panel.is-animating {
+    transition: none;
+  }
 }
