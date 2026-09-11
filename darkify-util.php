@@ -2,7 +2,7 @@
 /*
 *   Plugin Name: Darkify Util
 *   Description: A utility plugin to add dark mode functionality to your WordPress site.
-*   Version: 1.2
+*   Version: 1.3.0
  */
 
 // If this file is called directly, abort.
@@ -13,12 +13,12 @@ if (!defined('ABSPATH')) {
 define('DARKIFY_UTIL_FILE', __FILE__);
 define('DARKIFY_UTIL_PATH', plugin_dir_path(__FILE__));
 define('DARKIFY_UTIL_URL', plugin_dir_url(__FILE__));
-define('DARKIFY_UTIL_VERSION', '1.2');
+define('DARKIFY_UTIL_VERSION', '1.3.0');
 
 // enqueue the plugin's CSS and JavaScript files
 function darkify_enqueue_scripts()
 {
-    wp_enqueue_style('darkify-util-style', plugin_dir_url(__FILE__) . 'assets/css/darkify.css');
+    wp_enqueue_style('darkify-util-style', plugin_dir_url(__FILE__) . 'assets/css/darkify.css', array(), DARKIFY_UTIL_VERSION);
     wp_enqueue_script('darkify-util-script', plugin_dir_url(__FILE__) . 'assets/js/custom-script.js', array(), DARKIFY_UTIL_VERSION, true);
 
     /*
