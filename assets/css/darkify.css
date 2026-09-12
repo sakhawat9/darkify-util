@@ -3,6 +3,7 @@
 }
 .darkify_header .kb-header-container {
   min-height: 70px;
+  top: 0px !important;
 }
 .darkify_header .kb-header-row-layout-standard {
   width: 100% !important;
@@ -287,6 +288,14 @@ footer.wp-block-template-part {
   border-radius: 8px;
   font-weight: 500;
 }
+.betterdocs-toc {
+  background-color: #fdf0e8 !important;
+  padding: 20px !important;
+  border-radius: 12px !important;
+}
+.betterdocs-toc a {
+  color: #b8390a !important;
+}
 .docs_single_page .betterdocs-body ul li a.active {
   background-color: #fdf0e8 !important;
   color: #b8390a !important;
@@ -374,22 +383,10 @@ footer.wp-block-template-part {
   color: #14162a;
   font-weight: 600;
 }
-
-.single_blog blockquote {
-  border-left: 2px solid #b8390a;
-  padding-left: 15px;
-  margin-left: 0px !important;
-  background-color: #fdf0e8;
-  border-radius: 14px !important;
-}
-.single_blog blockquote strong {
+blockquote strong {
   font-weight: 700;
-  font-size: 18px;
-  color: #14162a;
-}
-.single_blog blockquote ul li {
-  color: #14162a;
   font-size: 16px;
+  color: #14162a;
 }
 .single_blog table * {
   border: 1px solid #e6e8ef;
@@ -469,23 +466,12 @@ footer.wp-block-template-part {
 }
 .wp-block-buttons a:hover {
   background-color: #c2410ceb;
+  color: var(--wp--preset--color--accent-3);
 }
 .wp-block-buttons .is-style-outline a:hover {
   background-color: inherit;
   border-color: #c2410ceb;
 }
-/* ==========================================================================
-   Showcase "Submit your site" toggle
-   --------------------------------------------------------------------------
-   Paired with assets/js/darkify-submit-toggle.js.
-
-   Everything here is scoped to `html.darkify-submit-toggle-ready`, a class the
-   script stamps on the root before first paint. That is deliberate: if the
-   script fails to load, or JS is off entirely, the class is never added, none
-   of these rules match, and the form renders exactly as it does today. A form
-   people are meant to submit must not be hidden by a stylesheet that outlives
-   the script meant to reveal it.
-   ========================================================================== */
 html.darkify-submit-toggle-ready .darkify-submit-panel {
   display: none;
 }
@@ -493,14 +479,6 @@ html.darkify-submit-toggle-ready .darkify-submit-panel {
 html.darkify-submit-toggle-ready .darkify-submit-panel.is-open {
   display: block;
 }
-
-/*
- * Only while opening or closing. `overflow: hidden` is what makes the slide
- * read as a reveal rather than a squash, but leaving it on afterwards would
- * clip anything the form pops outside its own box — a date picker, a select
- * menu, a validation tooltip. The height transition is likewise pointless once
- * the panel is back to `auto`.
- */
 html.darkify-submit-toggle-ready .darkify-submit-panel.is-animating {
   overflow: hidden;
   transition: height 0.32s ease;

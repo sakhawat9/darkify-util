@@ -517,7 +517,7 @@
 
 .dkfd__mode[data-dkfd-mode="dark"] {
 	background: #ffffff;
-	color: #0f172a;
+	color: #0f172a !important;
 }
 
 /* The badge sits at the right end, so the centred address needs the room. */

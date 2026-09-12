@@ -97,18 +97,24 @@ if (!class_exists('Darkify_Util_Preview')) {
             }
             self::$registered = true;
 
+            // Built copy in production, readable source under WP_DEBUG — see
+            // darkify_util_asset(). The preview frame copies these tags into
+            // itself, so serving a 404 here would leave the frame blank.
+            $style_path  = darkify_util_asset('assets/css/darkify-preview.css');
+            $script_path = darkify_util_asset('assets/js/darkify-preview.js');
+
             wp_register_style(
                 self::HANDLE,
-                DARKIFY_UTIL_URL . 'assets/css/darkify-preview.css',
+                DARKIFY_UTIL_URL . $style_path,
                 array(),
-                self::asset_version('assets/css/darkify-preview.css')
+                self::asset_version($style_path)
             );
 
             wp_register_script(
                 self::HANDLE,
-                DARKIFY_UTIL_URL . 'assets/js/darkify-preview.js',
+                DARKIFY_UTIL_URL . $script_path,
                 array(),
-                self::asset_version('assets/js/darkify-preview.js'),
+                self::asset_version($script_path),
                 true
             );
 

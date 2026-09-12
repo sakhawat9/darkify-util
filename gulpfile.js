@@ -164,7 +164,22 @@ gulp.task("cleanMinifiedJs", function () {
 gulp.task("minify-css", function () {
   return gulp
     .src(paths.css.src)
-    .pipe(cleanCSS({ level: { 1: { all: false }, 2: { all: false } } }))
+    /*
+     * `level: 1` — the standard safe level, and specifically NOT
+     * `{ 1: { all: false }, 2: { all: false } }`, which is what this used to be.
+     *
+     * That combination silently dropped whole declarations. With level 1's
+     * optimisations off, the newlines inside a multi-line value are never
+     * collapsed, and enabling level 2 at all (even with every one of its
+     * optimisations disabled) runs the shorthand validator over the result —
+     * which rejects any `background` whose value still contains line breaks and
+     * discards it. `.dkfd-swatch`'s gradient in darkify-preview.css was being
+     * thrown away exactly this way, reported only as a warning nobody reads.
+     *
+     * Level 1 collapses that whitespace first, which is the job a minifier is
+     * here to do, so the validator sees a well-formed value and keeps it.
+     */
+    .pipe(cleanCSS({ level: 1 }))
     .pipe(rename({ suffix: ".min" }))
     .pipe(gulp.dest(paths.css.dest));
 });
