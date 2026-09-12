@@ -165,21 +165,28 @@ gulp.task("minify-css", function () {
   return gulp
     .src(paths.css.src)
     /*
-     * `level: 1` — the standard safe level, and specifically NOT
-     * `{ 1: { all: false }, 2: { all: false } }`, which is what this used to be.
+     * Level 1, minus `tidySelectors`. Both halves of that are load-bearing,
+     * because clean-css 4 has a failure at each extreme:
      *
-     * That combination silently dropped whole declarations. With level 1's
-     * optimisations off, the newlines inside a multi-line value are never
-     * collapsed, and enabling level 2 at all (even with every one of its
-     * optimisations disabled) runs the shorthand validator over the result —
-     * which rejects any `background` whose value still contains line breaks and
-     * discards it. `.dkfd-swatch`'s gradient in darkify-preview.css was being
-     * thrown away exactly this way, reported only as a warning nobody reads.
+     *   `{ 1: { all: false }, 2: { all: false } }` — what this used to be, and
+     *   what Darkify/Darkify Pro still use — leaves the newlines inside a
+     *   multi-line value uncollapsed, and naming level 2 at all runs the
+     *   shorthand validator over the result. It rejects any `background` whose
+     *   value still contains line breaks and DISCARDS THE DECLARATION,
+     *   reported only as a warning nobody reads. `.dkfd-swatch`'s gradient in
+     *   darkify-preview.css was being thrown away exactly this way.
      *
-     * Level 1 collapses that whitespace first, which is the job a minifier is
-     * here to do, so the validator sees a well-formed value and keeps it.
+     *   Plain `level: 1` fixes that, but its `tidySelectors` step predates
+     *   Selectors Level 4 and strips the space INSIDE `:not()`:
+     *   `:not(.sub-menu a)` became `:not(.sub-menua)`. Nothing carries that
+     *   class, so the `:not()` always passed and hovering a parent menu item
+     *   turned every link in its dropdown red.
+     *
+     * Keeping level 1 collapses value whitespace, which is the job a minifier
+     * is here to do; turning off `tidySelectors` leaves selectors exactly as
+     * written. Verified against both cases — see the notes in the changelog.
      */
-    .pipe(cleanCSS({ level: 1 }))
+    .pipe(cleanCSS({ level: { 1: { tidySelectors: false } } }))
     .pipe(rename({ suffix: ".min" }))
     .pipe(gulp.dest(paths.css.dest));
 });

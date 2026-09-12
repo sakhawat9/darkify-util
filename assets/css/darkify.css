@@ -28,6 +28,9 @@
 .darkify_header ul li a {
   padding: 20px 5px !important;
 }
+.darkify_header ul li.darkify_sub_menu_mobile a {
+  padding: 10px 5px !important;
+}
 .darkify_header .darkify_header_mobile ul li a {
   padding: 10px 0px !important;
 }
@@ -453,9 +456,6 @@ blockquote strong {
 }
 .darkify_table_of_content ul::-webkit-scrollbar-thumb:hover {
   opacity: 0.2;
-}
-.kb-table-of-content-list li.active > .kb-table-of-contents__entry {
-  color: #c2410c !important;
 }
 .kb-table-of-content-list li {margin-bottom: 5px;}
 .kb-table-of-contents__entry {

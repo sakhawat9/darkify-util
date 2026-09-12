@@ -232,7 +232,7 @@ let holds = 0;
 /** @param {HTMLElement} docEl Document element carrying the flag. */
 function holdHeader( docEl ) {
 	holds++;
-	holdHeader( docEl );
+	docEl.dataset[ SCROLLING_FLAG ] = '1';
 }
 
 /** @param {HTMLElement} docEl Document element carrying the flag. */
@@ -288,7 +288,7 @@ function scrollToVersion( root, target, done ) {
 	const destination = () =>
 		destinationFor( target, scroller, offsetFor( target, scroller, root ) );
 
-	docEl.dataset[ SCROLLING_FLAG ] = '1';
+	holdHeader( docEl );
 
 	let frame = null;
 	let started = 0;

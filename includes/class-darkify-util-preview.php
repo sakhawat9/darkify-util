@@ -194,8 +194,13 @@ if (!class_exists('Darkify_Util_Preview')) {
 
         protected static function asset_version($relative_path)
         {
-            $file = DARKIFY_UTIL_PATH . $relative_path;
-            return file_exists($file) ? (string) filemtime($file) : DARKIFY_UTIL_VERSION;
+            // The plugin version, like every other asset this plugin serves.
+            // Bump DARKIFY_UTIL_VERSION on release and every URL changes with
+            // it; the parameter is kept so callers read as "version of this
+            // file" rather than having the constant scattered through them.
+            unset($relative_path);
+
+            return DARKIFY_UTIL_VERSION;
         }
 
         /**
@@ -204,6 +209,13 @@ if (!class_exists('Darkify_Util_Preview')) {
          */
         protected static function frame_css_url($relative_path)
         {
+            // Built copy in production, readable source under WP_DEBUG, exactly
+            // like every enqueued asset. This is a plain URL rather than an
+            // enqueue — the frame links it itself — so it has to ask
+            // darkify_util_asset() explicitly; it was serving the unminified
+            // file everywhere before, for both the hero and the demo frames.
+            $relative_path = darkify_util_asset($relative_path);
+
             return DARKIFY_UTIL_URL . $relative_path . '?ver=' . self::asset_version($relative_path);
         }
 

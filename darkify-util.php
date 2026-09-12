@@ -2,7 +2,7 @@
 /*
 *   Plugin Name: Darkify Util
 *   Description: A utility plugin to add dark mode functionality to your WordPress site.
-*   Version: 1.3.1
+*   Version: 1.3.2
  */
 
 // If this file is called directly, abort.
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 define('DARKIFY_UTIL_FILE', __FILE__);
 define('DARKIFY_UTIL_PATH', plugin_dir_path(__FILE__));
 define('DARKIFY_UTIL_URL', plugin_dir_url(__FILE__));
-define('DARKIFY_UTIL_VERSION', '1.3.1');
+define('DARKIFY_UTIL_VERSION', '1.3.2');
 
 
 /**
@@ -48,32 +48,14 @@ function darkify_util_asset($relative_path)
     return $relative_path;
 }
 
-/**
- * Cache-busting version for one of this plugin's assets.
- *
- * The plugin version alone cannot do this job: it changes on release, while
- * these files change whenever the build runs, so a rebuilt `.min` file would
- * keep being served from cache under an unchanged `?ver=`. The file's own
- * mtime changes exactly when its contents do.
- *
- * @param string $relative_path Path under the plugin root.
- * @return string
- */
-function darkify_util_asset_version($relative_path)
-{
-    $file = DARKIFY_UTIL_PATH . $relative_path;
-
-    return file_exists($file) ? (string) filemtime($file) : DARKIFY_UTIL_VERSION;
-}
-
 // enqueue the plugin's CSS and JavaScript files
 function darkify_enqueue_scripts()
 {
     $darkify_style = darkify_util_asset('assets/css/darkify.css');
-    wp_enqueue_style('darkify-util-style', DARKIFY_UTIL_URL . $darkify_style, array(), darkify_util_asset_version($darkify_style));
+    wp_enqueue_style('darkify-util-style', DARKIFY_UTIL_URL . $darkify_style, array(), DARKIFY_UTIL_VERSION);
 
     // $darkify_custom = darkify_util_asset('assets/js/custom-script.js');
-    // wp_enqueue_script('darkify-util-script', DARKIFY_UTIL_URL . $darkify_custom, array(), darkify_util_asset_version($darkify_custom), true);
+    // wp_enqueue_script('darkify-util-script', DARKIFY_UTIL_URL . $darkify_custom, array(), DARKIFY_UTIL_VERSION, true);
 
     /*
      * The "Submit your site" reveal on the showcase page.
@@ -93,7 +75,7 @@ function darkify_enqueue_scripts()
 
         if ($darkify_post && false !== strpos($darkify_post->post_content, 'submit_your_site')) {
             $darkify_toggle = darkify_util_asset('assets/js/darkify-submit-toggle.js');
-            wp_enqueue_script('darkify-util-submit-toggle', DARKIFY_UTIL_URL . $darkify_toggle, array(), darkify_util_asset_version($darkify_toggle), false);
+            wp_enqueue_script('darkify-util-submit-toggle', DARKIFY_UTIL_URL . $darkify_toggle, array(), DARKIFY_UTIL_VERSION, false);
         }
 
         /*
@@ -108,7 +90,7 @@ function darkify_enqueue_scripts()
         foreach ($darkify_label_anchors as $darkify_anchor) {
             if ($darkify_post && false !== strpos($darkify_post->post_content, $darkify_anchor)) {
                 $darkify_labels = darkify_util_asset('assets/js/darkify-mode-labels.js');
-                wp_enqueue_script('darkify-util-mode-labels', DARKIFY_UTIL_URL . $darkify_labels, array(), darkify_util_asset_version($darkify_labels), true);
+                wp_enqueue_script('darkify-util-mode-labels', DARKIFY_UTIL_URL . $darkify_labels, array(), DARKIFY_UTIL_VERSION, true);
                 break;
             }
         }
