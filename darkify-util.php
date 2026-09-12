@@ -2,7 +2,7 @@
 /*
 *   Plugin Name: Darkify Util
 *   Description: A utility plugin to add dark mode functionality to your WordPress site.
-*   Version: 1.3.0
+*   Version: 1.3.1
  */
 
 // If this file is called directly, abort.
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 define('DARKIFY_UTIL_FILE', __FILE__);
 define('DARKIFY_UTIL_PATH', plugin_dir_path(__FILE__));
 define('DARKIFY_UTIL_URL', plugin_dir_url(__FILE__));
-define('DARKIFY_UTIL_VERSION', '1.3.0');
+define('DARKIFY_UTIL_VERSION', '1.3.1');
 
 // enqueue the plugin's CSS and JavaScript files
 function darkify_enqueue_scripts()
@@ -54,6 +54,22 @@ function darkify_enqueue_scripts()
 
         if ($darkify_post && false !== strpos($darkify_post->post_content, 'submit_your_site')) {
             wp_enqueue_script('darkify-util-submit-toggle', plugin_dir_url(__FILE__) . 'assets/js/darkify-submit-toggle.js', array(), DARKIFY_UTIL_VERSION, false);
+        }
+
+        /*
+         * The captions beside the Image Controls and Video Controls switches,
+         * which have to describe whichever mode is currently on. Same content
+         * test as above, and in the footer rather than the head: this one only
+         * rewrites text that is already on the page, so it has nothing to do
+         * before the content it edits has been parsed.
+         */
+        $darkify_label_anchors = array('image_control_btn', 'video_control_btn', 'data-darkify-label-toggle');
+
+        foreach ($darkify_label_anchors as $darkify_anchor) {
+            if ($darkify_post && false !== strpos($darkify_post->post_content, $darkify_anchor)) {
+                wp_enqueue_script('darkify-util-mode-labels', plugin_dir_url(__FILE__) . 'assets/js/darkify-mode-labels.js', array(), DARKIFY_UTIL_VERSION, true);
+                break;
+            }
         }
     }
 }

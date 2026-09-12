@@ -28,7 +28,7 @@
 	--darkify-changelog-badge-alpha: 14%;
 	--darkify-changelog-radius: 12px;
 	--darkify-changelog-gap: 28px;
-	--darkify-changelog-nav-width: 240px;
+	--darkify-changelog-nav-width: 260px;
 	--darkify-changelog-sticky-top: 32px;
 
 	box-sizing: border-box;
@@ -205,12 +205,12 @@
 .darkify-changelog__nav {
 	position: sticky;
 	top: var(--darkify-changelog-sticky-top);
-	max-height: calc(100vh - var(--darkify-changelog-sticky-top) - 24px);
+	max-height: calc(75vh - var(--darkify-changelog-sticky-top) - 24px);
 	overflow-y: auto;
 	padding: 18px;
 	border: 1px solid var(--darkify-changelog-border);
 	border-radius: var(--darkify-changelog-radius);
-	background-color: var(--darkify-changelog-raised);
+	background-color: #fff;
 }
 
 .darkify-changelog__nav-title {
