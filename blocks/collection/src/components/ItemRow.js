@@ -9,15 +9,11 @@
 
 import { __, sprintf } from '@wordpress/i18n';
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import {
-	Button,
-	FormTokenField,
-	TextControl,
-	TextareaControl,
-} from '@wordpress/components';
+import { BaseControl, Button, FormTokenField, TextControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
 import { emptyMeta, makeCategory } from '../model';
+import DescriptionEditor from './DescriptionEditor';
 
 /**
  * @param {Object}   props
@@ -259,13 +255,16 @@ export default function ItemRow( {
 							) }
 						/>
 
-						<TextareaControl
-							__nextHasNoMarginBottom
-							label={ __( 'Description', 'darkify-util' ) }
-							value={ item.description }
-							onChange={ ( description ) => update( { description } ) }
-							rows={ 3 }
-						/>
+						<BaseControl __nextHasNoMarginBottom className="darkify-collection-editor__description">
+							<BaseControl.VisualLabel>
+								{ __( 'Description', 'darkify-util' ) }
+							</BaseControl.VisualLabel>
+							<DescriptionEditor
+								label={ __( 'Description', 'darkify-util' ) }
+								value={ item.description }
+								onChange={ ( description ) => update( { description } ) }
+							/>
+						</BaseControl>
 
 						<div className="darkify-collection-editor__pair">
 							<TextControl

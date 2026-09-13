@@ -494,7 +494,8 @@ if (!class_exists('Darkify_Util_Collection')) {
                 $item['title'],
                 $item['subtitle'],
                 $item['badge'],
-                wp_strip_all_tags($item['description']),
+                // Line and block breaks have to stay gaps, or "<p>one</p><p>two</p>" searches as "onetwo".
+                preg_replace('/<br\s*\/?>|<\/(?:p|h[1-6]|li|blockquote|pre|td|th|caption)>/i', ' ', $item['description']),
             );
 
             foreach ($item['meta'] as $meta) {
@@ -522,6 +523,40 @@ if (!class_exists('Darkify_Util_Collection')) {
             $value = preg_replace('/\s+/u', ' ', $value);
 
             return trim(function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value));
+        }
+
+        /**
+         * A description, ready to print.
+         *
+         * The editor's rich-text field writes inline HTML with `<br>` for Enter,
+         * so a run of two or more breaks is read as a paragraph break before
+         * wpautop() builds the paragraphs. Older plain-text descriptions have
+         * newlines instead, which wpautop() already understands.
+         *
+         * $inline is for cards that clamp the description to a line or two: the
+         * formatting stays, the paragraphs flatten into one run of text.
+         *
+         * @param string $description Sanitised description.
+         * @param bool   $inline      Keep inline formatting only.
+         * @return string Escaped HTML.
+         */
+        public function description_html($description, $inline = false)
+        {
+            $description = (string) $description;
+
+            if ($inline) {
+                $allowed = wp_kses_allowed_html('post');
+                $inline_tags = array('a', 'abbr', 'b', 'bdo', 'cite', 'code', 'del', 'em', 'i', 'kbd', 'mark', 's', 'span', 'strike', 'strong', 'sub', 'sup', 'u');
+
+                $description = preg_replace('/<br\s*\/?>|<hr\s*\/?>|<\/(?:p|h[1-6]|li|blockquote|pre|ul|ol|td|th|tr|table|caption)>|\r?\n/i', ' ', $description);
+                $description = wp_kses($description, array_intersect_key($allowed, array_flip($inline_tags)));
+
+                return trim(preg_replace('/\s{2,}/', ' ', $description));
+            }
+
+            $description = preg_replace('/(?:<br\s*\/?>\s*){2,}/i', "\n\n", $description);
+
+            return wp_kses_post(wpautop($description));
         }
 
         /**

@@ -91,7 +91,10 @@ $dkc_has_strip = ($data['showMeta'] && !empty($dkc_item['meta']))
 
 			<?php if ($data['showDescription'] && '' !== $dkc_item['description']) : ?>
 				<p class="darkify-collection__tile-excerpt">
-					<?php echo esc_html(wp_strip_all_tags($dkc_item['description'])); ?>
+					<?php
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- description_html() runs wp_kses().
+					echo $dkc_collection->description_html($dkc_item['description'], true);
+					?>
 				</p>
 			<?php endif; ?>
 

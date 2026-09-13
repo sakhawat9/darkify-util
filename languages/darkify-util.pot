@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-12T06:27:02+00:00\n"
+"POT-Creation-Date: 2026-09-13T12:00:15+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: darkify-util\n"
@@ -123,7 +123,7 @@ msgid "You are not allowed to edit that post."
 msgstr ""
 
 #: includes/class-darkify-util-changelog.php:263
-#: includes/class-darkify-util-collection.php:857
+#: includes/class-darkify-util-collection.php:892
 msgid "Load More"
 msgstr ""
 
@@ -146,28 +146,28 @@ msgstr ""
 msgid "No items match your filters."
 msgstr ""
 
-#: includes/class-darkify-util-collection.php:719
+#: includes/class-darkify-util-collection.php:754
 msgid "That collection could not be found."
 msgstr ""
 
 #. translators: 1: number of items shown, 2: total number of matching items.
-#: includes/class-darkify-util-collection.php:759
+#: includes/class-darkify-util-collection.php:794
 #, php-format
 msgid "Showing %1$s of %2$s item."
 msgid_plural "Showing %1$s of %2$s items."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-darkify-util-collection.php:851
+#: includes/class-darkify-util-collection.php:886
 #: templates/changelog.php:53
 msgid "All"
 msgstr ""
 
-#: includes/class-darkify-util-collection.php:853
+#: includes/class-darkify-util-collection.php:888
 msgid "Search…"
 msgstr ""
 
-#: includes/class-darkify-util-collection.php:868
+#: includes/class-darkify-util-collection.php:903
 msgid "Learn More"
 msgstr ""
 
@@ -319,7 +319,7 @@ msgid "Latest"
 msgstr ""
 
 #: templates/changelog.php:195
-#: blocks/collection/src/components/ItemRow.js:291
+#: blocks/collection/src/components/ItemRow.js:290
 #: blocks/collection/src/edit.js:426
 msgid "Details"
 msgstr ""
@@ -339,7 +339,7 @@ msgid "Next"
 msgstr ""
 
 #. translators: %s: item title.
-#: templates/collection-cards/default.php:111
+#: templates/collection-cards/default.php:114
 #, php-format
 msgid "about %s"
 msgstr ""
@@ -617,6 +617,7 @@ msgid "Semi bold"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:139
+#: blocks/collection/src/components/DescriptionEditor.js:632
 msgid "Bold"
 msgstr ""
 
@@ -920,120 +921,217 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+#: blocks/collection/src/components/DescriptionEditor.js:24
+msgid "Paragraph"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:25
+msgid "Heading 2"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:26
+msgid "Heading 3"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:27
+msgid "Heading 4"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:28
+msgid "Heading 5"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:29
+msgid "Heading 6"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:30
+msgid "Preformatted"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:609
+msgid "Add Media"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:617
+msgid "Text format"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:638
+msgid "Italic"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:644
+msgid "Underline"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:653
+msgid "Bulleted list"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:659
+msgid "Numbered list"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:665
+msgid "Quote"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:674
+msgid "Link"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:684
+msgid "Clear formatting"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:693
+msgid "Editor mode"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:700
+msgid "Visual"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:708
+msgid "Code"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:721
+msgid "Write a description…"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:754
+msgid "URL"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:762
+msgid "Open in new tab"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:769
+msgid "Remove link"
+msgstr ""
+
+#: blocks/collection/src/components/DescriptionEditor.js:773
+msgid "Apply"
+msgstr ""
+
 #. translators: %d: item number.
-#: blocks/collection/src/components/ItemRow.js:119
+#: blocks/collection/src/components/ItemRow.js:115
 #, js-format
 msgid "Item %d"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:126
+#: blocks/collection/src/components/ItemRow.js:122
 msgid "Uncategorised"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:138
+#: blocks/collection/src/components/ItemRow.js:134
 msgid "Move item up"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:147
+#: blocks/collection/src/components/ItemRow.js:143
 msgid "Move item down"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:155
+#: blocks/collection/src/components/ItemRow.js:151
 msgid "Duplicate item"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:164
+#: blocks/collection/src/components/ItemRow.js:160
 msgid "Remove item"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:196
+#: blocks/collection/src/components/ItemRow.js:192
 msgid "Replace image"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:197
+#: blocks/collection/src/components/ItemRow.js:193
 msgid "Set image"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:210
+#: blocks/collection/src/components/ItemRow.js:206
 msgid "Remove image"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:215
+#: blocks/collection/src/components/ItemRow.js:211
 msgid "Alt text"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:218
+#: blocks/collection/src/components/ItemRow.js:214
 msgid "Leave empty if the image is decorative."
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:227
+#: blocks/collection/src/components/ItemRow.js:223
 #: blocks/collection/src/edit.js:525
 msgid "Title"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:234
+#: blocks/collection/src/components/ItemRow.js:230
 #: blocks/collection/src/edit.js:419
 msgid "Subtitle"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:237
+#: blocks/collection/src/components/ItemRow.js:233
 msgid "Optional"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:242
+#: blocks/collection/src/components/ItemRow.js:238
 #: blocks/collection/src/edit.js:403
 msgid "Badge"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:245
+#: blocks/collection/src/components/ItemRow.js:241
 msgid "A short flag over the image — “80% off”, “New”."
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:251
+#: blocks/collection/src/components/ItemRow.js:247
 #: blocks/collection/src/edit.js:182
 msgid "Categories"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:256
+#: blocks/collection/src/components/ItemRow.js:252
 msgid "An item can sit in several categories. A new name here becomes a new filter."
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:264
+#: blocks/collection/src/components/ItemRow.js:260
+#: blocks/collection/src/components/ItemRow.js:263
 #: blocks/collection/src/edit.js:433
 msgid "Description"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:273
+#: blocks/collection/src/components/ItemRow.js:272
 msgid "Link URL"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:282
+#: blocks/collection/src/components/ItemRow.js:281
 msgid "Link text"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:285
+#: blocks/collection/src/components/ItemRow.js:284
 msgid "Uses the block’s button text"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:294
+#: blocks/collection/src/components/ItemRow.js:293
 msgid "Label and value pairs, listed under the title. This is where anything the other fields do not cover belongs — dates, prices, coupons, stack."
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:304
-#: blocks/collection/src/components/ItemRow.js:308
+#: blocks/collection/src/components/ItemRow.js:303
+#: blocks/collection/src/components/ItemRow.js:307
 msgid "Label"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:312
-#: blocks/collection/src/components/ItemRow.js:316
+#: blocks/collection/src/components/ItemRow.js:311
+#: blocks/collection/src/components/ItemRow.js:315
 msgid "Value"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:328
+#: blocks/collection/src/components/ItemRow.js:327
 msgid "Remove detail"
 msgstr ""
 
-#: blocks/collection/src/components/ItemRow.js:339
+#: blocks/collection/src/components/ItemRow.js:338
 msgid "Add detail"
 msgstr ""
 

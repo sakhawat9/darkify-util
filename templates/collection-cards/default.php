@@ -95,7 +95,10 @@ if (!defined('ABSPATH')) {
 
 		<?php if ($data['showDescription'] && '' !== $dkc_item['description']) : ?>
 			<div class="darkify-collection__description">
-				<?php echo wp_kses_post(wpautop($dkc_item['description'])); ?>
+				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- description_html() runs wp_kses_post().
+				echo $dkc_collection->description_html($dkc_item['description']);
+				?>
 			</div>
 		<?php endif; ?>
 

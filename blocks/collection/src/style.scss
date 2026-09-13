@@ -446,6 +446,7 @@
 	line-height: 1.65;
 	color: var(--darkify-collection-text);
 
+	> *,
 	p {
 		margin: 0 0 8px;
 
@@ -456,6 +457,97 @@
 
 	a {
 		color: var(--darkify-collection-heading);
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: var(--darkify-collection-heading);
+		font-size: 1.1em;
+		line-height: 1.35;
+	}
+
+	h1,
+	h2 {
+		font-size: 1.25em;
+	}
+
+	ul,
+	ol {
+		padding-left: 1.3em;
+	}
+
+	li + li {
+		margin-top: 2px;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.95em;
+	}
+
+	th,
+	td {
+		padding: 6px 8px;
+		border: 1px solid var(--darkify-collection-border);
+		text-align: left;
+		vertical-align: top;
+	}
+
+	th {
+		color: var(--darkify-collection-heading);
+	}
+
+	hr {
+		border: 0;
+		border-top: 1px solid var(--darkify-collection-border);
+	}
+
+	/* Not the browser's `bolder`: over a light body weight that barely
+	   changes anything. */
+	b,
+	strong {
+		font-weight: 700;
+	}
+
+	blockquote {
+		margin-left: 0;
+		margin-right: 0;
+		padding-left: 12px;
+		border-left: 3px solid var(--darkify-collection-border);
+		font-style: italic;
+	}
+
+	pre {
+		padding: 10px 12px;
+		border-radius: 6px;
+		background-color: var(--darkify-collection-border);
+		font-size: 0.9em;
+		white-space: pre-wrap;
+		overflow-x: auto;
+	}
+
+	img {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		border-radius: 6px;
+	}
+
+	code,
+	kbd {
+		padding: 1px 5px;
+		border-radius: 4px;
+		background-color: var(--darkify-collection-border);
+		font-size: 0.9em;
+	}
+
+	mark {
+		padding: 0 2px;
 	}
 }
 
@@ -784,6 +876,19 @@
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+
+	/* The title's stretched link covers the whole tile; a link written into
+	   the description has to sit above it to be clickable. */
+	a {
+		position: relative;
+		z-index: 2;
+		color: var(--darkify-collection-heading);
+	}
+
+	b,
+	strong {
+		font-weight: 700;
+	}
 }
 
 .darkify-collection__tile-meta {
