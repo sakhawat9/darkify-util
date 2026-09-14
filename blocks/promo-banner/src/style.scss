@@ -100,9 +100,10 @@
 	justify-content: center;
 	min-height: 32px;
 	margin: 0;
-	padding: 5px 16px;
-	border: 0;
-	border-radius: 999px;
+	padding: var(--darkify-promo-button-padding-top, 5px) var(--darkify-promo-button-padding-right, 16px)
+		var(--darkify-promo-button-padding-bottom, 5px) var(--darkify-promo-button-padding-left, 16px);
+	border: var(--darkify-promo-button-border-width, 0) solid var(--darkify-promo-button-border, currentColor);
+	border-radius: var(--darkify-promo-button-radius, 999px);
 	background: var(--darkify-promo-button-bg);
 	color: var(--darkify-promo-button-color);
 	font-size: 0.9375em;
@@ -110,10 +111,11 @@
 	line-height: 1.2;
 	text-decoration: none;
 	white-space: nowrap;
-	transition: background-color 0.15s ease, color 0.15s ease;
+	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
 	&:hover,
 	&:focus-visible {
+		border-color: var(--darkify-promo-button-border-hover, var(--darkify-promo-button-border, currentColor));
 		background: var(--darkify-promo-button-bg-hover);
 		color: var(--darkify-promo-button-color-hover);
 		text-decoration: none;
@@ -283,7 +285,9 @@
 
 	.darkify-promo .darkify-promo__button {
 		min-height: 28px;
-		padding: 4px 12px;
+		// Through the same properties, so an author's padding still wins on phones.
+		padding: var(--darkify-promo-button-padding-top, 4px) var(--darkify-promo-button-padding-right, 12px)
+			var(--darkify-promo-button-padding-bottom, 4px) var(--darkify-promo-button-padding-left, 12px);
 	}
 
 	.darkify-promo .darkify-promo__close {

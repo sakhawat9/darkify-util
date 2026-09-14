@@ -513,6 +513,20 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 }
             }
 
+            foreach ($attributes['buttonPadding'] as $side => $value) {
+                if ('' !== $value) {
+                    $declarations[] = '--darkify-promo-button-padding-' . $side . ': ' . $value;
+                }
+            }
+
+            if ('' !== $attributes['buttonBorderWidth']) {
+                $declarations[] = '--darkify-promo-button-border-width: ' . $attributes['buttonBorderWidth'] . 'px';
+            }
+
+            if ('' !== $attributes['buttonRadius']) {
+                $declarations[] = '--darkify-promo-button-radius: ' . $attributes['buttonRadius'] . 'px';
+            }
+
             return implode('; ', $declarations);
         }
 
@@ -532,6 +546,8 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 'buttonBackgroundHover' => '--darkify-promo-button-bg-hover',
                 'buttonColor'           => '--darkify-promo-button-color',
                 'buttonColorHover'      => '--darkify-promo-button-color-hover',
+                'buttonBorderColor'      => '--darkify-promo-button-border',
+                'buttonBorderColorHover' => '--darkify-promo-button-border-hover',
                 'closeColor'            => '--darkify-promo-close',
             );
         }
@@ -560,6 +576,11 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 'buttonUrl'      => '',
                 'openInNewTab'   => false,
 
+                // Empty means "as designed": the stylesheet's values stand.
+                'buttonPadding'     => array('top' => '', 'right' => '', 'bottom' => '', 'left' => ''),
+                'buttonBorderWidth' => '',
+                'buttonRadius'      => '',
+
                 'targetDate'      => '',
                 'recurring'       => false,
                 'recurringDays'   => 7,
@@ -583,6 +604,8 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 'buttonBackgroundHover' => '',
                 'buttonColor'           => '',
                 'buttonColorHover'      => '',
+                'buttonBorderColor'      => '',
+                'buttonBorderColorHover' => '',
                 'closeColor'            => '',
             );
         }
@@ -654,6 +677,23 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
 
             foreach (array_keys(self::color_properties()) as $name) {
                 $clean[$name] = $this->color($get($name));
+            }
+
+            // Each side matched as a length, since it ends up in a style attribute.
+            $padding = is_array($get('buttonPadding')) ? $get('buttonPadding') : array();
+
+            $clean['buttonPadding'] = array();
+
+            foreach (array('top', 'right', 'bottom', 'left') as $side) {
+                $value = isset($padding[$side]) ? trim((string) $padding[$side]) : '';
+
+                $clean['buttonPadding'][$side] = preg_match('/^[0-9]+(\.[0-9]+)?(px|rem|em)$/', $value) ? $value : '';
+            }
+
+            foreach (array('buttonBorderWidth' => 10, 'buttonRadius' => 100) as $name => $max) {
+                $value = $get($name);
+
+                $clean[$name] = '' === $value || null === $value ? '' : (string) min($max, absint($value));
             }
 
             return $clean;

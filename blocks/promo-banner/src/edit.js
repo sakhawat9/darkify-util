@@ -19,6 +19,7 @@ import {
 	useBlockProps,
 } from '@wordpress/block-editor';
 import {
+	__experimentalBoxControl as BoxControl,
 	Button,
 	DateTimePicker,
 	Dropdown,
@@ -59,8 +60,31 @@ const COLOR_PROPERTIES = {
 	buttonBackgroundHover: '--darkify-promo-button-bg-hover',
 	buttonColor: '--darkify-promo-button-color',
 	buttonColorHover: '--darkify-promo-button-color-hover',
+	buttonBorderColor: '--darkify-promo-button-border',
+	buttonBorderColorHover: '--darkify-promo-button-border-hover',
 	closeColor: '--darkify-promo-close',
 };
+
+/** Units offered for the button padding. */
+const SPACING_UNITS = [
+	{ value: 'px', label: 'px', default: 0 },
+	{ value: 'em', label: 'em', default: 0 },
+	{ value: 'rem', label: 'rem', default: 0 },
+];
+
+/**
+ * A number setting stored as a string, where '' means "as designed".
+ *
+ * @param {string} value
+ * @return {number|undefined} For a RangeControl.
+ */
+const optionalNumber = ( value ) => ( '' === value ? undefined : parseInt( value, 10 ) );
+
+/**
+ * @param {number|undefined|null} value From a RangeControl.
+ * @return {string} For the attribute.
+ */
+const toOptional = ( value ) => ( undefined === value || null === value ? '' : String( value ) );
 
 const UNIT_LABELS = {
 	days: __( 'd', 'darkify-util' ),
@@ -169,6 +193,9 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		buttonText,
 		buttonUrl,
 		openInNewTab,
+		buttonPadding,
+		buttonBorderWidth,
+		buttonRadius,
 		targetDate,
 		recurring,
 		recurringDays,
@@ -221,6 +248,20 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 			style[ property ] = attributes[ attribute ];
 		}
 	} );
+
+	Object.entries( buttonPadding || {} ).forEach( ( [ side, value ] ) => {
+		if ( value ) {
+			style[ `--darkify-promo-button-padding-${ side }` ] = value;
+		}
+	} );
+
+	if ( '' !== buttonBorderWidth ) {
+		style[ '--darkify-promo-button-border-width' ] = `${ buttonBorderWidth }px`;
+	}
+
+	if ( '' !== buttonRadius ) {
+		style[ '--darkify-promo-button-radius' ] = `${ buttonRadius }px`;
+	}
 
 	const blockProps = useBlockProps( {
 		className: [
@@ -436,6 +477,55 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								checked={ openInNewTab }
 								onChange={ ( value ) => setAttributes( { openInNewTab: value } ) }
 							/>
+
+							{ /*
+							 * Per-side, and empty means "as designed" — so setting
+							 * one side does not zero the other three, and clearing
+							 * one gives the design's value back. The same goes for
+							 * border and radius: reset brings back the pill.
+							 */ }
+							<BoxControl
+								__next40pxDefaultSize
+								label={ __( 'Button padding', 'darkify-util' ) }
+								values={ buttonPadding }
+								units={ SPACING_UNITS }
+								onChange={ ( value ) =>
+									setAttributes( {
+										buttonPadding: [ 'top', 'right', 'bottom', 'left' ].reduce(
+											( box, side ) => ( { ...box, [ side ]: value?.[ side ] ?? '' } ),
+											{}
+										),
+									} )
+								}
+							/>
+
+							<RangeControl
+								__nextHasNoMarginBottom
+								label={ __( 'Border width', 'darkify-util' ) }
+								help={ __( 'Border colours are under Colours.', 'darkify-util' ) }
+								value={ optionalNumber( buttonBorderWidth ) }
+								onChange={ ( value ) =>
+									setAttributes( { buttonBorderWidth: toOptional( value ) } )
+								}
+								min={ 0 }
+								max={ 10 }
+								allowReset
+								resetFallbackValue={ undefined }
+							/>
+
+							<RangeControl
+								__nextHasNoMarginBottom
+								label={ __( 'Border radius', 'darkify-util' ) }
+								help={ __( 'Reset for a fully rounded pill.', 'darkify-util' ) }
+								value={ optionalNumber( buttonRadius ) }
+								onChange={ ( value ) =>
+									setAttributes( { buttonRadius: toOptional( value ) } )
+								}
+								min={ 0 }
+								max={ 50 }
+								allowReset
+								resetFallbackValue={ undefined }
+							/>
 						</>
 					) }
 				</PanelBody>
@@ -508,6 +598,8 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 						[ 'buttonBackgroundHover', __( 'Button background on hover', 'darkify-util' ) ],
 						[ 'buttonColor', __( 'Button text', 'darkify-util' ) ],
 						[ 'buttonColorHover', __( 'Button text on hover', 'darkify-util' ) ],
+						[ 'buttonBorderColor', __( 'Button border', 'darkify-util' ) ],
+						[ 'buttonBorderColorHover', __( 'Button border on hover', 'darkify-util' ) ],
 						[ 'closeColor', __( 'Close icon', 'darkify-util' ) ],
 					].map( ( [ name, label ] ) => ( {
 						label,

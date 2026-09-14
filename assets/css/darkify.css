@@ -1,8 +1,19 @@
 .optn-conv-wrapper {
   z-index: 5 !important;
 }
+/*
+ * position: relative makes the header the containing block for the absolutely
+ * centred row below. Without it the row centres inside the nearest positioned
+ * ancestor — the sticky template part, which also holds the promo banner — so
+ * it first paints half the banner's height too high, then jumps down when
+ * Kadence's header script sets the height. That jump is the load flicker.
+ */
+.darkify_header {
+  position: relative;
+  height: 60px !important;
+}
 .darkify_header .kb-header-container {
-  min-height: 70px;
+  min-height: 60px;
   top: 0px !important;
 }
 .darkify_header .kb-header-row-layout-standard {

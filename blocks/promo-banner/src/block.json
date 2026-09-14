@@ -52,6 +52,12 @@
 		"buttonText": { "type": "string", "default": "Claim the discount" },
 		"buttonUrl": { "type": "string", "default": "" },
 		"openInNewTab": { "type": "boolean", "default": false },
+		"buttonPadding": {
+			"type": "object",
+			"default": { "top": "", "right": "", "bottom": "", "left": "" }
+		},
+		"buttonBorderWidth": { "type": "string", "default": "" },
+		"buttonRadius": { "type": "string", "default": "" },
 
 		"targetDate": { "type": "string", "default": "" },
 		"recurring": { "type": "boolean", "default": false },
@@ -76,6 +82,8 @@
 		"buttonBackgroundHover": { "type": "string", "default": "" },
 		"buttonColor": { "type": "string", "default": "" },
 		"buttonColorHover": { "type": "string", "default": "" },
+		"buttonBorderColor": { "type": "string", "default": "" },
+		"buttonBorderColorHover": { "type": "string", "default": "" },
 		"closeColor": { "type": "string", "default": "" }
 	},
 	"editorScript": "file:./index.js",

@@ -71,6 +71,23 @@
       "type": "boolean",
       "default": false
     },
+    "buttonPadding": {
+      "type": "object",
+      "default": {
+        "top": "",
+        "right": "",
+        "bottom": "",
+        "left": ""
+      }
+    },
+    "buttonBorderWidth": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonRadius": {
+      "type": "string",
+      "default": ""
+    },
     "targetDate": {
       "type": "string",
       "default": ""
@@ -152,6 +169,14 @@
       "default": ""
     },
     "buttonColorHover": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonBorderColor": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonBorderColorHover": {
       "type": "string",
       "default": ""
     },
