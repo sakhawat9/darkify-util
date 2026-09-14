@@ -11,6 +11,10 @@ blocks/collection/src
 blocks/collection/package.json
 blocks/collection/package-lock.json
 blocks/collection/build/*.map
+blocks/promo-banner/src
+blocks/promo-banner/package.json
+blocks/promo-banner/package-lock.json
+blocks/promo-banner/build/*.map
 build
 *.zip
 package.json

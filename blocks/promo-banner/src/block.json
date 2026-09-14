@@ -1,0 +1,86 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "darkify-util/promo-banner",
+	"version": "1.0.0",
+	"title": "Darkify Promo Banner",
+	"category": "darkify",
+	"icon": "megaphone",
+	"description": "An announcement bar with a live countdown to a deadline, an urgent message as it gets close, and a dismiss button.",
+	"keywords": [
+		"promo",
+		"promotion",
+		"banner",
+		"announcement",
+		"countdown",
+		"offer",
+		"sale",
+		"timer"
+	],
+	"textdomain": "darkify-util",
+	"supports": {
+		"html": false,
+		"anchor": true,
+		"align": ["wide", "full"],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		}
+	},
+	"attributes": {
+		"schemaVersion": { "type": "number", "default": 1 },
+		"bannerId": { "type": "string", "default": "" },
+
+		"message": {
+			"type": "string",
+			"default": "Launch offer — up to 50% off every Pro plan"
+		},
+		"urgentMessage": {
+			"type": "string",
+			"default": "Last chance — up to 50% off ends in {remaining}"
+		},
+		"expiredMessage": {
+			"type": "string",
+			"default": "This offer has ended. Thanks for the love!"
+		},
+
+		"showButton": { "type": "boolean", "default": true },
+		"buttonText": { "type": "string", "default": "Claim the discount" },
+		"buttonUrl": { "type": "string", "default": "" },
+		"openInNewTab": { "type": "boolean", "default": false },
+
+		"targetDate": { "type": "string", "default": "" },
+		"recurring": { "type": "boolean", "default": false },
+		"recurringDays": { "type": "number", "default": 7 },
+		"urgentHours": { "type": "number", "default": 5 },
+		"expiredAction": { "type": "string", "default": "hide" },
+		"showCountdown": { "type": "boolean", "default": true },
+		"showDays": { "type": "boolean", "default": true },
+		"countdownLabels": { "type": "string", "default": "short" },
+		"urgentPulse": { "type": "boolean", "default": true },
+
+		"dismissible": { "type": "boolean", "default": true },
+		"dismissDays": { "type": "number", "default": 7 },
+		"position": { "type": "string", "default": "inline" },
+		"contentAlign": { "type": "string", "default": "center" },
+
+		"bannerBackground": { "type": "string", "default": "" },
+		"bannerColor": { "type": "string", "default": "" },
+		"countdownColor": { "type": "string", "default": "" },
+		"urgentColor": { "type": "string", "default": "" },
+		"buttonBackground": { "type": "string", "default": "" },
+		"buttonBackgroundHover": { "type": "string", "default": "" },
+		"buttonColor": { "type": "string", "default": "" },
+		"buttonColorHover": { "type": "string", "default": "" },
+		"closeColor": { "type": "string", "default": "" }
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

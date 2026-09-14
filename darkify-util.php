@@ -2,7 +2,7 @@
 /*
 *   Plugin Name: Darkify Util
 *   Description: A utility plugin to add dark mode functionality to your WordPress site.
-*   Version: 1.3.3
+*   Version: 1.3.4
  */
 
 // If this file is called directly, abort.
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 define('DARKIFY_UTIL_FILE', __FILE__);
 define('DARKIFY_UTIL_PATH', plugin_dir_path(__FILE__));
 define('DARKIFY_UTIL_URL', plugin_dir_url(__FILE__));
-define('DARKIFY_UTIL_VERSION', '1.3.3');
+define('DARKIFY_UTIL_VERSION', '1.3.4');
 
 
 /**
@@ -165,6 +165,18 @@ add_action('plugins_loaded', array('Darkify_Util_AI_Summarize', 'instance'));
 require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-social-share.php';
 
 add_action('plugins_loaded', array('Darkify_Util_Social_Share', 'instance'));
+
+/**
+ * The promo banner block and its [darkify_promo_banner] shortcode: an
+ * announcement bar counting down to a deadline.
+ *
+ * The copy moves on by itself — an urgent message inside the last few hours,
+ * then an ended one or no banner at all — and a recurring deadline rolls to its
+ * next cycle, so the bar never needs editing to stay true.
+ */
+require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-promo-banner.php';
+
+add_action('plugins_loaded', array('Darkify_Util_Promo_Banner', 'instance'));
 
 /**
  * SVG uploads.
