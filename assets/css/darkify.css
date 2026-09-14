@@ -31,6 +31,11 @@
 .darkify_header ul li.darkify_sub_menu_mobile a {
   padding: 10px 5px !important;
 }
+@media screen and (max-width: 1024px) {
+  .darkify_header ul li.menu-item a {
+    padding: 10px 5px !important;
+  }
+}
 .darkify_header .darkify_header_mobile ul li a {
   padding: 10px 0px !important;
 }
