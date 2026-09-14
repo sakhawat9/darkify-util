@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Darkify Util plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Darkify Util 1.3.4\n"
+"Project-Id-Version: Darkify Util 1.3.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/darkify-util\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-14T11:57:42+00:00\n"
+"POT-Creation-Date: 2026-09-14T12:55:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: darkify-util\n"
@@ -470,7 +470,7 @@ msgid "Switcher"
 msgstr ""
 
 #: templates/demo.php:140
-#: blocks/promo-banner/src/edit.js:446
+#: blocks/promo-banner/src/edit.js:536
 msgid "Position"
 msgstr ""
 
@@ -626,8 +626,8 @@ msgstr ""
 #: blocks/ai-summarize/src/components/ServiceList.js:89
 #: blocks/changelog/src/edit.js:181
 #: blocks/collection/src/edit.js:353
-#: blocks/promo-banner/src/edit.js:509
-#: blocks/promo-banner/src/edit.js:555
+#: blocks/promo-banner/src/edit.js:599
+#: blocks/promo-banner/src/edit.js:647
 #: blocks/social-share/src/components/NetworkList.js:96
 msgid "Button text"
 msgstr ""
@@ -783,13 +783,13 @@ msgstr ""
 #: blocks/changelog/src/edit.js:109
 #: blocks/collection/src/edit.js:254
 #: blocks/collection/src/edit.js:291
-#: blocks/promo-banner/src/edit.js:470
+#: blocks/promo-banner/src/edit.js:560
 #: blocks/social-share/src/edit.js:132
 msgid "Left"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:260
-#: blocks/promo-banner/src/edit.js:469
+#: blocks/promo-banner/src/edit.js:559
 #: blocks/social-share/src/edit.js:133
 msgid "Center"
 msgstr ""
@@ -856,7 +856,7 @@ msgstr ""
 
 #: blocks/changelog/src/edit.js:87
 #: blocks/collection/src/edit.js:169
-#: blocks/promo-banner/src/edit.js:387
+#: blocks/promo-banner/src/edit.js:428
 msgid "Preview"
 msgstr ""
 
@@ -1043,7 +1043,7 @@ msgid "Quote"
 msgstr ""
 
 #: blocks/collection/src/components/DescriptionEditor.js:674
-#: blocks/promo-banner/src/edit.js:422
+#: blocks/promo-banner/src/edit.js:463
 msgid "Link"
 msgstr ""
 
@@ -1383,7 +1383,7 @@ msgid "Category labels"
 msgstr ""
 
 #: blocks/collection/src/edit.js:440
-#: blocks/promo-banner/src/edit.js:409
+#: blocks/promo-banner/src/edit.js:450
 msgid "Button"
 msgstr ""
 
@@ -1440,7 +1440,7 @@ msgid "0 keeps the theme’s own heading size."
 msgstr ""
 
 #: blocks/collection/src/edit.js:509
-#: blocks/promo-banner/src/edit.js:499
+#: blocks/promo-banner/src/edit.js:589
 #: blocks/social-share/src/edit.js:181
 msgid "Colours"
 msgstr ""
@@ -1473,220 +1473,249 @@ msgstr ""
 msgid "Add the first item"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:66
+#: blocks/promo-banner/src/edit.js:90
 msgid "d"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:67
+#: blocks/promo-banner/src/edit.js:91
 msgid "h"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:68
+#: blocks/promo-banner/src/edit.js:92
 msgid "m"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:69
+#: blocks/promo-banner/src/edit.js:93
 msgid "s"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:73
-#: blocks/promo-banner/src/edit.js:395
+#: blocks/promo-banner/src/edit.js:97
+#: blocks/promo-banner/src/edit.js:436
 msgid "Counting down"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:74
-#: blocks/promo-banner/src/edit.js:396
+#: blocks/promo-banner/src/edit.js:98
+#: blocks/promo-banner/src/edit.js:437
 msgid "Urgent"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:75
-#: blocks/promo-banner/src/edit.js:397
+#: blocks/promo-banner/src/edit.js:99
+#: blocks/promo-banner/src/edit.js:438
 msgid "Ended"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:246
-#: blocks/promo-banner/src/edit.js:505
+#: blocks/promo-banner/src/edit.js:287
+#: blocks/promo-banner/src/edit.js:595
 msgid "Countdown"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:249
+#: blocks/promo-banner/src/edit.js:290
 msgid "Ends at"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:261
+#: blocks/promo-banner/src/edit.js:302
 msgid "Pick a date"
 msgstr ""
 
 #. translators: %s: the site's timezone, e.g. Asia/Dhaka or UTC+6.
-#: blocks/promo-banner/src/edit.js:279
+#: blocks/promo-banner/src/edit.js:320
 #, js-format
 msgid "In the site timezone (%s). Visitors see the time converted to their own."
 msgstr ""
 
 #. translators: %s: countdown state, e.g. Urgent.
-#: blocks/promo-banner/src/edit.js:289
+#: blocks/promo-banner/src/edit.js:330
 #, js-format
 msgid "Right now: %s"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:297
+#: blocks/promo-banner/src/edit.js:338
 msgid "Repeat automatically"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:298
+#: blocks/promo-banner/src/edit.js:339
 msgid "When the deadline passes, the countdown restarts to the same time one cycle later. No need to edit the block again."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:309
+#: blocks/promo-banner/src/edit.js:350
 msgid "Repeat every (days)"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:319
+#: blocks/promo-banner/src/edit.js:360
 msgid "Urgent when this many hours are left"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:320
+#: blocks/promo-banner/src/edit.js:361
 msgid "Swaps in the urgent message and colour. 0 turns it off."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:333
+#: blocks/promo-banner/src/edit.js:374
 msgid "When it ends"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:336
+#: blocks/promo-banner/src/edit.js:377
 msgid "Hide the banner"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:338
+#: blocks/promo-banner/src/edit.js:379
 msgid "Show the ended message"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:348
+#: blocks/promo-banner/src/edit.js:389
 msgid "Show countdown"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:357
+#: blocks/promo-banner/src/edit.js:398
 msgid "Show days"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:358
+#: blocks/promo-banner/src/edit.js:399
 msgid "Off, days are counted as hours."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:365
+#: blocks/promo-banner/src/edit.js:406
 msgid "Unit labels"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:368
+#: blocks/promo-banner/src/edit.js:409
 msgid "Short (02d : 14h)"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:369
+#: blocks/promo-banner/src/edit.js:410
 msgid "None (02 : 14)"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:376
+#: blocks/promo-banner/src/edit.js:417
 msgid "Pulse when urgent"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:384
+#: blocks/promo-banner/src/edit.js:425
 msgid "Messages"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:388
+#: blocks/promo-banner/src/edit.js:429
 msgid "Switch to Urgent or Ended to edit that message on the banner itself."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:394
+#: blocks/promo-banner/src/edit.js:435
 msgid "Live"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:402
+#: blocks/promo-banner/src/edit.js:443
 msgid "Placeholders: {remaining} (e.g. “5 hours”), {date} and {time} of the deadline — filled in on the page."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:412
+#: blocks/promo-banner/src/edit.js:453
 msgid "Show button"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:429
+#: blocks/promo-banner/src/edit.js:470
 msgid "The button is not shown on the page until it has a link."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:435
+#: blocks/promo-banner/src/edit.js:476
 msgid "Open in a new tab"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:443
+#: blocks/promo-banner/src/edit.js:489
+msgid "Button padding"
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:504
+#: blocks/social-share/src/edit.js:208
+msgid "Border width"
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:505
+msgid "Border colours are under Colours."
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:518
+msgid "Border radius"
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:519
+msgid "Reset for a fully rounded pill."
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:533
 msgid "Behaviour"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:449
+#: blocks/promo-banner/src/edit.js:539
 msgid "Sticks to the top while its container scrolls — place it at the top of the header or the page."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:457
+#: blocks/promo-banner/src/edit.js:547
 msgid "In the flow of the page"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:458
+#: blocks/promo-banner/src/edit.js:548
 msgid "Sticky at the top"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:459
+#: blocks/promo-banner/src/edit.js:549
 msgid "Fixed to the bottom"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:466
+#: blocks/promo-banner/src/edit.js:556
 msgid "Content alignment"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:477
+#: blocks/promo-banner/src/edit.js:567
 msgid "Can be dismissed"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:485
+#: blocks/promo-banner/src/edit.js:575
 msgid "Stay dismissed for (days)"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:486
+#: blocks/promo-banner/src/edit.js:576
 msgid "0 brings it back on the next page load. A new deadline always shows again."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:503
+#: blocks/promo-banner/src/edit.js:593
 #: blocks/social-share/src/edit.js:240
 msgid "Background"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:504
+#: blocks/promo-banner/src/edit.js:594
 msgid "Text"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:506
+#: blocks/promo-banner/src/edit.js:596
 msgid "Countdown when urgent"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:507
+#: blocks/promo-banner/src/edit.js:597
 msgid "Button background"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:508
+#: blocks/promo-banner/src/edit.js:598
 msgid "Button background on hover"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:510
+#: blocks/promo-banner/src/edit.js:600
 msgid "Button text on hover"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:511
+#: blocks/promo-banner/src/edit.js:601
+msgid "Button border"
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:602
+msgid "Button border on hover"
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:603
 msgid "Close icon"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:532
+#: blocks/promo-banner/src/edit.js:624
 msgid "Urgent message — empty uses the main one"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:533
+#: blocks/promo-banner/src/edit.js:625
 msgid "Write the announcement…"
 msgstr ""
 
@@ -1749,10 +1778,6 @@ msgstr ""
 #: blocks/social-share/src/edit.js:199
 #: blocks/social-share/src/edit.js:234
 msgid "Custom colours"
-msgstr ""
-
-#: blocks/social-share/src/edit.js:208
-msgid "Border width"
 msgstr ""
 
 #: blocks/social-share/src/edit.js:246

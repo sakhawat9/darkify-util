@@ -214,6 +214,27 @@
 			doc.head.appendChild(copy);
 		});
 
+		// The host site's web fonts. The sample borrows the host's font family
+		// (see baseFont), and without the @font-face rules behind that name it
+		// resolves to a system fallback inside the frame. Only the @font-face
+		// blocks are copied — the rest of those stylesheets belongs to the host
+		// page, not to the sample site.
+		var faces = [];
+		toArray(document.querySelectorAll("style")).forEach(function (style) {
+			var found = style.textContent.match(/@font-face\s*\{[^}]*\}/g);
+			if (found) {
+				faces = faces.concat(found);
+			}
+		});
+		if (faces.length) {
+			var fontStyle = doc.createElement("style");
+			fontStyle.textContent = faces.join("\n");
+			doc.head.appendChild(fontStyle);
+		}
+		toArray(document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]')).forEach(function (link) {
+			addLink(link.href);
+		});
+
 		// Nothing to wait for (no stylesheets found) — carry on immediately.
 		maybeReady();
 	}

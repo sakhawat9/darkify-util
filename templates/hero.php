@@ -127,6 +127,24 @@ if (!defined('ABSPATH')) {
 		</div>
 	</div>
 
+	<?php if ($data['highlight']) : ?>
+		<?php
+		/*
+		 * The one line of copy the hero adds, and it is a claim the preview backs
+		 * up: what is playing is the plugin, not a recording of it. Outside the
+		 * window so it floats over the corner rather than covering the page
+		 * inside.
+		 */
+		?>
+		<div class="dkfd__live">
+			<span class="dkfd__live-dot" aria-hidden="true"></span>
+			<span class="dkfd__live-text">
+				<strong><?php esc_html_e('Live preview', 'darkify-util'); ?></strong>
+				<?php esc_html_e('The real Darkify engine, not a video', 'darkify-util'); ?>
+			</span>
+		</div>
+	<?php endif; ?>
+
 	<template class="dkfd__source"><?php
 		// frame_markup() escapes every dynamic value it prints, and the switcher
 		// comes from Darkify's own shortcode, so this is safe to print as-is.

@@ -402,6 +402,192 @@
 .dkfd--hero {
 	--dkfd-fade: 260ms;
 	--dkfd-height: 420px;
+
+	/*
+	 * The hero takes its look from the site around it rather than from the
+	 * demo's dark section: the light browser chrome the dashboard screenshots
+	 * use, the site's hairline border and ink, and its orange for the one moving
+	 * accent. The demo keeps its own navy chrome — these are scoped to the hero.
+	 */
+	--dkfd-radius: 16px;
+	--dkfd-chrome-bg: #f5f6f8;
+	--dkfd-chrome-text: #656d81;
+	--dkfd-hero-line: #e6e8ef;
+	--dkfd-hero-ink: #14162a;
+	--dkfd-hero-brand: #c2410c;
+
+	position: relative;
+	/* The backdrop sits at z-index -1; isolation keeps it behind the window
+	   without letting it fall behind the page section as well. */
+	isolation: isolate;
+}
+
+/*
+ * The backdrop: a warm glow behind the top-right of the window, a softer amber
+ * one at the bottom left, and a faint dot grid, all faded out towards the edges
+ * by one radial mask. Pure CSS and static, so it costs nothing while the loop
+ * runs — the preview is the thing that moves.
+ */
+.dkfd--hero::before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	inset: -40px -32px;
+	pointer-events: none;
+	background:
+		radial-gradient(55% 50% at 80% 16%, rgba(194, 65, 12, 0.16), transparent 70%),
+		radial-gradient(50% 55% at 10% 92%, rgba(245, 165, 36, 0.16), transparent 70%),
+		radial-gradient(rgba(20, 22, 42, 0.12) 1px, transparent 1.4px) 0 0 / 18px 18px;
+	-webkit-mask-image: radial-gradient(closest-side, #000 50%, transparent 100%);
+	mask-image: radial-gradient(closest-side, #000 50%, transparent 100%);
+}
+
+/* Layered the way the site's cards are: a hairline ring and a 1px contact
+   shadow, then a long soft fall-off that lifts the window off the page. */
+.dkfd--hero .dkfd__window {
+	box-shadow:
+		0 0 0 1px rgba(20, 22, 42, 0.07),
+		0 1px 2px rgba(16, 20, 40, 0.05),
+		0 14px 28px -14px rgba(20, 22, 42, 0.16),
+		0 44px 90px -36px rgba(20, 22, 42, 0.34);
+}
+
+.dkfd--hero .dkfd__chrome {
+	min-height: 44px;
+	padding: 0 14px;
+	border-bottom: 1px solid var(--dkfd-hero-line);
+}
+
+.dkfd--hero .dkfd__dots {
+	gap: 6px;
+}
+
+.dkfd--hero .dkfd__dots i {
+	width: 10px;
+	height: 10px;
+	box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+}
+
+/*
+ * The address bar. The padlock is a pseudo-element on purpose: the loop
+ * rewrites this element's textContent when it walks to wp-admin, which would
+ * delete an icon written into the markup.
+ */
+.dkfd--hero .dkfd__url::before {
+	content: "";
+	flex: none;
+	width: 10px;
+	height: 10px;
+	background: currentColor;
+	opacity: 0.75;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 7V5a3.5 3.5 0 0 1 7 0v2h.5A1.5 1.5 0 0 1 13.5 8.5v5A1.5 1.5 0 0 1 12 15H4a1.5 1.5 0 0 1-1.5-1.5v-5A1.5 1.5 0 0 1 4 7h.5Zm1.5 0h4V5a2 2 0 0 0-4 0v2Z'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 7V5a3.5 3.5 0 0 1 7 0v2h.5A1.5 1.5 0 0 1 13.5 8.5v5A1.5 1.5 0 0 1 12 15H4a1.5 1.5 0 0 1-1.5-1.5v-5A1.5 1.5 0 0 1 4 7h.5Zm1.5 0h4V5a2 2 0 0 0-4 0v2Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/*
+ * "Live preview" — the chip floating over the window's lower-left corner.
+ * It straddles the window's bottom edge rather than sitting inside it, so it
+ * only ever covers the page's bottom padding, never a card title.
+ */
+.dkfd__live {
+	position: absolute;
+	bottom: -32px;
+	left: -24px;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 14px 9px 12px;
+	border: 1px solid var(--dkfd-hero-line);
+	border-radius: 12px;
+	background: #ffffff;
+	box-shadow: 0 1px 2px rgba(16, 20, 40, 0.05), 0 14px 30px -12px rgba(20, 22, 42, 0.24);
+	font-size: 11.5px;
+	font-weight: 400;
+	line-height: 1.3;
+	color: #656d81;
+	pointer-events: none;
+}
+
+.dkfd__live strong {
+	display: block;
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	color: var(--dkfd-hero-ink);
+}
+
+/* The site's own success green, with a slow ring leaving it: the recording
+   light of a thing that is actually running. */
+.dkfd__live-dot {
+	position: relative;
+	flex: none;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #12a366;
+}
+
+.dkfd__live-dot::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	background: #12a366;
+	animation: dkfd-live 2s ease-out infinite;
+}
+
+@keyframes dkfd-live {
+	0% {
+		opacity: 0.55;
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		transform: scale(2.8);
+	}
+}
+
+@media (max-width: 1024px) {
+	.dkfd--hero::before {
+		inset: -32px -12px;
+	}
+}
+
+/* Stacked under the copy: the chip leaves the corner and sits centred below
+   the window, where it cannot cover the page on a narrow screen, and the
+   backdrop stops at the window's sides so it can never widen the page. */
+@media (max-width: 782px) {
+	.dkfd--hero::before {
+		inset: -28px 0;
+	}
+
+	.dkfd__live {
+		position: relative;
+		bottom: auto;
+		left: auto;
+		width: max-content;
+		max-width: 100%;
+		margin: 16px auto 0;
+		box-shadow: 0 1px 2px rgba(16, 20, 40, 0.05);
+	}
+}
+
+@media (max-width: 600px) {
+	.dkfd--hero {
+		--dkfd-radius: 14px;
+	}
+
+	.dkfd--hero .dkfd__chrome {
+		min-height: 40px;
+		padding: 0 12px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dkfd__live-dot::after {
+		animation: none;
+	}
 }
 
 /* Set through the token rather than on .dkfd__window directly: the chrome and
@@ -501,29 +687,79 @@
 
 /* The mode badge in the window chrome. */
 
+/*
+ * The mode badge: a white pill with a sun in light mode, an ink pill with a
+ * moon in dark. The icon is a pseudo-element keyed off data-dkfd-mode, because
+ * the loop replaces the badge's text on every flip.
+ */
 .dkfd__mode {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
 	margin-left: auto;
-	padding: 3px 10px;
+	padding: 4px 10px 4px 7px;
+	border: 1px solid var(--dkfd-hero-line, rgba(255, 255, 255, 0.12));
 	border-radius: 999px;
-	font-size: 10px;
+	background: #ffffff;
+	font-size: 10.5px;
 	font-weight: 700;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
-	line-height: 1.6;
-	background: rgba(255, 255, 255, 0.12);
-	color: #e8ecf8;
-	transition: background-color var(--dkfd-fade) ease, color var(--dkfd-fade) ease;
+	letter-spacing: 0.01em;
+	line-height: 1.2;
+	color: var(--dkfd-hero-ink, #14162a);
+	transition: background-color var(--dkfd-fade) ease, border-color var(--dkfd-fade) ease, color var(--dkfd-fade) ease;
+}
+
+.dkfd__mode::before {
+	content: "";
+	flex: none;
+	width: 11px;
+	height: 11px;
+	background: #f5a524;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cpath d='M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1' stroke='%23000' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='5'/%3E%3Cpath d='M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1' stroke='%23000' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .dkfd__mode[data-dkfd-mode="dark"] {
-	background: #ffffff;
-	color: #0f172a !important;
+	border-color: var(--dkfd-hero-ink, #14162a);
+	background: var(--dkfd-hero-ink, #14162a);
+	color: #ffffff !important;
+}
+
+.dkfd__mode[data-dkfd-mode="dark"]::before {
+	background: #c7cbe0;
+	-webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z'/%3E%3C/svg%3E");
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z'/%3E%3C/svg%3E");
 }
 
 /* The badge sits at the right end, so the centred address needs the room. */
 .dkfd--hero .dkfd__url {
-	max-width: 45%;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	max-width: 48%;
+	padding: 5px 12px 5px 10px;
+	border: 1px solid var(--dkfd-hero-line);
+	border-radius: 8px;
+	background: #ffffff;
+	font-family: inherit;
+	font-size: 12px;
+	font-weight: 500;
+	letter-spacing: 0;
+	line-height: 1.2;
 	transition: opacity 180ms ease;
+}
+
+@media (max-width: 600px) {
+	.dkfd--hero .dkfd__url {
+		max-width: 52%;
+		padding: 4px 10px 4px 8px;
+		font-size: 11px;
+	}
+
+	.dkfd__mode {
+		padding: 3px 8px 3px 6px;
+		font-size: 10px;
+	}
 }
 
 /* The address changes when the preview walks to wp-admin and back. It is swapped
@@ -545,7 +781,7 @@
 	transform: scaleX(0);
 	transform-origin: 0 50%;
 	opacity: 0;
-	background: linear-gradient(90deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.85));
+	background: linear-gradient(90deg, rgba(194, 65, 12, 0), var(--dkfd-hero-brand, #c2410c));
 }
 
 .dkfd--hero.is-loading .dkfd__progress {

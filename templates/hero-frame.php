@@ -71,33 +71,74 @@ if (!defined('ABSPATH')) {
 			</header>
 
 			<div class="dkfh-hero">
-				<span class="dkfh-eyebrow"><?php esc_html_e('Dark mode', 'darkify-util'); ?></span>
-				<h2 class="dkfh-hero__title"><?php echo esc_html($data['heading']); ?></h2>
+				<?php if ('' !== $data['eyebrow']) : ?>
+					<?php
+					/*
+					 * The dot is a brand accent, not a surface, so it keeps its
+					 * colour; the pill around it is a surface and goes dark with the
+					 * page.
+					 */
+					?>
+					<span class="dkfh-eyebrow"><i class="dkfh-eyebrow__dot darkify_ignore" aria-hidden="true"></i><?php echo esc_html($data['eyebrow']); ?></span>
+				<?php endif; ?>
+				<h2 class="dkfh-hero__title"><?php
+					echo esc_html($data['heading_lead']);
+					if ('' !== $data['heading_accent']) :
+						?><span class="dkfh-accent"><?php echo esc_html($data['heading_accent']); ?></span><?php
+						echo esc_html($data['heading_tail']);
+					endif;
+				?></h2>
 				<p class="dkfh-hero__text"><?php echo esc_html($data['text']); ?></p>
+				<?php
+				/*
+				 * The star row shares the buttons' line rather than taking one of its
+				 * own: the window is meant to read as a widescreen monitor, and every
+				 * full-width row stacked here makes it squarer.
+				 */
+				?>
 				<div class="dkfh-actions">
-					<span class="dkfh-btn dkfh-btn--primary"><?php echo esc_html($data['cta']); ?></span>
+					<span class="dkfh-btn dkfh-btn--primary"><?php echo esc_html($data['cta']); ?><svg class="dkfh-btn__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9.5M8.5 4 12.5 8l-4 4"/></svg></span>
 					<span class="dkfh-btn dkfh-btn--ghost"><?php echo esc_html($data['cta_alt']); ?></span>
+					<?php if ('' !== $data['proof']) : ?>
+						<?php
+						/*
+						 * Stars carry `darkify_ignore` for the same reason the brand mark
+						 * does: amber is the point of them, and the engine would otherwise
+						 * fold them into the text colour.
+						 */
+						?>
+						<span class="dkfh-proof">
+							<span class="dkfh-stars darkify_ignore" aria-hidden="true"><?php for ($dkfh_i = 0; $dkfh_i < 5; $dkfh_i++) : ?><svg viewBox="0 0 16 16"><path d="m8 1.2 2.05 4.15 4.58.67-3.31 3.23.78 4.56L8 11.66l-4.1 2.15.78-4.56L1.37 6.02l4.58-.67L8 1.2Z"/></svg><?php endfor; ?></span>
+							<span class="dkfh-proof__text"><?php echo esc_html($data['proof']); ?></span>
+						</span>
+					<?php endif; ?>
 				</div>
 			</div>
 
-			<div class="dkfh-media" aria-hidden="true">
-				<span class="dkfh-media__thumb darkify_ignore"></span>
-				<span class="dkfh-media__lines darkify_ignore">
-					<i style="width: 82%"></i>
-					<i style="width: 64%"></i>
-					<i style="width: 71%"></i>
-				</span>
-			</div>
-
 			<div class="dkfh-cards" aria-hidden="true">
-				<?php for ($dkfh_i = 0; $dkfh_i < 3; $dkfh_i++) : ?>
+				<?php
+				/*
+				 * The picture leads the card row instead of sitting on a row of its
+				 * own — same reason as the star row above. Drawn rather than loaded:
+				 * a translucent warm gradient with a sun and a hill in it, translucent
+				 * for the same reason the placeholder bars are — what shows through is
+				 * the surface Darkify painted, so it dims with the page instead of
+				 * glaring out of it.
+				 */
+				?>
+				<div class="dkfh-card dkfh-card--media">
+					<span class="dkfh-media__thumb darkify_ignore"></span>
+				</div>
+
+				<?php foreach ($data['features'] as $dkfh_feature) : ?>
 					<div class="dkfh-card">
-						<span class="dkfh-card__icon darkify_ignore"></span>
-						<span class="dkfh-card__title darkify_ignore"></span>
+						<span class="dkfh-card__icon darkify_ignore"><svg viewBox="0 0 24 24"><?php
+							echo $dkfh_feature['icon']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static markup in Darkify_Util_Hero::render().
+						?></svg></span>
+						<span class="dkfh-card__title"><?php echo esc_html($dkfh_feature['title']); ?></span>
 						<span class="dkfh-card__line darkify_ignore"></span>
-						<span class="dkfh-card__line dkfh-card__line--short darkify_ignore"></span>
 					</div>
-				<?php endfor; ?>
+				<?php endforeach; ?>
 			</div>
 		</div>
 	</div>

@@ -53,9 +53,15 @@ if (!class_exists('Darkify_Util_Hero')) {
                 'brand'      => __('Your Brand', 'darkify-util'),
                 'url'        => 'yoursite.com',
                 'heading'    => __('Beautiful dark mode, automatically.', 'darkify-util'),
+                // The part of the heading set in the brand colour, the way the
+                // site's own H1 closes on an orange phrase. '' for none.
+                'heading_accent' => __('automatically.', 'darkify-util'),
+                'eyebrow'    => __('Dark mode ready', 'darkify-util'),
                 'text'       => __('Darkify recolors every background, text, border, image and scrollbar on your site — with contrast that stays readable.', 'darkify-util'),
                 'cta'        => __('Get Started', 'darkify-util'),
                 'cta_alt'    => __('See Features', 'darkify-util'),
+                // The star row under the buttons. '' hides it.
+                'proof'      => __('Loved by readers, day and night', 'darkify-util'),
                 'menu'       => '',
                 'nav'        => '',
                 'menu_limit' => '4',
@@ -77,6 +83,8 @@ if (!class_exists('Darkify_Util_Hero')) {
                 'cursor'     => 'yes',
                 'chrome'     => 'yes',
                 'badge'      => 'yes',
+                // The "Live preview" chip beside the window.
+                'highlight'  => 'yes',
                 // The loop, in milliseconds.
                 'autoplay'   => 'yes',
                 'light_hold' => '3000',
@@ -114,8 +122,41 @@ if (!class_exists('Darkify_Util_Hero')) {
                 $admin_presets = array();
             }
 
+            /*
+             * The heading is split around its accent rather than taking markup
+             * from the attribute, so every piece is still escaped as plain text.
+             * The last occurrence wins: an accent is the phrase a heading lands
+             * on. A heading that does not contain it simply renders unaccented.
+             */
+            $heading = (string) $atts['heading'];
+            $accent  = trim((string) $atts['heading_accent']);
+            $at      = '' !== $accent ? strrpos($heading, $accent) : false;
+
             $data = array(
                 'instance'    => 'dkfdh_' . wp_rand(),
+                'highlight'   => $this->is_truthy($atts['highlight']),
+                'eyebrow'     => $atts['eyebrow'],
+                'proof'       => $atts['proof'],
+                'heading_lead'   => false === $at ? $heading : substr($heading, 0, $at),
+                'heading_accent' => false === $at ? '' : $accent,
+                'heading_tail'   => false === $at ? '' : substr($heading, $at + strlen($accent)),
+                // The three cards on the sample page. Real titles rather than
+                // placeholder bars: text is what the engine recolours best, and
+                // it makes the mock read as a page rather than a wireframe.
+                'features'    => array(
+                    array(
+                        'title' => __('Lightweight', 'darkify-util'),
+                        'icon'  => '<path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z"/>',
+                    ),
+                    array(
+                        'title' => __('Accessible', 'darkify-util'),
+                        'icon'  => '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17Z" fill="currentColor"/>',
+                    ),
+                    array(
+                        'title' => __('Automatic', 'darkify-util'),
+                        'icon'  => '<path d="m12 3.5 1.8 4.7 4.7 1.8-4.7 1.8L12 16.5l-1.8-4.7L5.5 10l4.7-1.8L12 3.5ZM18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z"/>',
+                    ),
+                ),
                 'frame_css'   => self::frame_css_url('assets/css/darkify-hero-frame.css'),
                 'variant'     => $variant,
                 'switch_size' => max(40, min(200, (int) $atts['switch_size'])),
