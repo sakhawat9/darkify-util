@@ -155,6 +155,8 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 'button_text'     => '',
                 'button_url'      => '',
                 'new_tab'         => '',
+                'banner_url'      => '',
+                'banner_new_tab'  => '',
                 'deadline'        => '',
                 'recurring_days'  => '',
                 'urgent_hours'    => '',
@@ -190,6 +192,12 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 $attributes['targetDate'] = str_replace(' ', 'T', trim($atts['deadline']));
             }
 
+            // Giving the banner a link is what switches it on.
+            if ('' !== $atts['banner_url']) {
+                $attributes['linkBanner'] = true;
+                $attributes['bannerUrl']  = $atts['banner_url'];
+            }
+
             if ('' !== $atts['recurring_days']) {
                 $attributes['recurring']     = true;
                 $attributes['recurringDays'] = (int) $atts['recurring_days'];
@@ -203,6 +211,7 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
 
             foreach (array(
                 'new_tab'        => 'openInNewTab',
+                'banner_new_tab' => 'bannerNewTab',
                 'show_countdown' => 'showCountdown',
                 'show_days'      => 'showDays',
                 'dismissible'    => 'dismissible',
@@ -237,6 +246,7 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 'is-position-' . $clean['position'],
                 'is-align-' . $clean['contentAlign'],
                 $clean['urgentPulse'] ? 'has-pulse' : '',
+                $data['cover'] ? 'is-linked' : '',
             )));
 
             $properties = $this->custom_properties($clean);
@@ -309,7 +319,25 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 );
             }
 
+            /*
+             * The whole-banner link. Only when it is switched on *and* has
+             * somewhere to go — a toggle left on with an empty field would
+             * otherwise turn the bar into a link to the current page.
+             */
+            $cover = null;
+
+            if ($attributes['linkBanner'] && '' !== $attributes['bannerUrl']) {
+                $cover = array(
+                    'url'    => $attributes['bannerUrl'],
+                    'newTab' => $attributes['bannerNewTab'],
+                );
+            }
+
             return array(
+                'cover'         => $cover,
+                // The cover link is named by the message itself, so each
+                // banner on a page needs its own id to point at.
+                'messageId'     => wp_unique_id('darkify-promo-message-'),
                 'state'         => $state,
                 'deadline'      => $deadline,
                 'interval'      => $interval,
@@ -581,6 +609,10 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
                 'buttonBorderWidth' => '',
                 'buttonRadius'      => '',
 
+                'linkBanner'   => false,
+                'bannerUrl'    => '',
+                'bannerNewTab' => false,
+
                 'targetDate'      => '',
                 'recurring'       => false,
                 'recurringDays'   => 7,
@@ -639,10 +671,13 @@ if (!class_exists('Darkify_Util_Promo_Banner')) {
             )));
 
             $clean['buttonUrl'] = esc_url_raw(trim((string) $get('buttonUrl')));
+            $clean['bannerUrl'] = esc_url_raw(trim((string) $get('bannerUrl')));
 
             foreach (array(
                 'showButton',
                 'openInNewTab',
+                'linkBanner',
+                'bannerNewTab',
                 'recurring',
                 'showCountdown',
                 'showDays',

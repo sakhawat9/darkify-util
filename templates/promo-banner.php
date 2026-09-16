@@ -29,8 +29,34 @@ if (!defined('ABSPATH')) {
 	role="region"
 	aria-label="<?php esc_attr_e('Promotion', 'darkify-util'); ?>">
 
+	<?php if ($data['cover']) : ?>
+		<?php
+		/*
+		 * The whole-banner link: a sibling laid over the bar, not a wrapper
+		 * around it. A wrapper would put the button's <a> and the close <button>
+		 * inside another link, which HTML does not allow and browsers repair
+		 * unpredictably. Instead the content sits above this and lets clicks fall
+		 * through to it, except on the controls that have their own job.
+		 *
+		 * Named by the message it covers (aria-labelledby follows whichever state
+		 * is showing, since the other two are `hidden`), and first in tab order, so
+		 * a keyboard user reaches the offer before its button and close control.
+		 */
+		?>
+		<a class="darkify-promo__cover"
+			href="<?php echo esc_url($data['cover']['url']); ?>"
+			aria-labelledby="<?php echo esc_attr($data['messageId']); ?>"
+			<?php if ($data['cover']['newTab']) : ?>
+				target="_blank" rel="noopener"
+				aria-describedby="<?php echo esc_attr($data['messageId']); ?>-new-tab"
+			<?php endif; ?>></a>
+		<?php if ($data['cover']['newTab']) : ?>
+			<span class="darkify-promo__sr" id="<?php echo esc_attr($data['messageId']); ?>-new-tab"><?php esc_html_e('Opens in a new tab', 'darkify-util'); ?></span>
+		<?php endif; ?>
+	<?php endif; ?>
+
 	<div class="darkify-promo__inner">
-		<p class="darkify-promo__message"><?php foreach ($data['messages'] as $dkfp_state => $dkfp_html) : ?><span class="darkify-promo__text" data-darkify-promo-message="<?php echo esc_attr($dkfp_state); ?>"<?php echo $dkfp_state === $data['state'] ? '' : ' hidden'; ?>><?php echo $dkfp_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses()ed on sanitising; tokens are escaped. ?></span><?php endforeach; ?></p>
+		<p class="darkify-promo__message" id="<?php echo esc_attr($data['messageId']); ?>"><?php foreach ($data['messages'] as $dkfp_state => $dkfp_html) : ?><span class="darkify-promo__text" data-darkify-promo-message="<?php echo esc_attr($dkfp_state); ?>"<?php echo $dkfp_state === $data['state'] ? '' : ' hidden'; ?>><?php echo $dkfp_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_kses()ed on sanitising; tokens are escaped. ?></span><?php endforeach; ?></p>
 
 		<?php if ($data['showCountdown']) : ?>
 			<span class="darkify-promo__countdown" aria-hidden="true"><?php foreach ($data['units'] as $dkfp_index => $dkfp_unit) : ?><?php if ($dkfp_index > 0) : ?><span class="darkify-promo__sep">:</span><?php endif; ?><span class="darkify-promo__unit"><span class="darkify-promo__value" data-darkify-promo-unit="<?php echo esc_attr($dkfp_unit['key']); ?>"><?php echo esc_html($dkfp_unit['value']); ?></span><?php if ($data['showLabels']) : ?><span class="darkify-promo__label"><?php echo esc_html($dkfp_unit['label']); ?></span><?php endif; ?></span><?php endforeach; ?></span>

@@ -88,6 +88,18 @@
       "type": "string",
       "default": ""
     },
+    "linkBanner": {
+      "type": "boolean",
+      "default": false
+    },
+    "bannerUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "bannerNewTab": {
+      "type": "boolean",
+      "default": false
+    },
     "targetDate": {
       "type": "string",
       "default": ""

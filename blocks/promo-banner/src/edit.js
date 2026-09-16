@@ -196,6 +196,9 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 		buttonPadding,
 		buttonBorderWidth,
 		buttonRadius,
+		linkBanner,
+		bannerUrl,
+		bannerNewTab,
 		targetDate,
 		recurring,
 		recurringDays,
@@ -525,6 +528,49 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 								max={ 50 }
 								allowReset
 								resetFallbackValue={ undefined }
+							/>
+						</>
+					) }
+				</PanelBody>
+
+				{ /*
+				 * The canvas deliberately does not render the cover link: it
+				 * would sit over the RichText fields and swallow every click
+				 * meant for editing the message.
+				 */ }
+				<PanelBody title={ __( 'Banner link', 'darkify-util' ) } initialOpen={ false }>
+					<ToggleControl
+						__nextHasNoMarginBottom
+						label={ __( 'Make entire banner clickable', 'darkify-util' ) }
+						help={ __(
+							'The whole bar links to the address below. The button and the close control keep working on their own.',
+							'darkify-util'
+						) }
+						checked={ linkBanner }
+						onChange={ ( value ) => setAttributes( { linkBanner: value } ) }
+					/>
+
+					{ linkBanner && (
+						<>
+							<TextControl
+								__nextHasNoMarginBottom
+								type="url"
+								label={ __( 'Banner link', 'darkify-util' ) }
+								value={ bannerUrl }
+								onChange={ ( value ) => setAttributes( { bannerUrl: value } ) }
+							/>
+
+							{ ! bannerUrl && (
+								<Notice status="warning" isDismissible={ false }>
+									{ __( 'The banner is not clickable on the page until it has a link.', 'darkify-util' ) }
+								</Notice>
+							) }
+
+							<ToggleControl
+								__nextHasNoMarginBottom
+								label={ __( 'Open in a new tab', 'darkify-util' ) }
+								checked={ bannerNewTab }
+								onChange={ ( value ) => setAttributes( { bannerNewTab: value } ) }
 							/>
 						</>
 					) }

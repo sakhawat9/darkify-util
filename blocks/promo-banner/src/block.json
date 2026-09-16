@@ -59,6 +59,10 @@
 		"buttonBorderWidth": { "type": "string", "default": "" },
 		"buttonRadius": { "type": "string", "default": "" },
 
+		"linkBanner": { "type": "boolean", "default": false },
+		"bannerUrl": { "type": "string", "default": "" },
+		"bannerNewTab": { "type": "boolean", "default": false },
+
 		"targetDate": { "type": "string", "default": "" },
 		"recurring": { "type": "boolean", "default": false },
 		"recurringDays": { "type": "number", "default": 7 },

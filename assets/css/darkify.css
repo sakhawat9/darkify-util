@@ -1,13 +1,6 @@
 .optn-conv-wrapper {
   z-index: 5 !important;
 }
-/*
- * position: relative makes the header the containing block for the absolutely
- * centred row below. Without it the row centres inside the nearest positioned
- * ancestor — the sticky template part, which also holds the promo banner — so
- * it first paints half the banner's height too high, then jumps down when
- * Kadence's header script sets the height. That jump is the load flicker.
- */
 .darkify_header {
   position: relative;
   height: 60px !important;
@@ -513,4 +506,9 @@ html.darkify-submit-toggle-ready .darkify-submit-panel.is-animating {
 .kb-gallery-image-contain img {
     border: 4px solid #e6e8ef;
     border-radius: 12px;
+}
+.darkify-promo .darkify-promo__button {
+    border-bottom: 1px solid #fff;
+    border-radius: 0;
+    min-height: auto;
 }

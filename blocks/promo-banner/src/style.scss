@@ -121,9 +121,12 @@
 		text-decoration: none;
 	}
 
+	/* Outline plus a matching shadow ring: see the cover link below for why a
+	   shadow is needed on this site. */
 	&:focus-visible {
 		outline: 2px solid var(--darkify-promo-button-bg);
 		outline-offset: 2px;
+		box-shadow: 0 0 0 2px var(--darkify-promo-bg), 0 0 0 4px var(--darkify-promo-button-bg);
 	}
 }
 
@@ -161,6 +164,7 @@
 	&:focus-visible {
 		outline: 2px solid currentColor;
 		outline-offset: 1px;
+		box-shadow: 0 0 0 2px currentColor;
 	}
 }
 
@@ -177,12 +181,50 @@
 	border: 0;
 }
 
+/* Whole-banner link ------------------------------------------------------- */
+
+/*
+ * The cover link fills the bar beneath its content. The content is lifted over
+ * it and lets the pointer through, so a click anywhere on the message, the
+ * countdown or the empty space lands on the link — while the button, the close
+ * control and any link written into the message take their own clicks.
+ */
+.darkify-promo__cover {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	border-radius: inherit;
+}
+
+.darkify-promo.is-linked {
+	.darkify-promo__inner {
+		position: relative;
+		z-index: 1;
+		pointer-events: none;
+	}
+
+	.darkify-promo__button,
+	.darkify-promo__text a {
+		pointer-events: auto;
+	}
+
+	.darkify-promo__close {
+		z-index: 2;
+	}
+}
+
+/* The message underlines while the bar is hovered, as link text does. */
+.darkify-promo.is-linked:has(.darkify-promo__cover:hover) .darkify-promo__text {
+	text-decoration: none;
+}
+
 /* States ------------------------------------------------------------------ */
 
 .darkify-promo.is-state-expired {
 	.darkify-promo__countdown,
 	.darkify-promo__sr,
-	.darkify-promo__button {
+	.darkify-promo__button,
+	.darkify-promo__cover {
 		display: none;
 	}
 }

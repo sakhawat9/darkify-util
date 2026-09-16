@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Darkify Util plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Darkify Util 1.3.5\n"
+"Project-Id-Version: Darkify Util 1.3.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/darkify-util\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-14T12:55:35+00:00\n"
+"POT-Creation-Date: 2026-09-14T14:26:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: darkify-util\n"
@@ -213,61 +213,86 @@ msgstr ""
 msgid "Beautiful dark mode, automatically."
 msgstr ""
 
-#: includes/class-darkify-util-hero.php:56
+#: includes/class-darkify-util-hero.php:58
+msgid "automatically."
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:59
+msgid "Dark mode ready"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:60
 msgid "Darkify recolors every background, text, border, image and scrollbar on your site — with contrast that stays readable."
 msgstr ""
 
-#: includes/class-darkify-util-hero.php:57
+#: includes/class-darkify-util-hero.php:61
 msgid "Get Started"
 msgstr ""
 
-#: includes/class-darkify-util-hero.php:58
+#: includes/class-darkify-util-hero.php:62
 msgid "See Features"
 msgstr ""
 
+#: includes/class-darkify-util-hero.php:64
+msgid "Loved by readers, day and night"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:148
+msgid "Lightweight"
+msgstr ""
+
 #: includes/class-darkify-util-hero.php:152
+#: templates/demo-frame.php:66
+msgid "Accessible"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:156
+msgid "Automatic"
+msgstr ""
+
+#: includes/class-darkify-util-hero.php:193
 msgid "Features"
 msgstr ""
 
-#: includes/class-darkify-util-hero.php:153
+#: includes/class-darkify-util-hero.php:194
 msgid "Pricing"
 msgstr ""
 
-#: includes/class-darkify-util-hero.php:154
+#: includes/class-darkify-util-hero.php:195
 msgid "Docs"
 msgstr ""
 
-#: includes/class-darkify-util-hero.php:167
+#: includes/class-darkify-util-hero.php:208
 #: blocks/ai-summarize/src/edit.js:135
 msgid "Light"
 msgstr ""
 
-#: includes/class-darkify-util-hero.php:168
+#: includes/class-darkify-util-hero.php:209
 msgid "Dark"
 msgstr ""
 
-#: includes/class-darkify-util-promo-banner.php:412
+#: includes/class-darkify-util-promo-banner.php:440
 msgctxt "countdown: days"
 msgid "d"
 msgstr ""
 
-#: includes/class-darkify-util-promo-banner.php:413
+#: includes/class-darkify-util-promo-banner.php:441
 msgctxt "countdown: hours"
 msgid "h"
 msgstr ""
 
-#: includes/class-darkify-util-promo-banner.php:414
+#: includes/class-darkify-util-promo-banner.php:442
 msgctxt "countdown: minutes"
 msgid "m"
 msgstr ""
 
-#: includes/class-darkify-util-promo-banner.php:415
+#: includes/class-darkify-util-promo-banner.php:443
 msgctxt "countdown: seconds"
 msgid "s"
 msgstr ""
 
 #. translators: %s: number of days.
-#: includes/class-darkify-util-promo-banner.php:454
+#: includes/class-darkify-util-promo-banner.php:482
 #, php-format
 msgid "%s day"
 msgid_plural "%s days"
@@ -275,7 +300,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of hours.
-#: includes/class-darkify-util-promo-banner.php:460
+#: includes/class-darkify-util-promo-banner.php:488
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
@@ -283,7 +308,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: number of minutes.
-#: includes/class-darkify-util-promo-banner.php:465
+#: includes/class-darkify-util-promo-banner.php:493
 #, php-format
 msgid "%s minute"
 msgid_plural "%s minutes"
@@ -434,10 +459,6 @@ msgid "No layout shift."
 msgstr ""
 
 #: templates/demo-frame.php:66
-msgid "Accessible"
-msgstr ""
-
-#: templates/demo-frame.php:66
 msgid "WCAG contrast."
 msgstr ""
 
@@ -470,118 +491,114 @@ msgid "Switcher"
 msgstr ""
 
 #: templates/demo.php:140
-#: blocks/promo-banner/src/edit.js:536
+#: blocks/promo-banner/src/edit.js:582
 msgid "Position"
 msgstr ""
 
-#: templates/hero-frame.php:74
-msgid "Dark mode"
-msgstr ""
-
-#: templates/hero-frame.php:127
-#: templates/hero-frame.php:262
+#: templates/hero-frame.php:168
+#: templates/hero-frame.php:303
 msgid "Controls"
 msgstr ""
 
-#: templates/hero-frame.php:132
+#: templates/hero-frame.php:173
 msgid "Switches"
 msgstr ""
 
-#: templates/hero-frame.php:136
+#: templates/hero-frame.php:177
 msgid "Colors"
 msgstr ""
 
-#: templates/hero-frame.php:140
+#: templates/hero-frame.php:181
 msgid "Media"
 msgstr ""
 
-#: templates/hero-frame.php:144
+#: templates/hero-frame.php:185
 msgid "Advanced"
 msgstr ""
 
-#: templates/hero-frame.php:148
+#: templates/hero-frame.php:189
 msgid "Tools"
 msgstr ""
 
-#: templates/hero-frame.php:152
+#: templates/hero-frame.php:193
 msgid "License"
 msgstr ""
 
-#: templates/hero-frame.php:159
+#: templates/hero-frame.php:200
 msgid "Admin Panel Dark Mode"
 msgstr ""
 
-#: templates/hero-frame.php:160
+#: templates/hero-frame.php:201
 msgid "Enable dark mode in the WordPress admin dashboard."
 msgstr ""
 
-#: templates/hero-frame.php:164
+#: templates/hero-frame.php:205
 msgid "Admin Panel Palette"
 msgstr ""
 
-#: templates/hero-frame.php:165
+#: templates/hero-frame.php:206
 msgid "Color preset for the WordPress admin. Auto lets Darkify derive each color from the original."
 msgstr ""
 
-#: templates/hero-frame.php:171
+#: templates/hero-frame.php:212
 msgid "Block Editor Dark Mode"
 msgstr ""
 
-#: templates/hero-frame.php:172
+#: templates/hero-frame.php:213
 msgid "Enable the dark mode switch in the block editor to toggle between dark and light mode."
 msgstr ""
 
-#: templates/hero-frame.php:176
+#: templates/hero-frame.php:217
 msgid "Block Editor Palette"
 msgstr ""
 
-#: templates/hero-frame.php:177
+#: templates/hero-frame.php:218
 msgid "Color preset for the block editor, independent of the rest of the admin."
 msgstr ""
 
-#: templates/hero-frame.php:181
+#: templates/hero-frame.php:222
 msgid "Classic Editor Dark Mode"
 msgstr ""
 
-#: templates/hero-frame.php:182
+#: templates/hero-frame.php:223
 msgid "Enable the dark mode switch in the classic editor to toggle between dark and light modes."
 msgstr ""
 
-#: templates/hero-frame.php:187
+#: templates/hero-frame.php:228
 msgid "Auto (recommended)"
 msgstr ""
 
-#: templates/hero-frame.php:208
+#: templates/hero-frame.php:249
 msgid "New"
 msgstr ""
 
 #. translators: %s: sample user name.
-#: templates/hero-frame.php:214
+#: templates/hero-frame.php:255
 #, php-format
 msgid "Howdy, %s"
 msgstr ""
 
-#: templates/hero-frame.php:263
+#: templates/hero-frame.php:304
 msgid "Admin"
 msgstr ""
 
-#: templates/hero-frame.php:267
+#: templates/hero-frame.php:308
 msgid "Save"
 msgstr ""
 
-#: templates/hero-frame.php:273
+#: templates/hero-frame.php:314
 msgid "Bring dark mode to the WordPress admin dashboard and editors."
 msgstr ""
 
-#: templates/hero-frame.php:273
+#: templates/hero-frame.php:314
 msgid "View documentation"
 msgstr ""
 
-#: templates/hero-frame.php:275
+#: templates/hero-frame.php:316
 msgid "Admin appearance"
 msgstr ""
 
-#: templates/hero-frame.php:339
+#: templates/hero-frame.php:380
 msgid "On"
 msgstr ""
 
@@ -589,17 +606,29 @@ msgstr ""
 msgid "Darkify preview, switching between light and dark mode"
 msgstr ""
 
+#: templates/hero.php:142
+msgid "Live preview"
+msgstr ""
+
+#: templates/hero.php:143
+msgid "The real Darkify engine, not a video"
+msgstr ""
+
 #: templates/promo-banner.php:30
 msgid "Promotion"
 msgstr ""
 
+#: templates/promo-banner.php:54
+msgid "Opens in a new tab"
+msgstr ""
+
 #. translators: 1: date the offer ends, 2: time it ends.
-#: templates/promo-banner.php:40
+#: templates/promo-banner.php:66
 #, php-format
 msgid "Ends %1$s at %2$s."
 msgstr ""
 
-#: templates/promo-banner.php:56
+#: templates/promo-banner.php:82
 msgid "Dismiss this announcement"
 msgstr ""
 
@@ -626,8 +655,8 @@ msgstr ""
 #: blocks/ai-summarize/src/components/ServiceList.js:89
 #: blocks/changelog/src/edit.js:181
 #: blocks/collection/src/edit.js:353
-#: blocks/promo-banner/src/edit.js:599
-#: blocks/promo-banner/src/edit.js:647
+#: blocks/promo-banner/src/edit.js:645
+#: blocks/promo-banner/src/edit.js:693
 #: blocks/social-share/src/components/NetworkList.js:96
 msgid "Button text"
 msgstr ""
@@ -783,13 +812,13 @@ msgstr ""
 #: blocks/changelog/src/edit.js:109
 #: blocks/collection/src/edit.js:254
 #: blocks/collection/src/edit.js:291
-#: blocks/promo-banner/src/edit.js:560
+#: blocks/promo-banner/src/edit.js:606
 #: blocks/social-share/src/edit.js:132
 msgid "Left"
 msgstr ""
 
 #: blocks/ai-summarize/src/edit.js:260
-#: blocks/promo-banner/src/edit.js:559
+#: blocks/promo-banner/src/edit.js:605
 #: blocks/social-share/src/edit.js:133
 msgid "Center"
 msgstr ""
@@ -856,7 +885,7 @@ msgstr ""
 
 #: blocks/changelog/src/edit.js:87
 #: blocks/collection/src/edit.js:169
-#: blocks/promo-banner/src/edit.js:428
+#: blocks/promo-banner/src/edit.js:431
 msgid "Preview"
 msgstr ""
 
@@ -1043,7 +1072,7 @@ msgid "Quote"
 msgstr ""
 
 #: blocks/collection/src/components/DescriptionEditor.js:674
-#: blocks/promo-banner/src/edit.js:463
+#: blocks/promo-banner/src/edit.js:466
 msgid "Link"
 msgstr ""
 
@@ -1383,7 +1412,7 @@ msgid "Category labels"
 msgstr ""
 
 #: blocks/collection/src/edit.js:440
-#: blocks/promo-banner/src/edit.js:450
+#: blocks/promo-banner/src/edit.js:453
 msgid "Button"
 msgstr ""
 
@@ -1440,7 +1469,7 @@ msgid "0 keeps the theme’s own heading size."
 msgstr ""
 
 #: blocks/collection/src/edit.js:509
-#: blocks/promo-banner/src/edit.js:589
+#: blocks/promo-banner/src/edit.js:635
 #: blocks/social-share/src/edit.js:181
 msgid "Colours"
 msgstr ""
@@ -1490,232 +1519,250 @@ msgid "s"
 msgstr ""
 
 #: blocks/promo-banner/src/edit.js:97
-#: blocks/promo-banner/src/edit.js:436
+#: blocks/promo-banner/src/edit.js:439
 msgid "Counting down"
 msgstr ""
 
 #: blocks/promo-banner/src/edit.js:98
-#: blocks/promo-banner/src/edit.js:437
+#: blocks/promo-banner/src/edit.js:440
 msgid "Urgent"
 msgstr ""
 
 #: blocks/promo-banner/src/edit.js:99
-#: blocks/promo-banner/src/edit.js:438
+#: blocks/promo-banner/src/edit.js:441
 msgid "Ended"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:287
-#: blocks/promo-banner/src/edit.js:595
+#: blocks/promo-banner/src/edit.js:290
+#: blocks/promo-banner/src/edit.js:641
 msgid "Countdown"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:290
+#: blocks/promo-banner/src/edit.js:293
 msgid "Ends at"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:302
+#: blocks/promo-banner/src/edit.js:305
 msgid "Pick a date"
 msgstr ""
 
 #. translators: %s: the site's timezone, e.g. Asia/Dhaka or UTC+6.
-#: blocks/promo-banner/src/edit.js:320
+#: blocks/promo-banner/src/edit.js:323
 #, js-format
 msgid "In the site timezone (%s). Visitors see the time converted to their own."
 msgstr ""
 
 #. translators: %s: countdown state, e.g. Urgent.
-#: blocks/promo-banner/src/edit.js:330
+#: blocks/promo-banner/src/edit.js:333
 #, js-format
 msgid "Right now: %s"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:338
+#: blocks/promo-banner/src/edit.js:341
 msgid "Repeat automatically"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:339
+#: blocks/promo-banner/src/edit.js:342
 msgid "When the deadline passes, the countdown restarts to the same time one cycle later. No need to edit the block again."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:350
+#: blocks/promo-banner/src/edit.js:353
 msgid "Repeat every (days)"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:360
+#: blocks/promo-banner/src/edit.js:363
 msgid "Urgent when this many hours are left"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:361
+#: blocks/promo-banner/src/edit.js:364
 msgid "Swaps in the urgent message and colour. 0 turns it off."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:374
+#: blocks/promo-banner/src/edit.js:377
 msgid "When it ends"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:377
+#: blocks/promo-banner/src/edit.js:380
 msgid "Hide the banner"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:379
+#: blocks/promo-banner/src/edit.js:382
 msgid "Show the ended message"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:389
+#: blocks/promo-banner/src/edit.js:392
 msgid "Show countdown"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:398
+#: blocks/promo-banner/src/edit.js:401
 msgid "Show days"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:399
+#: blocks/promo-banner/src/edit.js:402
 msgid "Off, days are counted as hours."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:406
+#: blocks/promo-banner/src/edit.js:409
 msgid "Unit labels"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:409
+#: blocks/promo-banner/src/edit.js:412
 msgid "Short (02d : 14h)"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:410
+#: blocks/promo-banner/src/edit.js:413
 msgid "None (02 : 14)"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:417
+#: blocks/promo-banner/src/edit.js:420
 msgid "Pulse when urgent"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:425
+#: blocks/promo-banner/src/edit.js:428
 msgid "Messages"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:429
+#: blocks/promo-banner/src/edit.js:432
 msgid "Switch to Urgent or Ended to edit that message on the banner itself."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:435
+#: blocks/promo-banner/src/edit.js:438
 msgid "Live"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:443
+#: blocks/promo-banner/src/edit.js:446
 msgid "Placeholders: {remaining} (e.g. “5 hours”), {date} and {time} of the deadline — filled in on the page."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:453
+#: blocks/promo-banner/src/edit.js:456
 msgid "Show button"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:470
+#: blocks/promo-banner/src/edit.js:473
 msgid "The button is not shown on the page until it has a link."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:476
+#: blocks/promo-banner/src/edit.js:479
+#: blocks/promo-banner/src/edit.js:571
 msgid "Open in a new tab"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:489
+#: blocks/promo-banner/src/edit.js:492
 msgid "Button padding"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:504
+#: blocks/promo-banner/src/edit.js:507
 #: blocks/social-share/src/edit.js:208
 msgid "Border width"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:505
+#: blocks/promo-banner/src/edit.js:508
 msgid "Border colours are under Colours."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:518
+#: blocks/promo-banner/src/edit.js:521
 msgid "Border radius"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:519
+#: blocks/promo-banner/src/edit.js:522
 msgid "Reset for a fully rounded pill."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:533
+#: blocks/promo-banner/src/edit.js:541
+#: blocks/promo-banner/src/edit.js:558
+msgid "Banner link"
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:544
+msgid "Make entire banner clickable"
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:545
+msgid "The whole bar links to the address below. The button and the close control keep working on their own."
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:565
+msgid "The banner is not clickable on the page until it has a link."
+msgstr ""
+
+#: blocks/promo-banner/src/edit.js:579
 msgid "Behaviour"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:539
+#: blocks/promo-banner/src/edit.js:585
 msgid "Sticks to the top while its container scrolls — place it at the top of the header or the page."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:547
+#: blocks/promo-banner/src/edit.js:593
 msgid "In the flow of the page"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:548
+#: blocks/promo-banner/src/edit.js:594
 msgid "Sticky at the top"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:549
+#: blocks/promo-banner/src/edit.js:595
 msgid "Fixed to the bottom"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:556
+#: blocks/promo-banner/src/edit.js:602
 msgid "Content alignment"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:567
+#: blocks/promo-banner/src/edit.js:613
 msgid "Can be dismissed"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:575
+#: blocks/promo-banner/src/edit.js:621
 msgid "Stay dismissed for (days)"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:576
+#: blocks/promo-banner/src/edit.js:622
 msgid "0 brings it back on the next page load. A new deadline always shows again."
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:593
+#: blocks/promo-banner/src/edit.js:639
 #: blocks/social-share/src/edit.js:240
 msgid "Background"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:594
+#: blocks/promo-banner/src/edit.js:640
 msgid "Text"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:596
+#: blocks/promo-banner/src/edit.js:642
 msgid "Countdown when urgent"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:597
+#: blocks/promo-banner/src/edit.js:643
 msgid "Button background"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:598
+#: blocks/promo-banner/src/edit.js:644
 msgid "Button background on hover"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:600
+#: blocks/promo-banner/src/edit.js:646
 msgid "Button text on hover"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:601
+#: blocks/promo-banner/src/edit.js:647
 msgid "Button border"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:602
+#: blocks/promo-banner/src/edit.js:648
 msgid "Button border on hover"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:603
+#: blocks/promo-banner/src/edit.js:649
 msgid "Close icon"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:624
+#: blocks/promo-banner/src/edit.js:670
 msgid "Urgent message — empty uses the main one"
 msgstr ""
 
-#: blocks/promo-banner/src/edit.js:625
+#: blocks/promo-banner/src/edit.js:671
 msgid "Write the announcement…"
 msgstr ""
 
