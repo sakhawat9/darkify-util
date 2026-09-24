@@ -2,7 +2,7 @@
 /*
 *   Plugin Name: Darkify Util
 *   Description: A utility plugin to add dark mode functionality to your WordPress site.
-*   Version: 1.3.6
+*   Version: 1.4.0
  */
 
 // If this file is called directly, abort.
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 define('DARKIFY_UTIL_FILE', __FILE__);
 define('DARKIFY_UTIL_PATH', plugin_dir_path(__FILE__));
 define('DARKIFY_UTIL_URL', plugin_dir_url(__FILE__));
-define('DARKIFY_UTIL_VERSION', '1.3.6');
+define('DARKIFY_UTIL_VERSION', '1.4.0');
 
 
 /**
@@ -113,70 +113,30 @@ add_action('plugins_loaded', array('Darkify_Util_Demo', 'instance'));
 add_action('plugins_loaded', array('Darkify_Util_Hero', 'instance'));
 
 /**
- * The changelog block and its [darkify_changelog] shortcode, plus the one-time
- * migration off the third-party block the Changelogs page used to depend on.
- *
- * The parser is shared: the block's editor parses in JavaScript, the migration
- * parses in PHP, and both read the same category table from
- * includes/changelog-categories.json.
+ * The Changelog, Collection, AI Summarize, Social Share and Promo Banner blocks
+ * (and their [darkify_changelog], [darkify_collection], [darkify_ai_summarize],
+ * [darkify_social_share] and [darkify_promo_banner] shortcodes) moved to the
+ * standalone Atelier Blocks plugin in 1.4.0, under the same block names, so
+ * the pages using them are unchanged. That plugin must be active for them to
+ * render.
  */
-require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-changelog-parser.php';
-require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-changelog.php';
+
+/**
+ * The one-time migration off the third-party changelog block the Changelogs
+ * page used to depend on (Tools → Darkify Changelog Import, and
+ * `wp darkify-util changelog migrate`).
+ *
+ * It converts into the Atelier Blocks changelog block and parses with that
+ * plugin's parser, so it is offered only while Atelier Blocks is active: a
+ * migration into a block nothing renders would leave the page empty.
+ */
 require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-changelog-migrator.php';
 
-add_action('plugins_loaded', array('Darkify_Util_Changelog', 'instance'));
-add_action('plugins_loaded', array('Darkify_Util_Changelog_Migrator', 'instance'));
-
-/**
- * The collection block and its [darkify_collection] shortcode: a filterable,
- * searchable grid of items written into the block itself — roundups, showcases,
- * directories — rather than queried out of a post type.
- *
- * Filtering, search and paging are all answered in PHP, over AJAX, from the
- * items stored in the block comment; every control degrades to the plain link or
- * form it is rendered as.
- */
-require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-collection.php';
-
-add_action('plugins_loaded', array('Darkify_Util_Collection', 'instance'));
-
-/**
- * The AI summarize block and its [darkify_ai_summarize] shortcode: buttons that
- * open the current article in ChatGPT, Claude, Grok or Perplexity with a
- * summarise prompt already written.
- *
- * Every button is an ordinary link to the assistant's own web app — no API key,
- * no request leaves this server, and nothing to maintain when a provider
- * changes its models.
- */
-require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-ai-summarize.php';
-
-add_action('plugins_loaded', array('Darkify_Util_AI_Summarize', 'instance'));
-
-/**
- * The social share block and its [darkify_social_share] shortcode: share
- * buttons for the current post.
- *
- * Every button is an ordinary link to the network's own share endpoint, so no
- * third-party SDK is loaded and nothing about a reader reaches Facebook or X
- * unless that reader clicks. Instagram is the one exception and publishes no
- * share endpoint at all; its button copies the URL instead.
- */
-require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-social-share.php';
-
-add_action('plugins_loaded', array('Darkify_Util_Social_Share', 'instance'));
-
-/**
- * The promo banner block and its [darkify_promo_banner] shortcode: an
- * announcement bar counting down to a deadline.
- *
- * The copy moves on by itself — an urgent message inside the last few hours,
- * then an ended one or no banner at all — and a recurring deadline rolls to its
- * next cycle, so the bar never needs editing to stay true.
- */
-require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-promo-banner.php';
-
-add_action('plugins_loaded', array('Darkify_Util_Promo_Banner', 'instance'));
+add_action('plugins_loaded', function () {
+    if (class_exists('Atelier_Blocks_Changelog_Parser')) {
+        Darkify_Util_Changelog_Migrator::instance();
+    }
+});
 
 /**
  * SVG uploads.

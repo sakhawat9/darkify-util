@@ -406,36 +406,35 @@ shows through it is whatever Darkify painted underneath. The cards are tinted
 rather than white for the same reason — a white panel maps onto the palette's
 base background, which is also what the page becomes.
 
-## Building the changelog block
+## What moved to Atelier Blocks (1.4.0)
 
-The block owns its tooling. Everything is run **from the block directory**:
+The five reusable Gutenberg blocks that used to live here are now the
+standalone **Atelier Blocks** plugin (`wp-content/plugins/atelier-blocks`):
 
-```bash
-cd blocks/changelog
-npm install        # once
-npm run build      # production build into blocks/changelog/build
-npm run start      # watch while developing
-```
+| Block | Stored name (unchanged) | Shortcode (unchanged, now in Atelier Blocks) |
+| --- | --- | --- |
+| Changelog | `darkify-util/changelog` | `[darkify_changelog]` |
+| Collection | `darkify-util/collection` | `[darkify_collection]` |
+| AI Summarize | `darkify-util/ai-summarize` | `[darkify_ai_summarize]` |
+| Promo Banner | `darkify-util/promo-banner` | `[darkify_promo_banner]` |
+| Social Share | `darkify-util/social-share` | `[darkify_social_share]` |
 
-`build/` is committed, because the plugin is deployed by copying the folder.
+The block names were kept, so no stored content changed. **Atelier Blocks must
+be active** for those blocks to render. Build and develop them there, following
+its README.
 
-Two things about this setup are deliberate, and both fix a way the build can
-appear to do nothing:
+What stays here is specific to DarkifyWP:
 
-* **No `--webpack-src-dir` / `--output-path` flags.** wp-scripts' defaults are
-  `src/` → `build/` relative to the working directory, which is exactly the
-  block's own layout. When the tooling lived in the plugin root those flags were
-  needed, and running the same command from inside the block wrote the output to
-  `blocks/changelog/blocks/changelog/build/` — a stray nested folder — while the
-  real `build/` sat untouched and every change looked like it had been ignored.
-  With no flags, the command is either correct or it fails loudly.
-* **`--experimental-modules` is baked into the scripts.** `view.js` is declared
-  as `viewScriptModule` so the front end gets a real ES module. Without that flag
-  wp-scripts skips the module pass entirely: the build reports success, and
-  `view.js` is silently never rebuilt.
-
-To confirm a change reached the output: `grep` for it in `build/style-index.css`,
-`build/view.js` or `build/index.js`.
+* the `[darkify_demo]` and `[darkify_hero_demo]` preview shortcodes (above);
+* the one-time changelog migration off the third-party `block/changeloger`
+  block (Tools → Darkify Changelog Import, `wp darkify-util changelog migrate`).
+  It writes the Atelier Blocks changelog block and uses that plugin's parser,
+  so it is only offered while Atelier Blocks is active;
+* SVG uploads with sanitising;
+* the site stylesheet (`assets/css/darkify.css`, including DarkifyWP's own
+  overrides for the blocks' markup), the "Submit your site" toggle and the
+  mode-label script;
+* the Tawk.to chat embed.
 
 ## Files
 
@@ -444,6 +443,9 @@ includes/class-darkify-util-preview.php  shared: frame machinery, Darkify
                                          lookups, assets, switcher markup, menus
 includes/class-darkify-util-demo.php     [darkify_demo] and its controls
 includes/class-darkify-util-hero.php     [darkify_hero_demo]
+includes/class-darkify-util-changelog-migrator.php
+                                         block/changeloger → changelog block
+includes/class-darkify-util-svg*.php     SVG uploads and their sanitiser
 templates/demo.php                       the demo's browser window (host page)
 templates/demo-frame.php                 the demo's sample site (in the frame)
 templates/hero.php                       the hero's window and loop settings

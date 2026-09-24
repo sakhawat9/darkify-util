@@ -195,7 +195,7 @@ if (!class_exists('Darkify_Util_Changelog_Migrator')) {
             $attrs = isset($block['attrs']) ? $block['attrs'] : array();
             $raw   = isset($attrs['changelog']) ? (string) $attrs['changelog'] : '';
 
-            $parsed = Darkify_Util_Changelog_Parser::parse($raw);
+            $parsed = Atelier_Blocks_Changelog_Parser::parse($raw);
 
             $versions = $parsed['versions'];
             $entries  = 0;
