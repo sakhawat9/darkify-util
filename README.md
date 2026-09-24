@@ -408,7 +408,7 @@ base background, which is also what the page becomes.
 
 ## What moved to Atelier Blocks (1.4.0)
 
-The five reusable Gutenberg blocks that used to live here are now the
+The five reusable Gutenberg blocks and SVG upload support that used to live here are now in the
 standalone **Atelier Blocks** plugin (`wp-content/plugins/atelier-blocks`):
 
 | Block | Stored name (unchanged) | Shortcode (unchanged, now in Atelier Blocks) |
@@ -418,6 +418,10 @@ standalone **Atelier Blocks** plugin (`wp-content/plugins/atelier-blocks`):
 | AI Summarize | `darkify-util/ai-summarize` | `[darkify_ai_summarize]` |
 | Promo Banner | `darkify-util/promo-banner` | `[darkify_promo_banner]` |
 | Social Share | `darkify-util/social-share` | `[darkify_social_share]` |
+
+**SVG uploads** (with sanitising) moved to Atelier Blocks too, with unchanged
+behaviour. The `darkify_util_svg_capability` filter still works there but is
+deprecated; use `atelier_blocks_svg_capability`.
 
 The block names were kept, so no stored content changed. **Atelier Blocks must
 be active** for those blocks to render. Build and develop them there, following
@@ -430,7 +434,6 @@ What stays here is specific to DarkifyWP:
   block (Tools → Darkify Changelog Import, `wp darkify-util changelog migrate`).
   It writes the Atelier Blocks changelog block and uses that plugin's parser,
   so it is only offered while Atelier Blocks is active;
-* SVG uploads with sanitising;
 * the site stylesheet (`assets/css/darkify.css`, including DarkifyWP's own
   overrides for the blocks' markup), the "Submit your site" toggle and the
   mode-label script;
@@ -445,7 +448,6 @@ includes/class-darkify-util-demo.php     [darkify_demo] and its controls
 includes/class-darkify-util-hero.php     [darkify_hero_demo]
 includes/class-darkify-util-changelog-migrator.php
                                          block/changeloger → changelog block
-includes/class-darkify-util-svg*.php     SVG uploads and their sanitiser
 templates/demo.php                       the demo's browser window (host page)
 templates/demo-frame.php                 the demo's sample site (in the frame)
 templates/hero.php                       the hero's window and loop settings

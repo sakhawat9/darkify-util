@@ -139,17 +139,8 @@ add_action('plugins_loaded', function () {
 });
 
 /**
- * SVG uploads.
- *
- * WordPress refuses the format because an SVG is a document that can carry
- * scripts. The format is enabled here and every uploaded file is rewritten from
- * an allowlist before it is stored — the two always travel together, and the
- * sanitiser is required first so the mime type can never be allowed without it.
+ * SVG uploads (with sanitising) also moved to Atelier Blocks in 1.4.0.
  */
-require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-svg-sanitizer.php';
-require_once DARKIFY_UTIL_PATH . 'includes/class-darkify-util-svg.php';
-
-add_action('plugins_loaded', array('Darkify_Util_SVG', 'instance'));
 
 
 /**
